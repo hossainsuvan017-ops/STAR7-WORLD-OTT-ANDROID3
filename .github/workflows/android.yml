@@ -6,13 +6,13 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build Android APK
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout Repository
@@ -24,11 +24,16 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set Up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Configure Android SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
 
       - name: Install Android SDK 35
         run: |
+          yes | sdkmanager --licenses || true
           sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
       - name: Set Up Gradle
@@ -36,8 +41,18 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Check Project Files
+        run: |
+          test -f settings.gradle.kts
+          test -f build.gradle.kts
+          test -f app/build.gradle.kts
+          test -f app/src/main/AndroidManifest.xml
+          test -f app/src/main/assets/index.html
+          echo "Android project files found."
+
       - name: Build Debug APK
-        run: gradle assembleDebug --no-daemon
+        run: |
+          gradle assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -45,3 +60,4 @@ jobs:
           name: STAR7-WORLD-OTT-APK
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+          retention-days: 30
