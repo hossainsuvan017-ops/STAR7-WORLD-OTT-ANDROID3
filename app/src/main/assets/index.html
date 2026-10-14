@@ -627,7 +627,7 @@ $('contentForm').addEventListener('submit',e=>{
  e.preventDefault();
  try {
  const status=$('publishStatus');
- status.textContent='Publishing video...';
+ status.textContent='';
  status.style.color='#f5d56b';
  const fail=msg=>{status.textContent='Cannot publish: '+msg;status.style.color='#ff9898';alert('Cannot publish: '+msg)};
  const invalid=$('contentForm').querySelector('input:invalid,textarea:invalid,select:invalid');
@@ -686,7 +686,20 @@ $('contentForm').addEventListener('submit',e=>{
   $('contentForm').reset();$('broadcastNow').checked=true;$('seasonNumber').value=1;$('episodeNumber').value=1;buildAdSlots();filter='All';view='all';
   document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.filter==='All'));
   document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.view==='all'));
-  render();renderManage();refreshSeriesTargets();refreshFeatured();status.textContent='Saving video to device storage...';starPersist().then(()=>{status.textContent='SAVED ON DEVICE: Episode '+episodeNumber+' added to '+(existing?'existing series':'new title')+' will remain after closing and reopening this app (unless app data is cleared).';status.style.color='#9ff0a0'}).catch(err=>{status.textContent='Video visible now, but NOT saved permanently: '+err.message;status.style.color='#ff9898'});$('grid').scrollIntoView({behavior:'smooth',block:'start'});
+  render();renderManage();refreshSeriesTargets();refreshFeatured();
+  // Show the new title immediately, without waiting for large local video writes.
+  // Keep the selected Blob object URL alive so Home can play it right away.
+  $('search').value='';render();
+  status.textContent='';
+  document.querySelector('main')?.scrollIntoView({behavior:'auto',block:'start'});
+  $('grid').scrollIntoView({behavior:'smooth',block:'start'});
+  // Persistence is asynchronous; do not claim success before the device confirms it.
+  starPersist().then(()=>{status.textContent='Saved on this device. Video is ready on Home.';status.style.color='#9ff0a0'}).catch(err=>{
+    console.error('STAR 7 video storage failed:',err);
+    status.textContent='Video can play now, but saving failed: '+err.message+'. Keep the app open and retry with a direct video URL or free storage.';
+    status.style.color='#ff9898';
+    alert('Video appears on Home, but it could not be saved permanently: '+err.message);
+  });
  };
  const thumbnail=episodeThumbFile?starFileURL(episodeThumbFile):'';
  if(thumbnail)objectUrls.push(thumbnail);
