@@ -1,1 +1,847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>STAR 7 | World OTT</title>
+<style>
+:root{--bg:#080808;--panel:#141414;--gold:#f5ca2a;--text:#fff;--muted:#a7a7a7;--line:#2b2b2b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+header{height:auto;min-height:68px;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:22px;padding:12px 4%;background:#090909ed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{font-size:25px;font-weight:900;color:var(--gold);white-space:nowrap;letter-spacing:1px}.brand span{color:#fff}
+nav{display:flex;gap:18px;flex:1;overflow-x:auto}.nav{background:none;color:#ddd;border:0;white-space:nowrap;padding:8px 0}.nav.active,.nav:hover{color:var(--gold)}
+#search{width:min(240px,34vw);background:#181818;color:white;border:1px solid #363636;border-radius:24px;padding:10px 14px}
+main{max-width:1250px;margin:auto;padding:22px 4% 80px}
+.hero{min-height:310px;border-radius:18px;overflow:hidden;display:flex;align-items:end;padding:30px;background:linear-gradient(90deg,#080808 0%,#080808d9 42%,#08080810 100%),radial-gradient(ellipse at 78% 35%,#9b7014,#382606 38%,#121212 72%);border:1px solid #3b3013;position:relative}
+.hero:after{content:"STAR 7";position:absolute;right:4%;top:13%;font-size:clamp(48px,10vw,112px);font-weight:900;letter-spacing:4px;color:#ffffff0d;pointer-events:none}
+.heroContent{position:relative;z-index:1;max-width:600px}.eyebrow{color:var(--gold);font-weight:800;font-size:12px;letter-spacing:2px}.hero h1{font-size:clamp(32px,5vw,54px);margin:10px 0}.hero p{color:#ddd;line-height:1.6;max-width:520px}
+.btn{background:var(--gold);color:#111;border:0;border-radius:24px;padding:11px 18px;font-weight:800;margin:5px 8px 0 0}.btn.alt{background:#242424;color:#fff;border:1px solid #444}
+.rowTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 13px}.rowTitle h2{margin:0;font-size:21px}.muted{color:var(--muted);font-size:12px}
+.filters{display:flex;gap:8px;overflow:auto;padding:3px 0 12px}.chip{border:1px solid #363636;background:#1a1a1a;color:#ddd;border-radius:22px;padding:8px 14px;white-space:nowrap}.chip.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:bold}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}.card{min-width:0;cursor:pointer}.poster{height:clamp(140px,22vw,235px);border:1px solid #333;border-radius:12px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;background:linear-gradient(145deg,#4c3809,#151515 62%,#62480a)}.poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.posterTitle{position:relative;z-index:1;font-weight:900;color:#ffe27a;text-shadow:0 2px 12px #000}.play{position:absolute;right:9px;bottom:9px;z-index:2;width:35px;height:35px;border-radius:50%;background:var(--gold);color:#111;display:grid;place-items:center}.card h3{font-size:14px;margin:9px 0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:12px;color:var(--muted)}
+.empty{grid-column:1/-1;padding:26px;text-align:center;color:#bbb;border:1px dashed #444;border-radius:12px}
+.panel{margin-top:38px;border:1px solid #3b3013;border-radius:16px;background:#111;padding:20px}.panel h2{margin:5px 0 10px}.panel p{color:#c7c7c7;line-height:1.6}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;color:#ddd}.field input,.field select,.field textarea{width:100%;background:#1b1b1b;color:white;border:1px solid #414141;border-radius:9px;padding:11px}.notice{background:#201b0c;border:1px solid #4b3d16;color:#e8d58a;border-radius:10px;padding:12px;font-size:13px;line-height:1.5}
+dialog{width:min(900px,94vw);max-height:92vh;overflow:auto;background:#111;color:white;border:1px solid #443817;border-radius:16px;padding:18px}dialog::backdrop{background:#000d}.modalhead{display:flex;align-items:center;justify-content:space-between;gap:12px}.close{border:0;border-radius:50%;width:38px;height:38px;background:#292929;color:white;font-size:22px}.video{width:100%;max-height:60vh;background:#000;border-radius:12px;margin-top:12px}.desc{color:#bbb;line-height:1.6}
+footer{border-top:1px solid #222;text-align:center;padding:24px;color:#888;font-size:12px}
+@media(max-width:800px){header{flex-wrap:wrap;gap:10px}nav{order:3;flex-basis:100%}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{min-height:285px;padding:22px}}
+@media(max-width:480px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.poster{height:190px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}#search{margin-left:auto}.hero{min-height:300px}}
 
+#detailsDialog,#playerDialog{width:min(760px,100vw);max-height:96dvh} .episodeRow{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #303030}.episodeRow button{flex:1;text-align:left;border:0;background:#242424;color:white;border-radius:10px;padding:13px}.episodeRow .epNo{color:var(--gold);font-weight:bold}.moreGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.moreTile{min-height:130px;border:1px solid #444;border-radius:10px;color:#ffe49a;background:linear-gradient(145deg,#3b3014,#141414);font-weight:700;overflow:hidden}.moreTile img{width:100%;height:105px;object-fit:cover;display:block}.playerWrap{position:relative;background:black;border-radius:12px;overflow:hidden}.playerWrap .video{margin:0;border-radius:0;max-height:65vh;display:block}.tapZones{position:absolute;inset:0;display:flex;pointer-events:none}.tapZone{width:34%;height:75%;pointer-events:auto;touch-action:manipulation}.tapZone.center{width:32%;pointer-events:none}.seekToast{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);background:#000b;border-radius:20px;padding:10px;display:none;pointer-events:none}.playerActions{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.playerActions button,.playerActions select{background:#252525;color:white;border:1px solid #555;border-radius:9px;padding:10px}.playerEpList{max-height:320px;overflow:auto}.playerEpList button{width:100%;text-align:left;padding:13px;background:#222;color:white;border:0;border-bottom:1px solid #444}.playerEpList button.active{color:var(--gold)}
+
+/* STAR 7 viewing experience: full-width detail and player pages */
+#detailsDialog,#playerDialog{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border:0;border-radius:0;padding:clamp(12px,3vw,28px);margin:0;background:#101116;overflow-y:auto}
+#detailsDialog .modalhead,#playerDialog .modalhead{max-width:1100px;margin:auto}
+#detailsDialog .desc,#playerDialog .desc{max-width:1100px;margin:16px auto}
+#detailsDialog #episodeList,#playerDialog #playerEpisodes{max-width:1100px;margin:12px auto;display:block;max-height:none;overflow:visible}
+#detailsDialog #episodeList .episodeVisual,#playerDialog #playerEpisodes .episodeVisual{display:flex;align-items:center;gap:14px;width:100%;background:transparent;border:0;border-bottom:1px solid #292b32;color:white;text-align:left;padding:12px 0;min-height:100px}
+.episodeVisual.active .epInfo strong{color:#f5ca2a}.epThumb{position:relative;width:clamp(110px,31vw,190px);aspect-ratio:16/9;border-radius:8px;background:linear-gradient(135deg,#383020,#111);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}.epThumb img{width:100%;height:100%;object-fit:cover}.epThumb span{position:absolute;bottom:6px;left:8px;text-shadow:0 1px 5px black}.epInfo{display:grid;gap:9px}.epInfo strong{font-size:16px}.epInfo small{color:#9da2b3}
+#playerDialog .playerWrap{width:min(1100px,100%);margin:16px auto 0;aspect-ratio:16/9;border-radius:10px;background:black;display:flex;align-items:center;justify-content:center}
+#playerDialog .playerWrap video{width:100%;height:100%;object-fit:contain;max-height:none;margin:0}
+.playerWrap:fullscreen,.playerWrap:-webkit-full-screen{width:100vw!important;height:100dvh!important;max-width:none!important;aspect-ratio:auto!important;border-radius:0!important;background:black}
+.playerWrap:fullscreen video,.playerWrap:-webkit-full-screen video{width:100%;height:100%;object-fit:contain}
+.adOverlay{position:absolute;inset:0;pointer-events:none;color:white;text-shadow:0 1px 4px #000;z-index:4}.adOverlay[hidden]{display:none!important}.adMeta{position:absolute;bottom:25px;left:12px;display:flex;flex-direction:column;gap:4px;font-size:clamp(11px,2.7vw,15px);background:#0008;padding:5px 8px;border-radius:6px;max-width:55%}.adTrack{position:absolute;bottom:0;left:0;right:0;height:4px;background:#5558}.adTrack div{height:100%;width:0;background:#f5ca2a}.skipOverlay{position:absolute;right:10px;bottom:25px;background:#111d;border:1px solid #fff9;color:white;padding:10px 12px;border-radius:6px;pointer-events:auto;font-weight:700;font-size:clamp(11px,2.7vw,15px)}.skipOverlay:disabled{opacity:.85}.inPlayerFullscreen{position:absolute;right:10px;top:10px;z-index:3;background:#000a;color:white;border:1px solid #fff7;border-radius:6px;padding:7px 11px;font-size:22px}.playerWrap:fullscreen .inPlayerFullscreen{top:12px;right:12px}
+.tapZones{z-index:2}.playerActions{max-width:1100px;margin:10px auto 18px}.moreGrid{max-width:1100px;margin:15px auto;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:600px){#playerDialog,#detailsDialog{padding:12px}#playerDialog .playerWrap{width:calc(100% + 24px);margin:12px -12px 0;border-radius:0}.epInfo strong{font-size:14px}}
+.adCta{position:absolute;right:10px;bottom:77px;display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;max-width:65%;pointer-events:auto}.adCta button{background:#f5ca2a;color:#111;border:0;border-radius:7px;padding:9px 12px;font-weight:800}.adCta[hidden]{display:none!important}
+.premiereTag{position:absolute;top:8px;left:8px;background:#a31322d9;color:white;font-weight:800;font-size:11px;border-radius:5px;padding:5px 8px;z-index:3;animation:starBlink 1.6s ease-in-out infinite}@keyframes starBlink{50%{opacity:.45}}#episodeList{overflow-y:auto;overscroll-behavior:contain}#continueSection{margin:24px 0}#featuredTitles{width:100%;background:#222;color:white;padding:10px}#newDeletePassword{background:#222;color:white;padding:10px;border:1px solid #555;border-radius:8px}#detailsHero{background:#0b0b0b}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">STAR <span>7</span></div>
+  <nav>
+    <button class="nav active" data-view="all">Home</button>
+    <button class="nav" data-view="Movies">Movies</button>
+    <button class="nav" data-view="Web Series">Web Series</button>
+    <button class="nav" data-view="TV Shows">TV Shows</button>
+    <button class="nav" data-view="Serial">Serial</button>
+    <button class="nav" data-view="Live Stream">Live</button>
+    <button class="nav" data-view="Premium">Premium</button>
+    <button class="nav" data-view="My List">My List</button>
+    <button class="nav" type="button" id="mySpaceNav">My Space</button>
+  </nav>
+  <input id="search" type="search" placeholder="Search titles..." aria-label="Search titles">
+  <button id="viewerAccountBtn" class="btn" type="button" style="white-space:nowrap">Sign In / Sign Up</button>
+</header>
+<main>
+  <section class="hero">
+    <div class="heroContent"><div id="heroFeaturedLabel" class="eyebrow"></div>
+      <div class="eyebrow">YOUR ENTERTAINMENT • YOUR WORLD</div>
+      <h1>Stories Worth Watching.</h1>
+      <p>Discover movies and series on STAR 7. Enjoy movies, series, shows and more on STAR 7.</p>
+      <button class="btn" id="browse">▶ Play</button><button class="btn alt" id="heroOpen" type="button" hidden>View Details</button>
+    </div>
+  </section>
+  <section id="continueSection" hidden><div class="rowTitle"><h2>Continue Watching</h2></div><div id="continueGrid" class="grid"></div></section><div class="rowTitle"><h2 id="sectionTitle">Featured on STAR 7</h2><span id="count" class="muted"></span></div>
+  <div class="filters" id="filters">
+    <button class="chip active" data-filter="All">All</button>
+    <button class="chip" data-filter="Movies">Movies</button>
+    <button class="chip" data-filter="Web Series">Web Series</button>
+    <button class="chip" data-filter="TV Shows">TV Shows</button>
+    <button class="chip" data-filter="Documentary">Documentary</button>
+    <button class="chip" data-filter="Serial">Serial</button>
+    <button class="chip" data-filter="Live Stream">Live Stream</button>
+    <button class="chip" data-filter="Premium">Premium</button>
+  </div>
+  <section id="grid" class="grid"></section>
+
+  <section class="panel" id="mySpaceSection" hidden>
+    <div class="eyebrow">YOUR SPACE</div><h2>My Space</h2>
+    <div id="spaceAccount" class="notice"></div>
+    <div id="subscriptionExpiryNotice" class="notice" hidden role="status"><strong>Subscription Expired</strong><p>Your Premium subscription has ended. Renew to watch Premium videos. Free videos are still available.</p><button class="btn" id="renewSubscription" type="button">Renew Subscription</button></div>
+    <div class="rowTitle"><h2>Offline Downloads</h2><span class="muted" id="offlineCount"></span></div>
+    <div id="offlineLibrary" class="grid"></div>
+    <div class="rowTitle"><h2>Subscription Plans</h2></div>
+    <div id="viewerPlans" class="formgrid"></div>
+    <p class="muted">Purchases are not enabled in this version. Plans shown are informational until verified billing is connected.</p>
+    <button class="btn alt" id="spaceSignOut" type="button">Log Out</button>
+  </section>
+  <section id="offlineNotice" class="panel" hidden><h2>You're offline</h2><p>Connect to the internet to browse STAR 7, or watch videos saved on this device.</p><button class="btn" id="goToDownloads">Go to Downloads</button></section>
+  <section class="panel" id="viewerAccountSection" hidden>
+    <div class="eyebrow">STAR 7 · VIEWER ACCOUNT</div>
+    <h2 id="viewerAccountHeading">Viewer Sign In / Create Account</h2>
+    <p class="muted">Create your own viewer profile to keep a local sign-in on this device. Local viewer passwords are stored on this device and are NOT secure for public release. Do not use a real password. Online accounts, paid subscriptions and purchases require a secure backend.</p>
+    <div id="viewerGuestArea">
+      <div class="formgrid">
+        <div class="field"><label for="viewerEmail">Email address</label><input id="viewerEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
+        <div class="field"><label for="viewerName">Display name (for Sign Up)</label><input id="viewerName" autocomplete="nickname" placeholder="Your name"></div>
+        <div class="field"><label for="viewerPassword">Password (at least 8 characters)</label><input id="viewerPassword" type="password" autocomplete="current-password" minlength="8"></div>
+      </div>
+      <button type="button" class="btn" id="viewerSignIn">Sign In</button><button type="button" class="btn alt" id="viewerSignUp">Create Viewer Account</button>
+      <p class="muted" id="viewerAuthMessage" role="status">Sign in to continue watching your favorites.</p>
+    </div>
+    <div id="viewerSignedArea" hidden><h3 id="viewerGreeting"></h3><p class="muted">Account type: Viewer · Subscription: Not active (billing not connected).</p><button class="btn alt" id="viewerSignOut" type="button">Sign Out</button></div>
+  </section>
+  <section class="panel" id="adminSection" hidden>
+    <div class="eyebrow">RESTRICTED AREA • LOCAL PROTOTYPE</div>
+    <h2 id="ownerHeading">Owner Access</h2>
+    <p>Local-only owner access. A production release requires server-side owner verification and authorization.</p>
+    <div id="loginBox">
+      <div class="formgrid">
+        <div class="field"><label for="adminUser">Owner email</label><input id="adminUser" type="email" autocomplete="username" placeholder="Your email"></div>
+        <div class="field"><label for="adminPass">Owner password</label><input id="adminPass" type="password" autocomplete="current-password" placeholder="Enter password"></div>
+      </div>
+      <button class="btn" id="loginBtn">Sign In</button>
+      <p class="muted" id="ownerSetupHint">Private owner access on this device. Do not use this local-only version for a public release.</p>
+    </div>
+    <div id="adminBox" hidden>
+      <div class="panel" style="margin-top:20px"><h3>Subscription Plan Prices</h3><p>Set display prices. Real payment and subscription activation require a verified billing backend.</p><div id="adminPlanFields" class="formgrid"></div><button type="button" class="btn" id="savePlanPrices">Save Plan Prices</button></div>
+      <p class="muted">Live Stream supports a compatible stream URL only if the browser/player can play it. Premium is a label until secure subscriptions are implemented.</p>
+    <div class="rowTitle"><h2>Content Management</h2><button class="btn alt" id="logoutBtn">Sign Out</button></div>
+      <form id="contentForm" novalidate>
+        <div class="formgrid">
+          <div class="field"><label for="title">Title *</label><input id="title" required maxlength="120" placeholder="Movie or series title"></div>
+          <div class="field"><label for="category">Category</label><select id="category"><option>Movies</option><option>Web Series</option><option>TV Shows</option><option>Documentary</option><option>Serial</option><option>Live Stream</option><option>Premium</option></select></div>
+          <div class="field"><label for="accessType">Access label (display only; no payment lock yet)</label><select id="accessType"><option value="Free">Free</option><option value="Premium">Premium</option></select></div>
+          <div class="field"><label for="year">Release year</label><input id="year" type="number" min="1900" max="2100" placeholder="2026"></div>
+          <div class="field"><label for="posterFile">Poster image (optional)</label><input id="posterFile" type="file" accept="image/*"></div>
+          <div class="field full"><label for="videoFile">Video file (local to this browser) *</label><input id="videoFile" type="file" accept="video/*"></div>
+          <div class="field full"><label for="videoUrl">OR direct video URL (MP4/WebM or compatible stream)</label><input id="videoUrl" type="url" placeholder="https://your-authorized-host.example/video.mp4"></div>
+          <div class="field full"><label for="mainCuts">Remove parts from main video (MM:SS-MM:SS, comma-separated)</label><input id="mainCuts" placeholder="01:10-01:35, 04:00-04:20"><small class="muted">Example: 01:10-01:35 skips that 25-second part during playback. Original file stays unchanged.</small></div>
+          <div class="field full"><button type="button" class="btn alt" id="previewMain">▶ Preview main video</button></div>
+          <div class="field full"><label for="adCount">Number of ad breaks (0–100)</label><select id="adCount"></select></div>
+          <div class="field full" id="adSlots" aria-live="polite"></div>
+          <div class="field full" style="border:1px solid #69531b;border-radius:12px;padding:14px;background:#211c10"><strong style="color:#f8ce31">Series / Serial Episode Upload</strong><p class="muted">Upload Episode 23, Episode 188, or any positive whole-number episode. Select an existing series to add new episodes without replacing its previous episodes.</p><label for="seriesTarget">Add to existing series (optional)</label><select id="seriesTarget"><option value="">Create a new title / series</option></select><label for="seasonNumber" style="display:block;margin-top:12px">Season number</label><input id="seasonNumber" type="number" min="1" step="1" value="1"><label for="episodeNumber" style="display:block;margin-top:12px">Episode number (no fixed limit)</label><input id="episodeNumber" type="number" min="1" step="1" value="1"><label for="episodeDuration" style="display:block;margin-top:12px">Episode length (minutes, optional)</label><input id="episodeDuration" type="number" min="1" step="any" placeholder="e.g. 42, 60, 120, 300"><label for="episodeName" style="display:block;margin-top:12px">Episode title (optional)</label><input id="episodeName" placeholder="e.g. Episode 23: The Reunion"><label for="episodeThumb" style="display:block;margin-top:12px;color:#f8ce31;font-weight:700">🖼️ Thumbnail for THIS episode (Episode 1, 2, 12, 23...)</label><input id="episodeThumb" type="file" accept="image/*"><small class="muted">Select a different image each time you publish an episode. It appears beside that episode on the Details Page. If you add several episode URLs together, they will share this thumbnail; upload episodes individually for unique thumbnails.</small><small class="muted">Choose the video file above or enter its direct URL. For a series, upload each episode separately with its episode number. The episode list will be sorted by season and episode number.</small></div>
+          <div class="field full" style="border:1px solid #66531a;border-radius:12px;padding:14px"><strong>Show artwork & 30-second promo</strong><p class="muted">For a new show, choose its home poster and optional wide details banner. Existing shows keep their artwork unless you upload a replacement. Each episode can have its own thumbnail using the Episode thumbnail field above.</p><label for="detailsBannerFile">Wide details-page banner (optional)</label><input id="detailsBannerFile" type="file" accept="image/*"><label for="promoFile">30–60 second show promo video (optional)</label><input id="promoFile" type="file" accept="video/*"><label for="promoDuration">Promo playback length</label><select id="promoDuration"><option value="30">30 seconds</option><option value="45">45 seconds</option><option value="60">60 seconds (1 minute)</option></select><small class="muted">The promo starts automatically 3 seconds after opening Details. Sound is attempted first; if the browser blocks sound autoplay, viewers can tap the sound button. It plays once per visit, then returns to the banner. Reopening Details restarts the timer.</small><label for="promoUrl">OR promo video URL</label><input id="promoUrl" type="url" placeholder="https://example.com/promo.mp4"></div><div class="field full"><label for="episodeUrls">Series episodes (optional, one direct video URL per line; no fixed episode limit)</label><textarea id="episodeUrls" rows="5" placeholder="https://host.example/episode-1.mp4&#10;https://host.example/episode-2.mp4"></textarea><small class="muted">If filled, these become Episodes 1, 2, 3… and play consecutively. The main video field can be left empty for a series. Each episode plays a pre-roll ad if configured below.</small></div>
+          <div class="field full" style="border:1px solid #355d76;border-radius:12px;padding:14px;background:#101c26"><strong style="color:#8ddaff">🌐 Episode Audio / Dubbed Languages</strong><p class="muted">The primary video above is the default language. Add optional dubbed video versions for this specific episode. Each version must be a separately uploaded video file or a direct video URL. Viewers can switch languages in Video Settings while keeping their playback position.</p><label for="primaryLanguage">Primary video language</label><select id="primaryLanguage"><option value="bn">বাংলা (Bengali)</option><option value="hi">हिन्दी (Hindi)</option><option value="en">English</option><option value="ta">தமிழ் (Tamil)</option><option value="te">తెలుగు (Telugu)</option><option value="ml">മലയാളം (Malayalam)</option><option value="kn">ಕನ್ನಡ (Kannada)</option><option value="other">Other</option></select><label for="dubLanguage" style="display:block;margin-top:12px">Additional dubbed language (optional)</label><select id="dubLanguage"><option value="">No additional language</option><option value="bn">বাংলা (Bengali)</option><option value="hi">हिन्दी (Hindi)</option><option value="en">English</option><option value="ta">தமிழ் (Tamil)</option><option value="te">తెలుగు (Telugu)</option><option value="ml">മലയാളം (Malayalam)</option><option value="kn">ಕನ್ನಡ (Kannada)</option><option value="other">Other</option></select><label for="dubFile" style="display:block;margin-top:10px">Dubbed video file (optional)</label><input id="dubFile" type="file" accept="video/*"><label for="dubUrl" style="display:block;margin-top:10px">OR dubbed video direct URL</label><input id="dubUrl" type="url" placeholder="https://your-host.example/episode-hindi.mp4"><small class="muted">For additional languages, publish each episode individually. Dubbed files are stored on this device with the other local uploads.</small></div>
+          <div class="field full"><label for="broadcastType">Episode release type</label><select id="broadcastType"><option value="normal">Normal episode</option><option value="premiere">Premiere (becomes normal episode when finished)</option><option value="live">Live stream (ends without replay)</option></select><label for="broadcastStart">Premiere / Live start time (optional)</label><input type="datetime-local" id="broadcastStart"><label style="display:flex;align-items:center;gap:9px;margin-top:10px"><input id="broadcastNow" type="checkbox" style="width:auto" checked> Start immediately when I publish (morning, afternoon or night — my choice)</label><small class="muted">Premiere/live synchronization is based on device clocks and local playback; a worldwide verified broadcast needs a streaming server. Set any duration you want (for example 30, 60, 120, 300 minutes). Select Start immediately to begin at the time you press Publish, or uncheck it and set a future start time. Enter episode length above for timing.</small><label for="preRollUrl">Episode pre-roll ad URL (optional, direct video URL)</label><input id="preRollUrl" type="url" placeholder="https://host.example/preroll.mp4"><small class="muted">Runs before each episode. Existing timed ad breaks remain available.</small></div>
+          <div class="field full"><label for="description">Description</label><textarea id="description" rows="3" placeholder="Short description"></textarea></div>
+        </div>
+        <div class="notice" style="margin:14px 0">Future Google ad integration: Google AdMob (Android) or Google Ad Manager requires an approved account, native/SDK integration or supported web ad tags, privacy/consent configuration, and live hosting. This HTML currently runs owner-uploaded video ads only; it does not serve Google ads.</div><div class="notice" style="margin:14px 0">Choose a local video file OR provide a direct video URL. For ads, select 0–100 breaks. A separate file/URL input appears for each ad, so every break can play a different ad. You can specify parts to skip for each video and preview locally. Ads play inside the same player, and the main video resumes from the paused point. Local video files are saved on this device using IndexedDB after publishing. Do not clear app/site data or uninstall the app without a backup. Files are not uploaded to a server. For shared worldwide viewing, connect a real backend and video storage. Use only content you own or are licensed to distribute.</div>
+        <button class="btn" type="submit">＋ Publish Video</button>
+        <div id="publishStatus" role="status" aria-live="polite" style="margin-top:12px;padding:12px;border:1px solid #66531a;border-radius:9px;color:#f5d56b">Ready to publish. Enter a title and a video file, video URL, or episode URLs.</div>
+      </form>
+      <section id="googleAdsSettings" style="margin:22px 0;padding:16px;border:1px solid #66531a;border-radius:12px;background:#1c1c20">
+        <div class="rowTitle"><h2>Google Ads Settings</h2><span class="muted">Future Android integration</span></div>
+        <p class="muted">Save your planned Google AdMob IDs for a future native Android build. These settings do not load Google ads in this HTML app. Your existing owner-uploaded video ads continue independently.</p>
+        <div class="formgrid">
+          <div class="field"><label for="googleAdsMode">Google ads integration status</label><select id="googleAdsMode"><option value="disabled">Disabled (current HTML)</option><option value="planned">Planned for Android APK</option></select></div>
+          <div class="field"><label for="googleAppId">Android AdMob App ID</label><input id="googleAppId" placeholder="ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY" autocomplete="off"></div>
+          <div class="field"><label for="googleBannerId">Banner Ad Unit ID</label><input id="googleBannerId" placeholder="ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY" autocomplete="off"></div>
+          <div class="field"><label for="googleInterstitialId">Interstitial Ad Unit ID</label><input id="googleInterstitialId" placeholder="ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY" autocomplete="off"></div>
+          <div class="field"><label for="googleRewardedId">Rewarded Ad Unit ID</label><input id="googleRewardedId" placeholder="ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY" autocomplete="off"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button type="button" class="btn" id="saveGoogleAds">Save Google Ads Settings</button><button type="button" class="btn alt" id="clearGoogleAds">Clear Settings</button></div>
+        <p id="googleAdsStatus" class="muted" role="status" aria-live="polite">Not connected to Google AdMob.</p>
+        <p class="muted">For real ads later: integrate Google Mobile Ads SDK in the native Android app, use test ads during development, configure consent/privacy, and obtain account approval. AdMob IDs saved here are device-local configuration only; this does not generate ad revenue or show Google ads.</p>
+      </section>
+      <section id="starStudio" style="margin:22px 0;padding:16px;border:1px solid #66531a;border-radius:12px;background:#1c1c20">
+        <div class="rowTitle"><h2>STAR 7 Studio</h2><span class="muted">Device analytics · backend-ready</span></div>
+        <p class="muted">These are genuine playback events recorded on THIS device only. They are not worldwide audience totals. Verified live viewers and paid subscribers require server-side presence tracking, subscription billing and analytics.</p>
+        <div class="formgrid"><div class="field"><strong id="studioPlays">0</strong><br><span class="muted">Video starts on this device</span></div><div class="field"><strong id="studioMinutes">0 min</strong><br><span class="muted">Watch time on this device</span></div><div class="field"><strong>Not connected</strong><br><span class="muted">Verified subscriptions</span></div><div class="field"><strong>Not connected</strong><br><span class="muted">Concurrent live viewers</span></div></div>
+        <h3>Video analytics (this device)</h3><div id="studioVideos" class="muted">No playback recorded yet.</div>
+        <p id="studioStatus" class="muted" role="status">Analytics are stored locally on this device. For real global Studio numbers, connect a secure analytics backend.</p>
+      </section>
+      <section style="margin:20px 0;padding:16px;border:1px solid #66531a;border-radius:12px"><h2>Featured Home Carousel & Appearance</h2><p class="muted">Choose up to five titles to rotate on the home screen every 3 seconds. Theme and welcome message are saved on this device.</p><div class="field"><label>Featured titles (legacy multi-select)</label><select id="featuredTitles" multiple size="7"></select><small class="muted">For easier selection on Android, use the five slots below.</small></div><div id="featuredSlots" class="formgrid"></div><div class="formgrid"><div class="field"><label>App background color</label><input type="color" id="appBgColor" value="#080808"></div><div class="field"><label>Accent color</label><input type="color" id="appAccentColor" value="#f5ca2a"></div><div class="field full"><label>Festival welcome message</label><input id="festivalWelcome" placeholder="Happy Diwali from STAR 7!"></div><div class="field"><label>Theme preset</label><select id="themePreset"><option value="custom">Custom colors</option><option value="gold">Golden Night</option><option value="purple">Magical Purple</option><option value="blue">Ocean Blue</option><option value="green">Festival Green</option><option value="red">Celebration Red</option></select></div><div class="field"><label>Welcome banner style</label><select id="welcomeStyle"><option value="plain">Simple</option><option value="glow">Magical glow</option><option value="rainbow">Rainbow glow</option></select></div><div class="field"><label>Welcome text color</label><input type="color" id="welcomeColor" value="#ffffff"></div><div class="field"><label>Welcome message size</label><select id="welcomeSize"><option value="16">Small</option><option value="22">Medium</option><option value="30">Large</option></select></div></div><button type="button" class="btn" id="saveAppearance">Save home settings</button></section><section style="margin:20px 0;padding:16px;border:1px solid #66531a;border-radius:12px"><h2>Delete Protection</h2><p class="muted">Set a separate delete password. It protects the interface on this device only; it is not server security.</p><input type="password" id="newDeletePassword" placeholder="New delete password (8+ characters)"><button type="button" class="btn alt" id="setDeletePassword">Set / Change Delete Password</button></section><div class="rowTitle"><h2>Manage Content</h2><span class="muted">Remove entries using the button on each row.</span></div>
+      <div id="manageList"></div>
+    </div>
+  </section>
+</main>
+
+<footer>STAR 7</footer>
+
+<dialog id="trimDialog"><div class="modalhead"><h2>Preview video &amp; cuts</h2><button class="close" id="closeTrim">×</button></div><p class="desc">Play the selected source and check the cuts. The original video is not changed.</p><video id="trimPlayer" class="video" controls playsinline></video><p id="trimMessage" class="muted"></p></dialog>
+<dialog id="detailsDialog"><div class="modalhead"><h2 id="detailsTitle">Title details</h2><button class="close" id="closeDetails">×</button></div><div id="detailsHero" style="position:relative;max-width:100%;margin:8px 0 14px;border-radius:12px;overflow:hidden;background:#101014;min-height:110px"><img id="detailsBanner" alt="Show banner" style="width:100%;max-height:310px;object-fit:cover;display:none"><video id="detailsPromo" playsinline preload="none" style="display:none;width:100%;max-height:310px;background:#000"></video><button id="promoSoundButton" type="button" style="display:none;position:absolute;right:12px;bottom:12px;z-index:4;background:#f5ca2a;color:#111;border:0;border-radius:9px;padding:10px 13px;font-weight:800;cursor:pointer">🔊 Tap for sound</button><span id="detailsPromoLabel" style="position:absolute;top:9px;left:9px;background:#000b;padding:5px 9px;border-radius:6px;font-size:12px" hidden>PROMO</span></div><p id="detailsMeta" class="muted"></p><p id="detailsDescription" class="desc"></p><div><button class="btn" id="detailsPlay">▶ Play</button><button class="btn alt" id="detailsList">＋ My List</button><button class="btn alt" id="detailsShare">Share</button><button class="btn alt" id="detailsDownload">⬇ Save to My Space</button></div><h3 id="episodesHeading" hidden>Season 1 · Episodes</h3><div id="episodeList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-top:12px"></div><h3>More Like This</h3><div class="moreGrid" id="moreLikeThis"></div></dialog>
+<dialog id="playerDialog">
+  <div class="modalhead"><div><div class="eyebrow">STAR 7 PLAYER</div><h2 id="playerTitle" style="margin:5px 0"></h2></div><button class="close" id="closePlayer">×</button></div>
+  
+  <div class="playerWrap" id="playerWrap"><div id="liveAudience" hidden style="position:absolute;z-index:14;right:55px;top:10px;background:#121216d9;border:1px solid #ff4949;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;color:white;pointer-events:none">🔴 LIVE · Viewers unavailable</div><video id="player" class="video" controls playsinline></video><div class="tapZones"><div class="tapZone" id="tapBack" aria-label="Double tap to rewind 10 seconds"></div><div class="tapZone center"></div><div class="tapZone" id="tapForward" aria-label="Double tap to advance 10 seconds"></div></div><div class="seekToast" id="seekToast"></div><div id="adOverlay" class="adOverlay" hidden><div class="adMeta"><b id="adSponsored">Sponsored · Ad 1 of 1</b><span id="adRemaining">00:00 remaining</span></div><div class="adTrack"><div id="adProgress"></div></div><div id="adCta" class="adCta" hidden><button type="button" id="adWatchNow" hidden>▶ Watch Now</button><button type="button" id="adBuyNow" hidden>Buy Now ↗</button></div><button id="skipAd" class="skipOverlay" disabled>Skip in 5s</button></div><button id="inPlayerFullscreen" class="inPlayerFullscreen" aria-label="Fullscreen">⛶</button></div><div class="playerActions"><button type="button" id="fullScreenBtn">⛶ Fullscreen</button><button type="button" id="landscapeBtn">↻ Landscape</button><label>Speed <select id="speedSelect"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><button type="button" id="playerEpisodeToggle">☷ Episodes</button><label id="languageSettings" style="display:none">🌐 Language <select id="playerLanguage" aria-label="Video language"></select></label></div>
+  
+  <p id="playerDesc" class="desc"></p><h3>Episodes</h3><div id="playerEpisodes" class="playerEpList"></div><h3>More Like This</h3><div id="playerMore" class="moreGrid"></div>
+</dialog>
+<script>
+const initial = [
+ {id:'sample1',title:'Welcome to STAR 7',category:'Movies',year:'2026',description:'Explore this STAR 7 title.',sample:true},
+ {id:'sample2',title:'Stories & Drama',category:'Web Series',year:'2026',description:'Explore this STAR 7 title.',sample:true},
+ {id:'sample3',title:'Explore Documentaries',category:'Documentary',year:'2026',description:'Explore this STAR 7 title.',sample:true}
+];
+let content=initial.slice(), filter='All', view='all', saved=new Set(), objectUrls=[];
+// Persistent on-device media library: IndexedDB stores real Blob bytes, not temporary blob: URLs.
+const STAR_DB='STAR7_PERSISTENT_LIBRARY_V1';
+let starDBPromise=null;
+const mediaKeys=new Map();
+function starDB(){
+ if(!starDBPromise)starDBPromise=new Promise((resolve,reject)=>{
+  const r=indexedDB.open(STAR_DB,1);
+  r.onupgradeneeded=()=>{const d=r.result;d.createObjectStore('media');d.createObjectStore('data')};
+  r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
+ });
+ return starDBPromise;
+}
+async function starPut(store,key,value){const db=await starDB();return new Promise((resolve,reject)=>{const tx=db.transaction(store,'readwrite');tx.objectStore(store).put(value,key);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
+async function starGet(store,key){const db=await starDB();return new Promise((resolve,reject)=>{const r=db.transaction(store).objectStore(store).get(key);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+function starFileURL(file){const url=URL.createObjectURL(file);objectUrls.push(url);mediaKeys.set(url,{file,key:'media_'+Date.now()+'_'+Math.random().toString(36).slice(2)});return url}
+async function starPersist(){
+ const clone=JSON.parse(JSON.stringify(content.filter(x=>!x.sample)));
+ const newFiles=[];
+ const transform=v=>{
+  if(typeof v==='string'&&mediaKeys.has(v)){
+   const entry=mediaKeys.get(v);newFiles.push(entry);return 'star-media:'+entry.key;
+  }
+  if(Array.isArray(v))return v.map(transform);
+  if(v&&typeof v==='object'){for(const k of Object.keys(v))v[k]=transform(v[k]);return v}
+  return v;
+ };
+ transform(clone);
+ const seen=new Set();for(const f of newFiles){if(seen.has(f.key))continue;seen.add(f.key);await starPut('media',f.key,f.file)}
+ await starPut('data','library',clone);
+ await starPut('data','mylist',[...saved]);
+}
+async function starRestore(){
+ try{
+  const records=await starGet('data','library');
+  if(!records)return;
+  const keys=new Set();const gather=v=>{if(typeof v==='string'&&v.startsWith('star-media:'))keys.add(v.slice(11));else if(Array.isArray(v))v.forEach(gather);else if(v&&typeof v==='object')Object.values(v).forEach(gather)};
+  gather(records);const urls=new Map();for(const key of keys){const blob=await starGet('media',key);if(blob){const url=URL.createObjectURL(blob);objectUrls.push(url);mediaKeys.set(url,{file:blob,key});urls.set(key,url)}}
+  const revive=v=>{if(typeof v==='string'&&v.startsWith('star-media:'))return urls.get(v.slice(11))||'';if(Array.isArray(v))return v.map(revive);if(v&&typeof v==='object'){for(const k of Object.keys(v))v[k]=revive(v[k]);return v}return v};
+  content=initial.concat(revive(records));saved=new Set((await starGet('data','mylist'))||[]);
+  render();renderManage();refreshSeriesTargets();refreshFeatured();renderContinue();
+ }catch(e){console.error('Could not restore saved videos',e);const st=document.getElementById('publishStatus');if(st){st.textContent='Storage unavailable: '+e.message;st.style.color='#ff9898'}}
+}
+const $=id=>document.getElementById(id);
+const STAR_PROGRESS='STAR7_PROGRESS_V2';
+function progressKey(){return 'star7_progress_'+(typeof viewerCurrent==='function'&&viewerCurrent()||'guest')}
+function getProgress(){try{return JSON.parse(localStorage.getItem(progressKey())||'{}')}catch{return {}}}
+function saveProgress(x,index,seconds,duration,completed=false){if(!x||x.sample)return;const all=getProgress(),key=x.id;all[key]={index,seconds,duration,completed,updated:Date.now()};try{localStorage.setItem(progressKey(),JSON.stringify(all))}catch(e){}renderContinue()}
+function episodeState(rec){
+ if(!rec||!['premiere','live'].includes(rec.broadcastType))return 'normal';
+ const start=Date.parse(rec.broadcastStart||'');if(!Number.isFinite(start))return 'scheduled';
+ const now=Date.now();if(now<start)return 'scheduled';
+ const len=Number(rec.durationMinutes)||0;
+ if(len>0&&now>=start+len*60000)return rec.broadcastType==='premiere'?'normal':'ended';
+ return rec.broadcastType;
+}
+function fmtDate(value){if(!value)return 'Date unavailable';const d=new Date(value);return Number.isNaN(d.getTime())?'Date unavailable':d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+function renderContinue(){const section=$('continueSection'),box=$('continueGrid');if(!section||!box)return;box.replaceChildren();const all=getProgress();let count=0;for(const x of content.filter(c=>!c.sample)){const p=all[x.id];if(!p)continue;const records=episodeRecords(x);let index=p.index;if(index>=records.length)index=records.length-1;if(index<0)continue;if(p.completed){if(index+1>=records.length)continue;index++}const rec=records[index];if(episodeState(rec)==='ended')continue;count++;const card=document.createElement('article');card.className='card';const poster=document.createElement('div');poster.className='poster';if(x.poster){const img=document.createElement('img');img.src=x.poster;img.alt='';poster.append(img)}const name=document.createElement('span');name.className='posterTitle';name.textContent=x.poster?'':x.title;poster.append(name);if(episodeState(rec)==='premiere'){const tag=document.createElement('span');tag.className='premiereTag';tag.textContent='● PREMIERE';poster.append(tag)}const title=document.createElement('h3');title.textContent=x.title;const meta=document.createElement('div');meta.className='meta';meta.textContent='Episode '+rec.number+(p.completed?' · New episode':' · Resume');card.append(poster,title,meta);card.onclick=()=>startEpisode(x,index);box.append(card)}section.hidden=count===0}
+const STAR_APPEARANCE='STAR7_APPEARANCE_V1';let appearance={};try{appearance=JSON.parse(localStorage.getItem(STAR_APPEARANCE)||'{}')}catch(e){}
+let featuredIndex=0,featuredTimer=null,featuredCurrent=null;
+function applyAppearance(){document.documentElement.style.setProperty('--bg',appearance.bg||'#080808');document.documentElement.style.setProperty('--gold',appearance.accent||'#f5ca2a');const label=$('heroFeaturedLabel');label.textContent=appearance.welcome||'';label.style.color=appearance.welcomeColor||'#ffffff';label.style.fontSize=(Number(appearance.welcomeSize)||16)+'px';label.style.textShadow=appearance.welcomeStyle==='rainbow'?'0 0 9px #f0f, 0 0 18px #00f9ff, 0 0 25px #ffff00':appearance.welcomeStyle==='glow'?'0 0 12px currentColor, 0 0 25px currentColor':'';}
+function featuredTitlesList(){const selected=(appearance.featured||[]).map(id=>content.find(x=>x.id===id)).filter(Boolean);return selected.length?selected.slice(0,5):content.filter(x=>!x.sample).slice(0,5)}
+function rotateFeatured(){const titles=featuredTitlesList();const x=titles.length?titles[featuredIndex%titles.length]:null;const hero=document.querySelector('.hero');if(!x){featuredCurrent=null;$('heroOpen').hidden=true;$('browse').textContent='▶ Play';return}featuredCurrent=x;featuredIndex++;$('browse').textContent='▶ Play';hero.style.background=x.poster?'linear-gradient(90deg,#080808ef 0%,#080808bd 46%,#08080835 100%),url("'+x.poster.replace(/"/g,'%22')+'") center/cover':'linear-gradient(90deg,#080808,#614b12)';hero.querySelector('h1').textContent=x.title;hero.querySelector('p').textContent=x.description||'Watch now on STAR 7';$('heroOpen').hidden=false;$('heroOpen').onclick=()=>openDetails(x)}
+function refreshFeatured(){const sel=$('featuredTitles');if(!sel)return;sel.replaceChildren();for(const x of content){const o=new Option(x.title,x.id);o.selected=(appearance.featured||[]).includes(x.id);sel.add(o)}const slots=$('featuredSlots');if(slots){slots.replaceChildren();for(let i=0;i<5;i++){const field=document.createElement('div');field.className='field';const label=document.createElement('label');label.textContent='Home slide '+(i+1);const pick=document.createElement('select');pick.className='featuredSlot';pick.setAttribute('aria-label','Home slide '+(i+1));pick.add(new Option('— None —',''));for(const x of content)pick.add(new Option(x.title,x.id));pick.value=(appearance.featured||[])[i]||'';field.append(label,pick);slots.append(field)}}featuredIndex=0;rotateFeatured()}
+
+applyAppearance();featuredTimer=setInterval(()=>{if(!document.hidden)rotateFeatured()},3000);
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function render(){
+ const q=$('search').value.trim().toLowerCase();
+ const list=content.filter(x=>(filter==='All'||x.category===filter)&&(view==='all'||view==='My List'?true:(view==='Premium'?x.accessType==='Premium'||x.category==='Premium':x.category===view))&&(view!=='My List'||saved.has(x.id))&&(`${x.title} ${x.category} ${x.year} ${x.description||''}`.toLowerCase().includes(q)));
+ $('sectionTitle').textContent=view==='My List'?'My List':view==='all'?'Featured on STAR 7':view;
+ $('count').textContent=`${list.length} titles`;
+ $('grid').innerHTML='';renderContinue();
+ if(!list.length){$('grid').innerHTML='<div class="empty">No titles found. Try another search.</div>';return}
+ list.forEach(x=>{
+  const card=document.createElement('article');card.className='card';
+  card.innerHTML=`<div class="poster">${x.poster?`<img src="${x.poster}" alt="">`:''}<span class="posterTitle">${x.poster?'':esc(x.title)}</span><span class="play">▶</span></div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.category)}${x.accessType==='Premium'?' • PREMIUM':''}${x.year?' • '+esc(x.year):''}</div>`;
+  card.onclick=()=>openDetails(x);$('grid').appendChild(card);
+ });
+}
+// Local ad-break engine: one in-player video element for both content and ads.
+let playback=null, selectedTitle=null, currentEpisode=0;
+function episodeRecords(x){if(x.episodeRecords?.length)return [...x.episodeRecords].sort((a,b)=>a.season-b.season||a.number-b.number);return (x.episodes?.length?x.episodes:[x.video]).map((src,i)=>({src,season:1,number:i+1,name:'',thumbnail:x.poster||''}))}
+function episodesOf(x){return episodeRecords(x).map(e=>e.src)}
+const starLanguageNames={bn:'বাংলা',hi:'हिन्दी',en:'English',ta:'தமிழ்',te:'తెలుగు',ml:'മലയാളം',kn:'ಕನ್ನಡ',other:'Other'};
+function starEpisodeLanguages(rec){const langs=rec?.languages&&typeof rec.languages==='object'?rec.languages:{};const primary=rec?.primaryLanguage||'bn';return Object.keys(langs).length?langs:{[primary]:rec?.src||''}}
+function starSetPlayerLanguages(rec){const el=$('playerLanguage'),wrap=$('languageSettings');if(!el||!wrap)return;el.replaceChildren();const languages=starEpisodeLanguages(rec);for(const [code,src] of Object.entries(languages)){if(src)el.add(new Option(starLanguageNames[code]||code,code))}wrap.style.display=el.options.length?'inline-flex':'none';el.value=rec?.primaryLanguage&&languages[rec.primaryLanguage]?rec.primaryLanguage:(el.options[0]?.value||'bn');}
+$('playerLanguage').addEventListener('change',()=>{const rec=selectedTitle&&episodeRecords(selectedTitle)[currentEpisode];if(!rec||!playback||playback.mode!=='content'){alert('Change language while the episode is playing, not during an advertisement.');return}const src=starEpisodeLanguages(rec)[$('playerLanguage').value];if(!src)return;const p=$('player'),position=p.currentTime,wasPaused=p.paused,mode=playback.broadcastMode;p.pause();p.src=src;playback.item.video=src;p.load();p.addEventListener('loadedmetadata',function restoreLanguage(){if(Number.isFinite(position)&&!mode)try{p.currentTime=Math.min(position,Math.max(0,p.duration-0.1))}catch(e){}if(!wasPaused)p.play().catch(()=>{})},{once:true});});
+
+function refreshSeriesTargets(){const el=$('seriesTarget');if(!el)return;const prior=el.value;el.replaceChildren(new Option('Create a new title / series',''));content.filter(x=>!x.sample).forEach(x=>el.add(new Option(x.title+' ('+x.category+')',x.id)));el.value=prior;}
+$('seriesTarget').addEventListener('change',()=>{const x=content.find(c=>c.id===$('seriesTarget').value);if(x){$('title').value=x.title;$('category').value=x.category;$('accessType').value=x.accessType||'Free';$('description').value=x.description||'';}});
+let detailsPromoTimer=null,detailsPromoGeneration=0;
+function stopDetailsPromo(){
+ detailsPromoGeneration++;
+ clearTimeout(detailsPromoTimer);detailsPromoTimer=null;
+ const v=$('detailsPromo');v.pause();v.ontimeupdate=null;v.onended=null;v.onerror=null;
+ v.removeAttribute('src');v.load();
+ v.style.display='none';$('detailsPromoLabel').hidden=true;$('promoSoundButton').style.display='none';
+}
+function openDetails(x){
+ stopDetailsPromo();selectedTitle=x;
+ const banner=$('detailsBanner'),promo=$('detailsPromo'),dialog=$('detailsDialog');
+ const artwork=x.detailsBanner||x.poster||'';
+ banner.src=artwork;banner.style.display=artwork?'block':'none';
+ promo.style.display='none';$('detailsPromoLabel').hidden=true;$('promoSoundButton').style.display='none';
+ const generation=detailsPromoGeneration;
+ if(x.promo){
+  detailsPromoTimer=setTimeout(()=>{
+   if(generation!==detailsPromoGeneration||!dialog.open||selectedTitle!==x)return;
+   const duration=[30,45,60].includes(Number(x.promoDuration))?Number(x.promoDuration):30;
+   let finished=false;
+   const finish=()=>{
+    if(finished||generation!==detailsPromoGeneration)return;
+    finished=true;promo.pause();promo.ontimeupdate=null;promo.onended=null;promo.onerror=null;
+    promo.style.display='none';$('detailsPromoLabel').hidden=true;$('promoSoundButton').style.display='none';
+    banner.style.display=artwork?'block':'none';
+   };
+   promo.src=x.promo;promo.muted=false;promo.volume=1;promo.playsInline=true;
+   promo.currentTime=0;promo.style.display='block';banner.style.display='none';
+   const soundButton=$('promoSoundButton');
+   soundButton.style.display='none';
+   soundButton.textContent='🔊 Tap for sound';
+   soundButton.onclick=async()=>{
+    if(finished||generation!==detailsPromoGeneration)return;
+    try{promo.muted=false;promo.volume=1;await promo.play();soundButton.style.display='none'}
+    catch(e){soundButton.textContent='▶ Tap to play promo with sound';soundButton.style.display='block'}
+   };
+   $('detailsPromoLabel').textContent=duration+'s PROMO';$('detailsPromoLabel').hidden=false;
+   promo.ontimeupdate=()=>{if(promo.currentTime>=duration)finish()};
+   promo.onended=finish;promo.onerror=finish;
+   // Browsers usually prohibit autoplay with sound. Try it, then fall back to
+   // muted autoplay with a visible user-gesture button for enabling sound.
+   Promise.resolve(promo.play()).catch(async()=>{
+    if(finished||generation!==detailsPromoGeneration)return;
+    promo.muted=true;
+    soundButton.style.display='block';
+    try{await promo.play()}catch(e){
+     if(finished||generation!==detailsPromoGeneration)return;
+     soundButton.textContent='▶ Tap to play promo with sound';
+    }
+   });
+  },3000);
+ }
+ $('detailsTitle').textContent=x.title;$('detailsMeta').textContent=`${x.category} • ${x.accessType||'Free'} • ${x.year||''} • ${episodesOf(x).length} episode(s)`;$('detailsDescription').textContent=x.description||'Watch on STAR 7';
+ const eps=episodesOf(x);$('episodesHeading').hidden=eps.length===0;fillEpisodeRows(x,'episodeList',8);
+ renderRecommendations(x,'moreLikeThis');
+ $('detailsList').textContent=saved.has(x.id)?'✓ In My List':'＋ My List';$('detailsDialog').showModal()}
+function renderRecommendations(x,target){const holder=$(target);holder.replaceChildren();content.filter(y=>y.id!==x.id&&!y.sample).slice(0,9).forEach(y=>{const btn=document.createElement('button');btn.className='moreTile';if(y.poster){const img=document.createElement('img');img.src=y.poster;img.alt='';btn.append(img)}const name=document.createElement('span');name.textContent=y.title;btn.append(name);btn.onclick=()=>{if($('playerDialog').open){$('playerDialog').close();resetPlayback()}if($('detailsDialog').open)$('detailsDialog').close();openDetails(y)};holder.append(btn)});if(!holder.children.length)holder.textContent='More titles will appear here when you publish them.'}
+function makeEpisodeRow(x,i){const b=document.createElement('button');b.className='episodeVisual'+(i===currentEpisode?' active':'');const thumb=document.createElement('div');thumb.className='epThumb';if(x.poster){const img=document.createElement('img');img.src=x.poster;img.alt='';thumb.append(img)}const icon=document.createElement('span');icon.textContent='▶';thumb.append(icon);const info=document.createElement('div');info.className='epInfo';const rec=episodeRecords(x)[i];const title=document.createElement('strong');title.textContent=rec.name||`Episode ${rec.number}`;const meta=document.createElement('small');meta.textContent=`Season ${rec.season} · Episode ${rec.number} · ${fmtDate(rec.uploadedAt)} · ${rec.durationMinutes?rec.durationMinutes+' min':'Duration unavailable'}`;const state=episodeState(rec);if(state==='premiere'||state==='live'){const badge=document.createElement('span');badge.className='premiereTag';badge.textContent=state==='premiere'?'● PREMIERE':'● LIVE';thumb.append(badge)}if(state==='scheduled')meta.textContent+=' · Scheduled '+(rec.broadcastStart?new Date(rec.broadcastStart).toLocaleString():'(set start time)');if(state==='ended')meta.textContent+=' · Live ended · No replay';if(rec.thumbnail&&rec.thumbnail!==x.poster){const im=thumb.querySelector('img')||document.createElement('img');im.src=rec.thumbnail;if(!im.parentNode)thumb.prepend(im)}info.append(title,meta);b.append(thumb,info);b.onclick=()=>startEpisode(x,i);return b}
+function fillEpisodeRows(x,target,initial=8){const box=$(target);const eps=episodesOf(x);let limit=Math.min(eps.length,initial);function paint(){box.replaceChildren();for(let i=0;i<limit;i++)box.append(makeEpisodeRow(x,i));if(limit<eps.length){const more=document.createElement('button');more.className='btn alt';more.textContent=`View More · ${eps.length-limit} episodes remaining`;more.onclick=()=>{limit=Math.min(eps.length,limit+60);paint();more.scrollIntoView?.({block:'nearest'})};box.append(more)}}paint()}
+function renderPlayerEpisodes(x){fillEpisodeRows(x,'playerEpisodes',8);renderRecommendations(x,'playerMore')}
+let toastTimer;function seekBy(amount){if(playback?.mode!=='content'||playback.broadcastMode)return;const v=$('player');if(!Number.isFinite(v.duration))return;v.currentTime=Math.max(0,Math.min(v.duration,v.currentTime+amount));$('seekToast').textContent=(amount>0?'+':'')+amount+' seconds';$('seekToast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('seekToast').style.display='none',700)}
+function doubleTap(el,seconds){let last=0;el.addEventListener('pointerup',e=>{const now=Date.now();if(now-last<340){seekBy(seconds);last=0}else last=now})}
+doubleTap($('tapBack'),-10);doubleTap($('tapForward'),10);
+$('speedSelect').onchange=()=>{$('player').playbackRate=Number($('speedSelect').value)};
+$('fullScreenBtn').onclick=async()=>{const wrap=$('playerWrap'),v=$('player');try{if(document.fullscreenElement){await document.exitFullscreen()}else if(wrap.requestFullscreen){await wrap.requestFullscreen()}else if(v.webkitEnterFullscreen){v.webkitEnterFullscreen()}else alert('Fullscreen unavailable in this browser')}catch(e){if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();else alert('Fullscreen is blocked by this viewer. Try Chrome.')}};
+$('inPlayerFullscreen').onclick=()=>$('fullScreenBtn').click();
+$('landscapeBtn').onclick=async()=>{try{if(!document.fullscreenElement)await $('playerWrap').requestFullscreen();if(screen.orientation?.lock)await screen.orientation.lock('landscape');else alert('Rotate your phone manually for landscape.')}catch(e){alert('Landscape lock is unavailable here. Rotate the phone manually.')}};
+$('playerEpisodeToggle').onclick=()=>$('playerEpisodes').scrollIntoView({behavior:'smooth',block:'start'});
+$('closeDetails').onclick=()=>{stopDetailsPromo();$('detailsDialog').close()};$('detailsDialog').addEventListener('close',stopDetailsPromo);
+$('detailsPlay').onclick=()=>{if(selectedTitle){const x=selectedTitle;stopDetailsPromo();startEpisode(x,0);if($('playerDialog').open)$('detailsDialog').close()}};
+$('detailsList').onclick=()=>{if(!selectedTitle)return;saved.has(selectedTitle.id)?saved.delete(selectedTitle.id):saved.add(selectedTitle.id);$('detailsList').textContent=saved.has(selectedTitle.id)?'✓ In My List':'＋ My List';render();starPersist().catch(console.error)};
+$('detailsShare').onclick=async()=>{if(!selectedTitle)return;const data={title:selectedTitle.title,text:`Watch ${selectedTitle.title} on STAR 7`};if(navigator.share){try{await navigator.share(data)}catch(e){}}else{try{await navigator.clipboard.writeText(data.text);alert('Title copied for sharing')}catch(e){alert(data.text)}}};
+$('detailsDownload').onclick=()=>{if(!selectedTitle)return;downloadToSpace(selectedTitle,0)};
+function startEpisode(x,index){if(!premiumGate(x))returnstopDetailsPromo();const rec=episodeRecords(x)[index],state=episodeState(rec);if(state==='scheduled'){alert('This broadcast has not started yet.');return}if(state==='ended'){alert('This live stream has ended and has no replay.');return}selectedTitle=x;currentEpisode=index;const src=episodesOf(x)[index];if(!src){alert('Episode source missing');return}const item={...x,video:src,ads:(x.preRoll?[{src:x.preRoll,atSeconds:0,skippable:false,cuts:[]}]:[]).concat(x.ads||[])};playContent(item);starSetPlayerLanguages(rec);if(state==='live'||state==='premiere'){const start=Date.parse(rec.broadcastStart||'');const offset=Math.max(0,(Date.now()-start)/1000);playback.broadcastMode=state;playback.broadcastStart=start;playback.broadcastLength=(Number(rec.durationMinutes)||0)*60;const v=$('player');v.controls=false;
+ const syncBroadcast=()=>{if(playback?.broadcastMode&&playback.mode==='content'){
+  const elapsed=Math.max(0,(Date.now()-start)/1000);
+  const target=Math.min(elapsed,Math.max(0,(Number.isFinite(v.duration)?v.duration:elapsed)-0.2));
+  if(Math.abs(v.currentTime-target)>1.5)try{v.currentTime=target}catch(e){}
+ }};
+ v.addEventListener('loadedmetadata',syncBroadcast,{once:true});
+ $('liveAudience').hidden=false;$('liveAudience').textContent=state==='live'?'🔴 LIVE · Viewers unavailable':'🔴 PREMIERE';}else{const prog=getProgress()[x.id];if(prog&&prog.index===index&&!prog.completed&&prog.seconds>3){const v=$('player');v.addEventListener('loadedmetadata',function resumeSaved(){try{v.currentTime=Math.min(prog.seconds,Math.max(0,v.duration-1))}catch(e){}},{once:true})}}renderPlayerEpisodes(x);$('playerTitle').textContent=`${x.title}${episodesOf(x).length>1?' — Episode '+episodeRecords(x)[index].number:''}`;}
+
+function toSeconds(t){const m=/^(\d+):([0-5]\d)$/.exec(t.trim());return m?Number(m[1])*60+Number(m[2]):null}
+function parseCuts(value){
+ if(!value.trim())return [];
+ const cuts=[];
+ for(const piece of value.split(',')){
+  const parts=piece.trim().split('-');
+  if(parts.length!==2)throw Error('Use MM:SS-MM:SS for every cut.');
+  const a=toSeconds(parts[0]),b=toSeconds(parts[1]);
+  if(a===null||b===null||b<=a)throw Error('Invalid cut: '+piece);
+  cuts.push({start:a,end:b});
+ }
+ cuts.sort((a,b)=>a.start-b.start);
+ for(let i=1;i<cuts.length;i++)if(cuts[i].start<cuts[i-1].end)throw Error('Cut ranges cannot overlap.');
+ return cuts;
+}
+function skipCuts(video,cuts){
+ if(!cuts||!cuts.length||!Number.isFinite(video.currentTime))return false;
+ const now=video.currentTime;
+ for(const cut of cuts){if(now>=cut.start-0.06&&now<cut.end-0.06){
+  if(Number.isFinite(video.duration)&&cut.end>=video.duration){video.currentTime=Math.max(0,video.duration-0.05);return false}
+  video.currentTime=cut.end;return true;
+ }}return false;
+}
+let trimPreviewCuts=[],trimPreviewObject=null;
+function previewVideo(fileInput,urlInput,cutsInput){
+ let cuts;try{cuts=parseCuts(cutsInput.value)}catch(e){alert(e.message);return}
+ const f=fileInput.files[0],url=urlInput.value.trim();if(!f&&!url){alert('Select a video file or enter a URL first.');return}
+ const player=$('trimPlayer');player.pause();if(trimPreviewObject){URL.revokeObjectURL(trimPreviewObject);trimPreviewObject=null}
+ trimPreviewObject=f?URL.createObjectURL(f):null;trimPreviewCuts=cuts;
+ player.src=trimPreviewObject||url;player.load();$('trimMessage').textContent=cuts.length?`${cuts.length} cut range(s) will be skipped in playback.`:'No cuts selected.';
+ $('trimDialog').showModal();player.play().catch(()=>{});
+}
+$('trimPlayer').addEventListener('timeupdate',()=>skipCuts($('trimPlayer'),trimPreviewCuts));
+$('closeTrim').onclick=()=>$('trimDialog').close();
+$('trimDialog').addEventListener('close',()=>{const p=$('trimPlayer');p.pause();p.removeAttribute('src');p.load();if(trimPreviewObject)URL.revokeObjectURL(trimPreviewObject);trimPreviewObject=null});
+$('previewMain').onclick=()=>previewVideo($('videoFile'),$('videoUrl'),$('mainCuts'));
+
+function resetPlayback(){
+ const p=$('player');p.pause();p.removeAttribute('src');p.load();p.controls=true;
+ $('adOverlay').hidden=true;$('skipAd').disabled=true;playback=null;studioLastStamp=0;
+}
+// Local, honest analytics. Never fabricate global audience or subscription totals.
+const STAR_STUDIO_KEY='STAR7_STUDIO_DEVICE_ANALYTICS_V1';
+let studioData={};try{studioData=JSON.parse(localStorage.getItem(STAR_STUDIO_KEY)||'{}')||{}}catch(e){}
+function studioSave(){try{localStorage.setItem(STAR_STUDIO_KEY,JSON.stringify(studioData))}catch(e){}}
+function studioEntry(x){return studioData[x.id]||(studioData[x.id]={title:x.title,starts:0,seconds:0})}
+function studioRender(){
+ const entries=Object.values(studioData);$('studioPlays').textContent=entries.reduce((n,x)=>n+(x.starts||0),0).toLocaleString();
+ $('studioMinutes').textContent=(entries.reduce((n,x)=>n+(x.seconds||0),0)/60).toFixed(1)+' min';
+ const box=$('studioVideos');box.replaceChildren();if(!entries.length){box.textContent='No playback recorded yet.';return}
+ entries.sort((a,b)=>(b.starts||0)-(a.starts||0)).forEach(x=>{const row=document.createElement('div');row.style.cssText='padding:9px 0;border-bottom:1px solid #393939';row.textContent=`${x.title}: ${x.starts||0} starts · ${((x.seconds||0)/60).toFixed(1)} minutes watched`;box.append(row)})
+}
+let studioLastTime=0,studioLastStamp=0;
+function studioStart(x){const a=studioEntry(x);a.title=x.title;a.starts++;studioSave();studioRender();studioLastTime=0;studioLastStamp=0}
+function studioTick(){const state=playback,p=$('player');if(!state||state.mode!=='content'||p.paused||p.seeking||!Number.isFinite(p.currentTime))return;const now=Date.now();if(studioLastStamp&&now-studioLastStamp<3000){const delta=p.currentTime-studioLastTime;if(delta>0&&delta<3){studioEntry(state.item).seconds+=Math.min(delta,(now-studioLastStamp)/1000+0.3);studioSave();studioRender()}}studioLastTime=p.currentTime;studioLastStamp=now}
+$('player').addEventListener('timeupdate',studioTick);
+$('player').addEventListener('timeupdate',()=>{
+ if(!playback?.broadcastMode||playback.mode!=='content')return;
+ const rec=selectedTitle&&episodeRecords(selectedTitle)[currentEpisode];
+ if(!rec)return;
+ const state=episodeState(rec);
+ if(state==='normal'&&playback.broadcastMode==='premiere'){
+  playback.broadcastMode=null;$('player').controls=true;$('liveAudience').hidden=true;
+ }else if(state==='ended'&&playback.broadcastMode==='live'){
+  $('player').pause();$('player').controls=false;$('liveAudience').textContent='🔴 LIVE ENDED';
+ }
+});
+let lastProgressSave=0;$('player').addEventListener('timeupdate',()=>{if(playback?.mode!=='content'||playback.broadcastMode||!selectedTitle)return;const p=$('player');if(Date.now()-lastProgressSave>2500&&Number.isFinite(p.currentTime)&&p.duration){lastProgressSave=Date.now();saveProgress(selectedTitle,currentEpisode,p.currentTime,p.duration,false)}});
+
+$('player').addEventListener('seeked',()=>{studioLastStamp=0;if(playback?.broadcastMode&&playback.broadcastStart){const p=$('player');const liveTime=Math.max(0,(Date.now()-playback.broadcastStart)/1000);if(Math.abs(p.currentTime-liveTime)>3)try{p.currentTime=Math.min(liveTime,p.duration||liveTime)}catch(e){}}});
+studioRender();
+function studioLiveBadge(x){const badge=$('liveAudience');badge.hidden=true;badge.textContent='🔴 LIVE · Viewers unavailable';badge.title='A verified live viewer count needs a connected presence backend. No fabricated count is shown.'}
+function playContent(x){
+ if(!premiumGate(x))return
+ if(x.sample){alert('This title is not available to play yet.');return}
+ if(!x.video){alert('No playable video source was saved for this title.');return}
+ resetPlayback();
+ studioStart(x);studioLiveBadge(x);
+ $('playerTitle').textContent=x.title;
+ $('playerDesc').textContent=`${x.category}${x.year?' • '+x.year:''}${x.description?' — '+x.description:''}`;
+ playback={item:x,adCount:(x.ads||[]).length,played:0,mode:'content',resumeAt:0,adStarted:false,activeAd:null};
+ const p=$('player');p.playbackRate=Number($('speedSelect').value);p.src=x.video;p.load();if(!$('playerDialog').open)$('playerDialog').showModal();p.play().catch(()=>{});if(adsAllowed()&&x.ads?.length&&x.ads[0].atSeconds===0){p.addEventListener('loadedmetadata',()=>{if(playback?.mode==='content'&&playback.played===0)startAd()},{once:true})}
+}
+function startAd(){
+ const state=playback;
+ if(!state||state.mode!=='content'||!state.item.ads?.[state.played])return;
+ const p=$('player');state.resumeAt=p.currentTime;state.mode='ad';const nextAd=state.item.ads[state.played];state.activeAd=nextAd;state.played++;
+ const action=$('adCta'),watch=$('adWatchNow'),buy=$('adBuyNow');watch.hidden=nextAd.ctaType!=='watch';buy.hidden=nextAd.ctaType!=='buy';action.hidden=watch.hidden&&buy.hidden;
+ $('adOverlay').hidden=false;$('adSponsored').textContent=`Sponsored · Ad ${state.played} of ${state.adCount}`;const skip=$('skipAd');skip.disabled=true;skip.textContent='Skip in 5s';p.pause();p.src=nextAd.src;p.controls=false;p.load();p.play().catch(()=>{alert('Tap the video to play the ad.');p.controls=true});
+}
+function resumeContent(){
+ const state=playback;if(!state||state.mode!=='ad')return;
+ const p=$('player');state.mode='content';$('adOverlay').hidden=true;
+ p.pause();p.src=state.item.video;p.controls=!state.broadcastMode;state.activeAd=null;
+ // Restore the exact position after metadata loads.
+ const resumeAt=state.resumeAt;
+ p.addEventListener('loadedmetadata',function restore(){p.removeEventListener('loadedmetadata',restore);try{p.currentTime=Math.min(resumeAt,p.duration||resumeAt)}catch(e){}p.play().catch(()=>{})},{once:true});
+ p.load();
+}
+$('player').addEventListener('timeupdate',()=>{
+ const state=playback,p=$('player');
+ if(state?.mode==='ad'){skipCuts(p,state.activeAd?.cuts);const skip=$('skipAd');const duration=Number.isFinite(p.duration)?p.duration:0;const left=duration?Math.max(0,Math.ceil(duration-p.currentTime)):0;const fmt=n=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');$('adRemaining').textContent=duration?fmt(left)+' remaining':'Ad playing';$('adProgress').style.width=duration?Math.min(100,p.currentTime/duration*100)+'%':'0%';if(state.activeAd?.skippable){const remaining=Math.max(0,Math.ceil(5-p.currentTime));skip.disabled=remaining>0;skip.textContent=remaining?`Skip in ${remaining}s`:'Skip Ad ▶'}else{skip.disabled=true;skip.textContent=duration?`Ad ends in ${left}s`:'Ad playing'}return}
+ if(state?.mode==='content'&&!state.broadcastMode)skipCuts(p,state.item.cuts);
+ if(!state||!adsAllowed()||state.mode!=='content'||!state.item.ads?.length||state.adCount<=0||state.played>=state.adCount)return;
+ if(!Number.isFinite(p.duration)||p.duration<=0)return;
+ // Play each ad at the exact timestamp configured by the admin (in seconds).
+ const next=state.item.ads[state.played];
+ if(next && p.currentTime>=next.atSeconds && p.currentTime<p.duration-0.3)startAd();
+});
+$('adWatchNow').onclick=()=>{const ad=playback?.activeAd;if(!ad||ad.ctaType!=='watch')return;const target=content.find(x=>x.id===ad.targetId);if(!target){alert('This title is no longer available.');return}const player=$('player');player.pause();if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});if($('playerDialog').open)$('playerDialog').close();resetPlayback();if($('detailsDialog').open)$('detailsDialog').close();openDetails(target)};
+$('adBuyNow').onclick=()=>{const ad=playback?.activeAd;if(!ad||ad.ctaType!=='buy')return;try{const u=new URL(ad.buyUrl);if(u.protocol!=='https:')return;$('player').pause();const w=window.open(u.href,'_blank','noopener,noreferrer');if(!w)alert('Your browser blocked the sponsor page. Allow pop-ups or open in Chrome.')}catch(e){alert('Sponsor website URL is invalid')}};
+$('skipAd').onclick=()=>{if(playback?.mode==='ad'&&playback.activeAd?.skippable&&!$('skipAd').disabled)resumeContent()};
+$('player').addEventListener('ended',()=>{
+ if(playback?.mode==='ad')resumeContent();else if(playback?.mode==='content'&&selectedTitle){if(!playback.broadcastMode)saveProgress(selectedTitle,currentEpisode,0,$('player').duration,true);if(episodesOf(selectedTitle).length>currentEpisode+1&&!playback.broadcastMode)startEpisode(selectedTitle,currentEpisode+1)}
+});
+$('player').addEventListener('error',()=>{
+ if(playback?.mode==='ad'){
+  alert('The ad video could not be played. Returning to your video.');resumeContent();
+ }
+});
+$('closePlayer').onclick=()=>{$('playerDialog').close();resetPlayback()};
+$('playerDialog').addEventListener('close',resetPlayback);
+$('setDeletePassword').onclick=()=>{const v=$('newDeletePassword').value;if(v.length<8){alert('Use at least 8 characters.');return}localStorage.setItem('STAR7_DELETE_KEY',v);$('newDeletePassword').value='';alert('Delete password saved on this device. Not secure against technical inspection.')};
+$('themePreset').onchange=()=>{const presets={gold:['#080808','#f5ca2a'],purple:['#160c29','#cb7bff'],blue:['#071b32','#47b8ff'],green:['#092319','#58df96'],red:['#280b15','#ff6688']};const p=presets[$('themePreset').value];if(p){$('appBgColor').value=p[0];$('appAccentColor').value=p[1]}};
+$('saveAppearance').onclick=()=>{appearance={bg:$('appBgColor').value,accent:$('appAccentColor').value,welcome:$('festivalWelcome').value.trim(),featured:[...document.querySelectorAll('.featuredSlot')].map(o=>o.value).filter(Boolean).slice(0,5),welcomeStyle:$('welcomeStyle').value,welcomeColor:$('welcomeColor').value,welcomeSize:$('welcomeSize').value,themePreset:$('themePreset').value};localStorage.setItem(STAR_APPEARANCE,JSON.stringify(appearance));featuredIndex=0;applyAppearance();rotateFeatured();alert('Five home carousel slots saved on this device.')};$('appBgColor').value=appearance.bg||'#080808';$('appAccentColor').value=appearance.accent||'#f5ca2a';$('festivalWelcome').value=appearance.welcome||'';$('welcomeStyle').value=appearance.welcomeStyle||'plain';$('welcomeColor').value=appearance.welcomeColor||'#ffffff';$('welcomeSize').value=appearance.welcomeSize||'16';$('themePreset').value=appearance.themePreset||'custom';
+$('browse').onclick=()=>{if(featuredCurrent)openDetails(featuredCurrent);else $('filters').scrollIntoView({behavior:'smooth'})};
+$('search').addEventListener('input',render);
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;render()});
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');view=b.dataset.view;filter='All';document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.filter==='All'));render()});
+// Local-only viewer profiles: a future release must replace this with server-side auth.
+const VIEWER_STORE='star7_viewer_profiles_v1', VIEWER_SESSION='star7_viewer_session_v1';
+function viewerProfiles(){try{return JSON.parse(localStorage.getItem(VIEWER_STORE)||'{}')}catch{return {}}}
+function viewerCurrent(){try{return localStorage.getItem(VIEWER_SESSION)||''}catch{return ''}}
+function viewerRender(){const email=viewerCurrent(), profile=viewerProfiles()[email];$('viewerGuestArea').hidden=!!profile;$('viewerSignedArea').hidden=!profile;$('viewerGreeting').textContent=profile?'Welcome, '+profile.name:'';$('viewerAccountBtn').textContent=profile?'👤 My Space':'Sign In / Sign Up'}
+function viewerMessage(message){$('viewerAuthMessage').textContent=message}
+$('viewerAccountBtn').onclick=()=>{$('viewerAccountSection').hidden=!$('viewerAccountSection').hidden;if(!$('viewerAccountSection').hidden){viewerRender();$('viewerAccountSection').scrollIntoView({behavior:'smooth'})}};
+$('viewerSignUp').onclick=()=>{const email=$('viewerEmail').value.trim().toLowerCase(),name=$('viewerName').value.trim(),pass=$('viewerPassword').value;if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!name||pass.length<8){viewerMessage('Enter a valid email, display name and a password of at least 8 characters.');return}const profiles=viewerProfiles();if(profiles[email]){viewerMessage('Account already exists on this device. Please sign in.');return}profiles[email]={name,password:pass};try{localStorage.setItem(VIEWER_STORE,JSON.stringify(profiles));localStorage.setItem(VIEWER_SESSION,email);$('viewerPassword').value='';viewerRender()}catch(e){viewerMessage('Cannot save viewer profile on this device: '+e.message)}};
+$('viewerSignIn').onclick=()=>{const email=$('viewerEmail').value.trim().toLowerCase(),pass=$('viewerPassword').value,profile=viewerProfiles()[email];if(!profile||profile.password!==pass){viewerMessage('Invalid viewer email or password on this device.');return}try{localStorage.setItem(VIEWER_SESSION,email);$('viewerPassword').value='';viewerRender()}catch(e){viewerMessage('Cannot sign in: '+e.message)}};
+$('viewerSignOut').onclick=()=>{localStorage.removeItem(VIEWER_SESSION);viewerRender()};viewerRender();
+// Private local owner entry: tap the STAR 7 logo seven times quickly.
+// This is UI concealment only, NOT secure authorization for a public app.
+const OWNER_CONFIG='star7_owner_config_v2';
+let ownerAuthenticated=false, logoTaps=0, logoTapTimer=0;
+async function ownerHash(value){
+ const bytes=new TextEncoder().encode(value);
+ if(!crypto.subtle)throw Error('Secure browser context required for owner setup. Open via HTTPS or an Android WebView.');
+ const result=await crypto.subtle.digest('SHA-256',bytes);
+ return Array.from(new Uint8Array(result),b=>b.toString(16).padStart(2,'0')).join('');
+}
+function ownerConfig(){try{return JSON.parse(localStorage.getItem(OWNER_CONFIG)||'null')}catch{return null}}
+function ownerAccessUI(){
+ const setup=!ownerConfig();
+ $('ownerHeading').textContent=setup?'Set Up Owner Access':'Owner Sign In';
+ $('loginBtn').textContent=setup?'Create Owner Access':'Sign In';
+ $('ownerSetupHint').textContent=setup?'Set an owner email and a unique password (at least 12 characters). Keep a backup: local browser data can be erased.':'Enter the owner email and password set on this device.';
+}
+const brand=document.querySelector('header .brand');
+brand.addEventListener('click',()=>{
+ clearTimeout(logoTapTimer);logoTaps++;
+ if(logoTaps>=7){logoTaps=0;ownerAccessUI();$('adminSection').hidden=false;$('loginBox').hidden=ownerAuthenticated;$('adminBox').hidden=!ownerAuthenticated;$('adminSection').scrollIntoView({behavior:'smooth'});}
+ else logoTapTimer=setTimeout(()=>logoTaps=0,2300);
+});
+$('loginBtn').onclick=async()=>{
+ const email=$('adminUser').value.trim().toLowerCase(),pass=$('adminPass').value;
+ const config=ownerConfig();
+ try{
+  if(!config){
+   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||pass.length<12){alert('Enter a valid owner email and a password of at least 12 characters.');return}
+   const salt=Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join('');
+   localStorage.setItem(OWNER_CONFIG,JSON.stringify({email,salt,hash:await ownerHash(salt+pass)}));
+  }else if(email!==config.email||(await ownerHash(config.salt+pass))!==config.hash){alert('Incorrect owner credentials.');return}
+  ownerAuthenticated=true;$('adminPass').value='';$('loginBox').hidden=true;$('adminBox').hidden=false;renderManage();
+ }catch(e){alert('Owner access unavailable: '+e.message)}
+};
+$('logoutBtn').onclick=()=>{ownerAuthenticated=false;$('adminBox').hidden=true;$('adminSection').hidden=true;$('loginBox').hidden=false;$('adminPass').value=''};
+function confirmOwnerDelete(actionLabel){
+ if(!ownerAuthenticated){alert('Owner sign in required.');return false}
+ const key=localStorage.getItem('STAR7_DELETE_KEY');
+ if(!key){alert('Set a separate Delete Password in Delete Protection first.');return false}
+ if(prompt('Enter separate delete password to '+actionLabel)!==key){alert('Incorrect delete password');return false}
+ return confirm('Permanently '+actionLabel+'? This cannot be undone.');
+}
+function deleteSingleEpisode(titleId,season,number){
+ const x=content.find(item=>item.id===titleId&&!item.sample);
+ if(!x)return;
+ const records=episodeRecords(x);
+ const target=records.find(r=>Number(r.season)===Number(season)&&Number(r.number)===Number(number));
+ if(!target)return;
+ if(records.length===1){alert('This is the only episode. To remove it, use Delete Entire Title.');return}
+ if(!confirmOwnerDelete('delete '+x.title+' — Season '+season+', Episode '+number))return;
+ const remaining=records.filter(r=>!(Number(r.season)===Number(season)&&Number(r.number)===Number(number)));
+ x.episodeRecords=remaining;
+ x.episodes=remaining.map(r=>r.src);
+ x.video=remaining[0].src;
+ const progress=getProgress();
+ if(progress[x.id]){
+  const previous=progress[x.id];const oldIndex=Number(previous.index)||0;
+  const removedIndex=records.indexOf(target);
+  if(oldIndex===removedIndex)delete progress[x.id];
+  else if(oldIndex>removedIndex)progress[x.id]={...previous,index:oldIndex-1};
+  try{localStorage.setItem(progressKey(),JSON.stringify(progress))}catch(e){console.warn('Progress update not saved',e)}
+ }
+ if(selectedTitle?.id===x.id){stopDetailsPromo();try{$('player').pause()}catch(e){};selectedTitle=null;currentEpisode=0}
+ render();renderManage();refreshSeriesTargets();refreshFeatured();renderContinue();
+ starPersist().catch(err=>alert('Episode removed from this session but saving failed: '+err.message));
+}
+function renderManage(){
+ const holder=$('manageList');holder.replaceChildren();
+ const managed=content.filter(x=>!x.sample);
+ if(!managed.length){const msg=document.createElement('p');msg.className='muted';msg.textContent='No uploaded titles yet.';holder.append(msg);return}
+ managed.forEach(x=>{
+  const section=document.createElement('section');section.style.cssText='padding:14px 0;border-top:1px solid #333';
+  const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap';
+  const label=document.createElement('strong');label.textContent=`${x.title} — ${x.category} — ${episodeRecords(x).length} episode(s)`;
+  const del=document.createElement('button');del.className='btn alt';del.type='button';del.textContent='Delete Entire Title';
+  del.onclick=()=>{if(!confirmOwnerDelete('delete entire title "'+x.title+'"'))return;content=content.filter(y=>y.id!==x.id);saved.delete(x.id);render();renderManage();refreshSeriesTargets();refreshFeatured();renderContinue();starPersist().catch(err=>alert('Could not save deletion: '+err.message))};
+  row.append(label,del);section.append(row);
+  const details=document.createElement('details');details.style.cssText='margin-top:12px;border:1px solid #3d3526;border-radius:10px;padding:10px';
+  const summary=document.createElement('summary');summary.textContent='Manage Episodes — select an episode to delete';summary.style.cursor='pointer';details.append(summary);
+  const episodes=episodeRecords(x);
+  episodes.forEach(rec=>{
+   const epRow=document.createElement('div');epRow.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #333;flex-wrap:wrap';
+   const epLabel=document.createElement('span');epLabel.textContent=`Season ${rec.season} · Episode ${rec.number}${rec.name?' — '+rec.name:''}`;
+   const epDel=document.createElement('button');epDel.type='button';epDel.className='btn alt';epDel.textContent='Delete Episode';epDel.disabled=episodes.length===1;epDel.title=episodes.length===1?'Use Delete Entire Title for the only episode':'';
+   epDel.onclick=()=>deleteSingleEpisode(x.id,rec.season,rec.number);
+   epRow.append(epLabel,epDel);details.append(epRow);
+  });
+  section.append(details);holder.append(section);
+ });
+}
+// Build exactly as many independent ad upload fields as the admin requests.
+const adSelect=$('adCount');
+for(let n=0;n<=100;n++){const option=document.createElement('option');option.value=n;option.textContent=n===0?'0 — No ads':`${n} ad${n===1?'':'s'}`;adSelect.appendChild(option)}
+function buildAdSlots(){
+ const n=Number(adSelect.value), holder=$('adSlots');holder.replaceChildren();
+ if(!n)return;
+ const heading=document.createElement('h3');heading.textContent=`Upload ${n} different ad videos`;holder.appendChild(heading);
+ const hint=document.createElement('p');hint.className='muted';hint.textContent='For every ad, enter the exact minute and second when it should play (e.g. 05:30). Each ad has its own video and Skip setting. Set times in ascending order.';holder.appendChild(hint);
+ for(let i=0;i<n;i++){
+  const box=document.createElement('div');box.style.cssText='border:1px solid #3b3013;border-radius:10px;padding:12px;margin:9px 0;background:#191919';
+  box.innerHTML=`<strong style="color:var(--gold)">Ad ${i+1} of ${n}</strong><div style="margin:10px 0;color:#eee"><label for="adTime${i}">Play at (MM:SS): </label><input id="adTime${i}" type="text" inputmode="numeric" placeholder="05:30" pattern="[0-9]+:[0-5][0-9]" required style="width:110px;padding:8px;background:#252525;color:white;border:1px solid #555;border-radius:7px" value="${String((i+1)*5).padStart(2,'0')}:00"><span style="color:#aaa;font-size:12px"> into the main video</span></div><div style="margin:10px 0;color:#eee"><label for="adSkip${i}">Skip setting: </label><select id="adSkip${i}" style="padding:8px;background:#252525;color:white;border:1px solid #555;border-radius:7px"><option value="yes">Allow Skip after 5 seconds</option><option value="no">Non-skippable (watch full ad)</option></select></div><div class="formgrid" style="margin-top:9px"><div class="field"><label for="adFile${i}">Ad ${i+1} video file</label><input type="file" accept="video/*" id="adFile${i}"></div><div class="field"><label for="adUrl${i}">OR direct ad video URL</label><input type="url" id="adUrl${i}" placeholder="https://example.com/ad${i+1}.mp4"></div></div>`;
+  holder.appendChild(box);
+  const cuts=document.createElement('div');cuts.className='field';cuts.style.marginTop='12px';cuts.innerHTML=`<label for="adCuts${i}">Remove parts from Ad ${i+1} (MM:SS-MM:SS)</label><input id="adCuts${i}" placeholder="00:10-00:15"><small class="muted">Cut unwanted sections during playback; original file is unchanged.</small>`;
+  box.appendChild(cuts);
+  const cta=document.createElement('div');cta.className='formgrid';cta.style.marginTop='12px';cta.innerHTML=`<div class="field"><label for="adCtaType${i}">Ad action</label><select id="adCtaType${i}"><option value="none">No action</option><option value="watch">Watch Now — STAR 7 title</option><option value="buy">Buy Now — sponsor website</option></select></div><div class="field"><label for="adTarget${i}">STAR 7 title (Watch Now)</label><select id="adTarget${i}"><option value="">Select title</option></select></div><div class="field full"><label for="adBuyUrl${i}">Sponsor product page URL (Buy Now)</label><input id="adBuyUrl${i}" type="url" placeholder="https://sponsor.example/product"></div>`;
+  box.appendChild(cta);
+  const target=$(`adTarget${i}`);content.filter(x=>!x.sample).forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.title;target.appendChild(o)});
+  $(`adCtaType${i}`).onchange=()=>{target.disabled=$(`adCtaType${i}`).value!=='watch';$(`adBuyUrl${i}`).disabled=$(`adCtaType${i}`).value!=='buy'};$(`adCtaType${i}`).onchange();
+  const preview=document.createElement('button');preview.type='button';preview.className='btn alt';preview.textContent='▶ Preview Ad '+(i+1);preview.onclick=()=>previewVideo($(`adFile${i}`),$(`adUrl${i}`),$(`adCuts${i}`));box.appendChild(preview);
+ }
+}
+adSelect.addEventListener('change',buildAdSlots);
+buildAdSlots();refreshSeriesTargets();refreshFeatured();renderContinue();
+$('contentForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ try {
+ const status=$('publishStatus');
+ status.textContent='Publishing video...';
+ status.style.color='#f5d56b';
+ const fail=msg=>{status.textContent='Cannot publish: '+msg;status.style.color='#ff9898';alert('Cannot publish: '+msg)};
+ const invalid=$('contentForm').querySelector('input:invalid,textarea:invalid,select:invalid');
+ if(invalid){fail('Please check '+(invalid.labels?.[0]?.textContent||invalid.id||'an input')+'.');invalid.scrollIntoView({behavior:'smooth',block:'center'});return}
+ 
+ const bannerFile=$('detailsBannerFile').files[0],promoFile=$('promoFile').files[0],promoUrl=$('promoUrl').value.trim(),promoDuration=Number($('promoDuration').value)||30;if(promoUrl&&!/^https?:\/\//i.test(promoUrl)){fail('Promo URL must begin with http:// or https://');return}const primaryLanguage=$('primaryLanguage').value,dubLanguage=$('dubLanguage').value,dubFile=$('dubFile').files[0],dubUrl=$('dubUrl').value.trim();
+ if(dubFile&&dubUrl){fail('Choose either dubbed video file or dubbed URL, not both.');return}if(dubLanguage&&dubLanguage===primaryLanguage){fail('Dubbed language must be different from primary language.');return}if((dubFile||dubUrl)&&!dubLanguage){fail('Select the additional dubbed language.');return}if(dubLanguage&&!dubFile&&!dubUrl){fail('Choose a dubbed video file or URL.');return}if(dubFile&&!dubFile.type.startsWith('video/')){fail('Dubbed file must be a video.');return}if(dubUrl&&!/^https?:\/\//i.test(dubUrl)){fail('Dubbed URL must start with http:// or https://');return}if(dubLanguage&&$('episodeUrls').value.trim()){fail('Upload episodes individually to assign dubbed versions.');return}
+ const title=$('title').value.trim(),seriesTarget=$('seriesTarget').value,seasonNumber=Number($('seasonNumber').value),episodeNumber=Number($('episodeNumber').value),episodeName=$('episodeName').value.trim(),episodeThumbFile=$('episodeThumb').files[0],file=$('videoFile').files[0],url=$('videoUrl').value.trim(),posterFile=$('posterFile').files[0],adCount=Number($('adCount').value),episodeUrls=$('episodeUrls').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),preRoll=$('preRollUrl').value.trim();
+ if(!title){fail('Enter a title.');return}if(!Number.isInteger(seasonNumber)||seasonNumber<1||!Number.isInteger(episodeNumber)||episodeNumber<1||episodeNumber>Number.MAX_SAFE_INTEGER){fail('Enter a valid positive whole-number season and episode.');return}
+ if(!file&&!url&&!episodeUrls.length){fail('Choose a video file, video URL, or episode URLs.');return}if(episodeUrls.some(x=>!/^https?:\/\//i.test(x))){fail('Episode URLs must start with http:// or https://');return}
+ if(file&&url){fail('Choose either a file or a URL, not both.');return}
+ if(file&&!file.type.startsWith('video/')){fail('Please choose a valid video file.');return}
+ if(url&&!/^https?:\/\//i.test(url)){fail('Video URL must start with http:// or https://');return}
+ let mainCuts;
+ try{mainCuts=parseCuts($('mainCuts').value)}catch(err){fail('Main video: '+err.message);return}
+ const adInputs=[];
+ let lastAdTime=-1;
+ for(let i=0;i<adCount;i++){
+  const adFile=$(`adFile${i}`).files[0],adUrl=$(`adUrl${i}`).value.trim();
+  if(!adFile&&!adUrl){fail(`Choose a file or URL for Ad ${i+1}.`);return}
+  if(adFile&&adUrl){fail(`Use either a file or a URL for Ad ${i+1}, not both.`);return}
+  if(adFile&&!adFile.type.startsWith('video/')){fail(`Ad ${i+1} must be a video file.`);return}
+  if(adUrl&&!/^https?:\/\//i.test(adUrl)){fail(`Ad ${i+1} needs a valid http(s) URL.`);return}
+  const timeText=$(`adTime${i}`).value.trim();
+  const match=/^(\d+):([0-5]\d)$/.exec(timeText);
+  if(!match){fail(`Enter a valid MM:SS time for Ad ${i+1} (example: 05:30).`);return}
+  const atSeconds=Number(match[1])*60+Number(match[2]);
+  if(atSeconds<=lastAdTime){fail(`Ad ${i+1} must be scheduled later than the previous ad.`);return}
+  lastAdTime=atSeconds;
+  let cuts;try{cuts=parseCuts($(`adCuts${i}`).value)}catch(err){fail(`Ad ${i+1}: `+err.message);return}
+  const ctaType=$(`adCtaType${i}`).value, targetId=$(`adTarget${i}`).value, buyUrl=$(`adBuyUrl${i}`).value.trim();
+  if(ctaType==='watch'&&!targetId){fail(`Select a published STAR 7 title for Ad ${i+1}.`);return}
+  if(ctaType==='buy'){try{const u=new URL(buyUrl);if(u.protocol!=='https:')throw Error()}catch(e){fail(`Ad ${i+1}: Buy Now needs a valid HTTPS product URL.`);return}}
+  adInputs.push({file:adFile,url:adUrl,atSeconds,cuts,skippable:$(`adSkip${i}`).value==='yes',ctaType,targetId,buyUrl});
+ }
+ const add=(poster,episodeThumb)=>{const banner=bannerFile?starFileURL(bannerFile):'';if(banner)objectUrls.push(banner);const promo=promoFile?starFileURL(promoFile):promoUrl;if(promoFile)objectUrls.push(promo);
+  const video=file?starFileURL(file):(url||episodeUrls[0]);
+  if(file)objectUrls.push(video);
+  const ads=adInputs.map(a=>{if(a.file){const local=starFileURL(a.file);return {src:local,skippable:a.skippable,atSeconds:a.atSeconds,cuts:a.cuts,ctaType:a.ctaType,targetId:a.targetId,buyUrl:a.buyUrl}}return {src:a.url,skippable:a.skippable,atSeconds:a.atSeconds,cuts:a.cuts,ctaType:a.ctaType,targetId:a.targetId,buyUrl:a.buyUrl}});
+  const existing=seriesTarget?content.find(x=>x.id===seriesTarget):null;
+  if(seriesTarget&&!existing){fail('Selected series was not found.');return}
+  if(['premiere','live'].includes($('broadcastType').value)&&(!($('broadcastNow').checked||$('broadcastStart').value)||!(Number($('episodeDuration').value)>0))){alert('For Premiere or Live, enter both a scheduled start time and episode duration in minutes.');return}
+  const dubbedSource=dubFile?starFileURL(dubFile):dubUrl;
+  const newRecords=(episodeUrls.length?episodeUrls:[video]).map((src,i)=>({primaryLanguage,languages:{[primaryLanguage]:src,...(i===0&&dubLanguage&&dubbedSource?{[dubLanguage]:dubbedSource}:{})},src,season:seasonNumber,number:episodeNumber+i,name:i===0?episodeName:'',thumbnail:episodeThumb||poster||existing?.poster||'',uploadedAt:new Date().toISOString(),durationMinutes:Number($('episodeDuration').value)||null,broadcastType:$('broadcastType').value,broadcastStart:['premiere','live'].includes($('broadcastType').value)?($('broadcastNow').checked?new Date().toISOString():new Date($('broadcastStart').value).toISOString()):''}));
+  if(!Number.isSafeInteger(episodeNumber+newRecords.length-1)){fail('Episode number is too large for accurate numbering.');return}
+  if(existing){
+    const old=episodeRecords(existing);
+    const duplicates=newRecords.filter(n=>old.some(o=>o.season===n.season&&o.number===n.number));
+    if(duplicates.length){fail('Episode '+duplicates[0].number+' already exists in Season '+duplicates[0].season+'. Choose a different number.');return}
+    existing.episodeRecords=old.concat(newRecords).sort((a,b)=>a.season-b.season||a.number-b.number);
+    if(!existing.video)existing.video=existing.episodeRecords[0].src;
+    if(poster)existing.poster=poster;if(banner)existing.detailsBanner=banner;if(promo)existing.promo=promo;if(promo||!existing.promoDuration)existing.promoDuration=promoDuration;
+  }else{
+    content.unshift({id:'v'+Date.now(),title,accessType:$('accessType').value,category:$('category').value,year:$('year').value,description:$('description').value.trim(),video,poster:poster||'',detailsBanner:banner||poster||'',promo,promoDuration,ads,adCount,cuts:mainCuts,episodeRecords:newRecords,preRoll});
+  }
+  $('contentForm').reset();$('broadcastNow').checked=true;$('seasonNumber').value=1;$('episodeNumber').value=1;buildAdSlots();filter='All';view='all';
+  document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.filter==='All'));
+  document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.view==='all'));
+  render();renderManage();refreshSeriesTargets();refreshFeatured();status.textContent='Saving video to device storage...';starPersist().then(()=>{status.textContent='SAVED ON DEVICE: Episode '+episodeNumber+' added to '+(existing?'existing series':'new title')+' will remain after closing and reopening this app (unless app data is cleared).';status.style.color='#9ff0a0'}).catch(err=>{status.textContent='Video visible now, but NOT saved permanently: '+err.message;status.style.color='#ff9898'});$('grid').scrollIntoView({behavior:'smooth',block:'start'});
+ };
+ const thumbnail=episodeThumbFile?starFileURL(episodeThumbFile):'';
+ if(thumbnail)objectUrls.push(thumbnail);
+ if(posterFile){const poster=starFileURL(posterFile);add(poster,thumbnail)}else add('',thumbnail);
+ } catch(err) {
+  console.error('STAR 7 publish error:',err);
+  const status=document.getElementById('publishStatus');
+  status.textContent='Publish error: '+(err?.message||String(err));
+  status.style.color='#ff9898';
+  alert(status.textContent);
+ }
+});
+window.addEventListener('error',e=>{const st=document.getElementById('publishStatus');if(st&&st.textContent.includes('Publishing video')){st.textContent='Error: '+e.message;st.style.color='#ff9898'}});
+// Device-local configuration only: native Android AdMob SDK integration is required to serve Google ads.
+const STAR_GOOGLE_ADS_KEY='STAR7_GOOGLE_ADS_SETTINGS_V1';
+const googleAdFields=['googleAdsMode','googleAppId','googleBannerId','googleInterstitialId','googleRewardedId'];
+function loadGoogleAdsSettings(){
+ try{const saved=JSON.parse(localStorage.getItem(STAR_GOOGLE_ADS_KEY)||'{}');
+  googleAdFields.forEach(id=>{if(typeof saved[id]==='string'&&document.getElementById(id))document.getElementById(id).value=saved[id]});
+ }catch(e){document.getElementById('googleAdsStatus').textContent='Could not read saved settings: '+e.message}
+}
+document.getElementById('saveGoogleAds').addEventListener('click',()=>{
+ const values=Object.fromEntries(googleAdFields.map(id=>[id,document.getElementById(id).value.trim()]));
+ const appPattern=/^ca-app-pub-\d{16}~\d{10}$/;
+ const unitPattern=/^ca-app-pub-\d{16}\/\d{10}$/;
+ if(values.googleAppId&&!appPattern.test(values.googleAppId)){document.getElementById('googleAdsStatus').textContent='Invalid AdMob App ID format.';return}
+ for(const id of googleAdFields.slice(2)){if(values[id]&&!unitPattern.test(values[id])){document.getElementById('googleAdsStatus').textContent='Invalid Ad Unit ID format: '+id;return}}
+ try{localStorage.setItem(STAR_GOOGLE_ADS_KEY,JSON.stringify(values));document.getElementById('googleAdsStatus').textContent='Settings saved on this device. Google ads are NOT active; Android SDK integration is still required.'}
+ catch(e){document.getElementById('googleAdsStatus').textContent='Unable to save settings: '+e.message}
+});
+document.getElementById('clearGoogleAds').addEventListener('click',()=>{
+ try{localStorage.removeItem(STAR_GOOGLE_ADS_KEY);googleAdFields.forEach(id=>document.getElementById(id).value=id==='googleAdsMode'?'disabled':'');document.getElementById('googleAdsStatus').textContent='Google Ads settings cleared.'}
+ catch(e){document.getElementById('googleAdsStatus').textContent='Unable to clear settings: '+e.message}
+});
+loadGoogleAdsSettings();
+render();
+starRestore();
+
+// My Space: offline media is stored in IndexedDB, not sent to the Android Downloads folder.
+const SPACE_PLANS_KEY='STAR7_PLAN_PRICES_V1';
+const DEFAULT_PLANS=[
+ {id:'monthly_ads',label:'1 Month · With Ads',months:1,ads:true,price:49},
+ {id:'monthly_noads',label:'1 Month · No Ads',months:1,ads:false,price:99},
+ {id:'quarter_ads',label:'3 Months · With Ads',months:3,ads:true,price:129},
+ {id:'quarter_noads',label:'3 Months · No Ads',months:3,ads:false,price:249},
+ {id:'year_ads',label:'1 Year · With Ads',months:12,ads:true,price:449},
+ {id:'year_noads',label:'1 Year · No Ads',months:12,ads:false,price:799}
+];
+function spacePlans(){try{const values=JSON.parse(localStorage.getItem(SPACE_PLANS_KEY)||'{}');return DEFAULT_PLANS.map(p=>({...p,price:Number.isFinite(Number(values[p.id]))?Math.max(0,Number(values[p.id])):p.price}))}catch{return DEFAULT_PLANS}}
+function spacePlanUI(){
+ const owner=$('adminPlanFields'),viewer=$('viewerPlans');owner.replaceChildren();viewer.replaceChildren();
+ for(const p of spacePlans()){
+  const field=document.createElement('div');field.className='field';const label=document.createElement('label');label.textContent=p.label+' · ₹';const input=document.createElement('input');input.type='number';input.min='0';input.step='1';input.value=p.price;input.dataset.plan=p.id;label.append(input);field.append(label);owner.append(field);
+  const box=document.createElement('div');box.className='notice';const strong=document.createElement('strong');strong.textContent=p.label;const price=document.createElement('p');price.textContent='₹'+p.price+' · '+(p.ads?'Includes ads':'Ad-free plan');const note=document.createElement('small');note.textContent='Purchases available after secure billing setup';box.append(strong,price,note);viewer.append(box);
+ }
+}
+$('savePlanPrices').onclick=()=>{const values={};for(const el of $('adminPlanFields').querySelectorAll('input')){if(el.value===''||!Number.isFinite(Number(el.value))||Number(el.value)<0){alert('Enter valid plan prices');return}values[el.dataset.plan]=Number(el.value)}localStorage.setItem(SPACE_PLANS_KEY,JSON.stringify(values));spacePlanUI();alert('Plan display prices saved on this device.')};
+// Configure only after deploying an authenticated HTTPS backend. Never accept
+// self-issued subscriptions from localStorage or viewer input.
+const STAR7_ENTITLEMENT_API = ''; // e.g. https://your-secure-domain.example/api/me/entitlement
+let star7Entitlement=null, star7EntitlementChecked=0, star7EverSubscribed=false;
+async function refreshVerifiedSubscription(){
+ if(!STAR7_ENTITLEMENT_API || !navigator.onLine){star7Entitlement=null;return null}
+ try{
+  const response=await fetch(STAR7_ENTITLEMENT_API,{credentials:'include',cache:'no-store',headers:{'Accept':'application/json'}});
+  if(!response.ok)throw Error('Subscription check unavailable');
+  const result=await response.json();
+  // Expected trusted server response: {status:'active'|'expired'|'none',expiresAt:ISO,planId:string}.
+  // The server must verify the purchase and viewer session before responding.
+  star7EverSubscribed=result.status==='expired'||result.status==='active';
+  const expiry=Date.parse(result.expiresAt||'');
+  star7Entitlement=(result.status==='active'&&Number.isFinite(expiry)&&expiry>Date.now())
+    ? {expiresAt:expiry,planId:String(result.planId||'')} : null;
+  star7EntitlementChecked=Date.now();
+ }catch(e){star7Entitlement=null;star7EntitlementChecked=0}
+ updateSubscriptionUI();
+ return star7Entitlement;
+}
+function activeVerifiedPlan(){
+ if(!star7Entitlement||Date.now()>=star7Entitlement.expiresAt)return null;
+ if(!STAR7_ENTITLEMENT_API||Date.now()-star7EntitlementChecked>60000)return null;
+ const plan=spacePlans().find(p=>p.id===star7Entitlement.planId);
+ return plan||null;
+}
+function subscriptionExpired(){return star7EverSubscribed&&!activeVerifiedPlan()}
+function updateSubscriptionUI(){
+ const p=activeVerifiedPlan();
+ const box=$('subscriptionExpiryNotice');if(box)box.hidden=!subscriptionExpired();
+ const account=$('spaceAccount');if(account&&viewerCurrent()){
+  const profile=viewerProfiles()[viewerCurrent()];
+  account.textContent='Signed in: '+(profile?.name||'Viewer')+' · '+viewerCurrent()+' · '+(p?'Active: '+p.label+' · ₹'+p.price+' · Ends '+new Date(star7Entitlement.expiresAt).toLocaleDateString():subscriptionExpired()?'Subscription Expired · Renew to continue Premium viewing':'Subscription not active (payment not connected)');
+ }
+}
+function requestSubscriptionRenewal(){
+ showSpace();$('subscriptionExpiryNotice').hidden=false;
+ $('viewerPlans').scrollIntoView({behavior:'smooth',block:'center'});
+}
+$('renewSubscription').onclick=requestSubscriptionRenewal;
+function premiumGate(x){
+ if(!isPremiumTitle(x)||activeVerifiedPlan())return true;
+ alert(subscriptionExpired()?'Subscription Expired. Renew Subscription to watch Premium videos. Free videos remain available.':'A verified Premium subscription is required. Payment is not connected yet.');
+ requestSubscriptionRenewal();return false;
+}
+setInterval(()=>{
+ if(star7Entitlement&&Date.now()>=star7Entitlement.expiresAt){
+  star7Entitlement=null;star7EverSubscribed=true;
+  if(playback?.mode&&isPremiumTitle(playback.item)){
+   $('player').pause();$('player').removeAttribute('src');$('player').load();
+   if($('playerDialog').open)$('playerDialog').close();
+   requestSubscriptionRenewal();
+  }
+ }
+ if(STAR7_ENTITLEMENT_API&&navigator.onLine)refreshVerifiedSubscription();
+ updateSubscriptionUI();
+},30000);
+if(STAR7_ENTITLEMENT_API)refreshVerifiedSubscription();
+
+function isPremiumTitle(x){return x&&(x.accessType==='Premium'||x.category==='Premium')}
+function hasPremiumAccess(x){return !isPremiumTitle(x)||!!activeVerifiedPlan()}
+function adsAllowed(){const p=activeVerifiedPlan();return !p||p.ads}
+const spaceKey=()=> 'space:'+viewerCurrent()+':';
+async function spaceKeys(){const db=await starDB();return new Promise((resolve,reject)=>{const r=db.transaction('data').objectStore('data').getAllKeys();r.onsuccess=()=>resolve(r.result.filter(k=>typeof k==='string'&&k.startsWith(spaceKey())));r.onerror=()=>reject(r.error)})}
+async function downloadToSpace(x,index){
+ const user=viewerCurrent();if(!user){alert('Sign in to save videos to My Space.');$('viewerAccountSection').hidden=false;viewerRender();$('viewerAccountSection').scrollIntoView();return}
+ if(!premiumGate(x))return
+ const rec=episodeRecords(x)[index];if(!rec||episodeState(rec)!=='normal'){alert('This broadcast is not available for offline download.');return}
+ const src=rec.src||episodesOf(x)[index];if(!src){alert('Video source unavailable');return}
+ try{
+  const response=await fetch(src);if(!response.ok)throw Error('Video server refused the download ('+response.status+')');
+  const blob=await response.blob();if(!blob.size||(!blob.type.startsWith('video/')&&blob.type!=='application/octet-stream'))throw Error('The link did not return a video file');
+  const key=spaceKey()+x.id+':'+index;
+  await starPut('media',key,blob);
+  await starPut('data',key,{titleId:x.id,index,title:x.title,poster:x.poster||'',episode:rec.number,accessType:x.accessType||'Free',savedAt:Date.now()});
+  alert('Saved to My Space for offline viewing on this device.');await renderSpace();
+ }catch(e){alert('Could not save offline video: '+e.message+' (Some websites block downloads or offline storage.)')}
+}
+async function renderSpace(){
+ const email=viewerCurrent(),profile=viewerProfiles()[email];
+ $('spaceAccount').textContent=profile?'Signed in: '+profile.name+' · '+email+' · Subscription: Not active (payment not connected)':'Sign in to view your private offline downloads and account.';updateSubscriptionUI();
+ $('spaceSignOut').hidden=!profile;
+ const box=$('offlineLibrary');box.replaceChildren();if(!profile){$('offlineCount').textContent='Sign in required';return}
+ try{const keys=await spaceKeys();$('offlineCount').textContent=keys.length+' saved';if(!keys.length){box.innerHTML='<p class="muted">No offline videos saved yet.</p>';return}
+  for(const key of keys){const meta=await starGet('data',key);if(!meta)continue;const card=document.createElement('article');card.className='card';const poster=document.createElement('div');poster.className='poster';if(meta.poster&&!meta.poster.startsWith('blob:')){const im=document.createElement('img');im.src=meta.poster;poster.append(im)}const name=document.createElement('h3');name.textContent=meta.title+' · Episode '+meta.episode;const play=document.createElement('button');play.className='btn';play.textContent='▶ Watch Offline';play.onclick=async()=>{const blob=await starGet('media',key);if(!blob){alert('Offline file missing');return}if(meta.accessType==='Premium'&&!premiumGate({accessType:'Premium'}))return;const url=URL.createObjectURL(blob);objectUrls.push(url);playContent({id:meta.titleId,title:meta.title,category:'Offline',video:url,ads:[],cuts:[]})};const del=document.createElement('button');del.className='btn alt';del.textContent='Remove Download';del.onclick=async()=>{if(!confirm('Remove this offline download?'))return;await starDelete('data',key);await starDelete('media',key);renderSpace()};card.append(poster,name,play,del);box.append(card)}
+ }catch(e){box.textContent='Offline library unavailable: '+e.message}
+}
+async function starDelete(store,key){const db=await starDB();return new Promise((resolve,reject)=>{const tx=db.transaction(store,'readwrite');tx.objectStore(store).delete(key);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+function showSpace(){if(!viewerCurrent()){$('viewerAccountSection').hidden=false;viewerRender();$('viewerAccountSection').scrollIntoView();return} $('mySpaceSection').hidden=false;renderSpace();$('mySpaceSection').scrollIntoView({behavior:'smooth'})}
+$('mySpaceNav').onclick=showSpace;
+$('goToDownloads').onclick=()=>{$('offlineNotice').hidden=true;showSpace()};
+$('spaceSignOut').onclick=()=>{localStorage.removeItem(VIEWER_SESSION);star7Entitlement=null;star7EverSubscribed=false;viewerRender();renderSpace()};
+window.addEventListener('online',()=>{$('offlineNotice').hidden=true;if(STAR7_ENTITLEMENT_API)refreshVerifiedSubscription()});
+window.addEventListener('offline',()=>{$('offlineNotice').hidden=false});
+if(!navigator.onLine)$('offlineNotice').hidden=false;
+spacePlanUI();
+
+</script>
+</body>
+</html>
