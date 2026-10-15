@@ -45,6 +45,12 @@ footer{border-top:1px solid #222;text-align:center;padding:24px;color:#888;font-
 @media(max-width:600px){#playerDialog,#detailsDialog{padding:12px}#playerDialog .playerWrap{width:calc(100% + 24px);margin:12px -12px 0;border-radius:0}.epInfo strong{font-size:14px}}
 .adCta{position:absolute;right:10px;bottom:77px;display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;max-width:65%;pointer-events:auto}.adCta button{background:#f5ca2a;color:#111;border:0;border-radius:7px;padding:9px 12px;font-weight:800}.adCta[hidden]{display:none!important}
 .premiereTag{position:absolute;top:8px;left:8px;background:#a31322d9;color:white;font-weight:800;font-size:11px;border-radius:5px;padding:5px 8px;z-index:3;animation:starBlink 1.6s ease-in-out infinite}@keyframes starBlink{50%{opacity:.45}}#episodeList{overflow-y:auto;overscroll-behavior:contain}#continueSection{margin:24px 0}#featuredTitles{width:100%;background:#222;color:white;padding:10px}#newDeletePassword{background:#222;color:white;padding:10px;border:1px solid #555;border-radius:8px}#detailsHero{background:#0b0b0b}
+
+/* STAR 7 mobile insets and persistent bottom navigation */
+html{scroll-padding-top:80px}body{padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+header{top:0}#starBottomNav{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-content:space-around;align-items:center;min-height:62px;padding-bottom:env(safe-area-inset-bottom,0px);background:#0c0c10f5;border-top:1px solid #333}#starBottomNav button{background:none;color:#e5e5e5;border:0;padding:9px 15px;font-weight:700;font-size:13px}#starBottomNav button:focus{color:var(--gold)}
+#detailsPromoLabel{color:#fff!important;background:#0009!important;font-weight:900!important}#promoSoundButton{background:#141414d9!important;color:#fff!important;border:1px solid #ddd8!important}
+.tapPlayerControls{position:absolute;left:10px;bottom:43px;z-index:17;display:flex;gap:7px;flex-wrap:wrap;align-items:center;pointer-events:auto}.tapPlayerControls[hidden],#playerSettingsPanel[hidden],.broadcastProgress[hidden]{display:none!important}.tapPlayerControls button{border:1px solid #888;background:#10131ddd;color:white;border-radius:8px;padding:9px}.tapPlayerControls #playerSettingsPanel{background:#14151af0;color:white;padding:9px;border-radius:8px;flex-basis:100%}.tapPlayerControls select{background:#222;color:white;padding:6px}.broadcastProgress{position:absolute;bottom:0;left:0;right:0;height:5px;background:#444;z-index:18;pointer-events:none}.broadcastProgress div{height:100%;width:0%;background:#188cff}.broadcastProgress.live div{background:#ef2929}
 </style>
 </head>
 <body>
@@ -177,16 +183,16 @@ footer{border-top:1px solid #222;text-align:center;padding:24px;color:#888;font-
       <div id="manageList"></div>
     </div>
   </section>
-</main>
+</main><div id="starBottomNav" aria-label="Bottom navigation"><button type="button" id="starNavHome">⌂<br>Home</button><button type="button" id="starNavSearch">⌕<br>Search</button><button type="button" id="starNavSpace">♙<br>My Space</button></div>
 
 <footer>STAR 7</footer>
 
 <dialog id="trimDialog"><div class="modalhead"><h2>Preview video &amp; cuts</h2><button class="close" id="closeTrim">×</button></div><p class="desc">Play the selected source and check the cuts. The original video is not changed.</p><video id="trimPlayer" class="video" controls playsinline></video><p id="trimMessage" class="muted"></p></dialog>
-<dialog id="detailsDialog"><div class="modalhead"><h2 id="detailsTitle">Title details</h2><button class="close" id="closeDetails">×</button></div><div id="detailsHero" style="position:relative;max-width:100%;margin:8px 0 14px;border-radius:12px;overflow:hidden;background:#101014;min-height:110px"><img id="detailsBanner" alt="Show banner" style="width:100%;max-height:310px;object-fit:cover;display:none"><video id="detailsPromo" playsinline preload="none" style="display:none;width:100%;max-height:310px;background:#000"></video><button id="promoSoundButton" type="button" style="display:none;position:absolute;right:12px;bottom:12px;z-index:4;background:#f5ca2a;color:#111;border:0;border-radius:9px;padding:10px 13px;font-weight:800;cursor:pointer">🔊 Tap for sound</button><span id="detailsPromoLabel" style="position:absolute;top:9px;left:9px;background:#000b;padding:5px 9px;border-radius:6px;font-size:12px" hidden>PROMO</span></div><p id="detailsMeta" class="muted"></p><p id="detailsDescription" class="desc"></p><div><button class="btn" id="detailsPlay">▶ Play</button><button class="btn alt" id="detailsList">＋ My List</button><button class="btn alt" id="detailsShare">Share</button><button class="btn alt" id="detailsDownload">⬇ Save to My Space</button></div><h3 id="episodesHeading" hidden>Season 1 · Episodes</h3><div id="episodeList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-top:12px"></div><h3>More Like This</h3><div class="moreGrid" id="moreLikeThis"></div></dialog>
+<dialog id="detailsDialog"><div class="modalhead"><h2 id="detailsTitle">Title details</h2><button class="close" id="closeDetails">×</button></div><div id="detailsHero" style="position:relative;max-width:100%;margin:8px 0 14px;border-radius:12px;overflow:hidden;background:#101014;min-height:110px"><img id="detailsBanner" alt="Show banner" style="width:100%;max-height:310px;object-fit:cover;display:none"><video id="detailsPromo" playsinline preload="none" style="display:none;width:100%;max-height:310px;background:#000"></video><button id="promoSoundButton" type="button" style="display:none;position:absolute;right:12px;bottom:12px;z-index:4;background:#f5ca2a;color:#111;border:0;border-radius:9px;padding:10px 13px;font-weight:800;cursor:pointer">🔊 Tap for sound</button><span id="detailsPromoLabel" style="position:absolute;top:9px;left:9px;background:#000b;padding:5px 9px;border-radius:6px;font-size:12px" hidden>TRAILER</span></div><p id="detailsMeta" class="muted"></p><p id="detailsDescription" class="desc"></p><div><button class="btn" id="detailsPlay">▶ Play</button><button class="btn alt" id="detailsList">＋ My List</button><button class="btn alt" id="detailsShare">Share</button><button class="btn alt" id="detailsDownload">⬇ Save to My Space</button></div><h3 id="episodesHeading" hidden>Season 1 · Episodes</h3><div id="episodeList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-top:12px"></div><h3>More Like This</h3><div class="moreGrid" id="moreLikeThis"></div></dialog>
 <dialog id="playerDialog">
   <div class="modalhead"><div><div class="eyebrow">STAR 7 PLAYER</div><h2 id="playerTitle" style="margin:5px 0"></h2></div><button class="close" id="closePlayer">×</button></div>
   
-  <div class="playerWrap" id="playerWrap"><div id="liveAudience" hidden style="position:absolute;z-index:14;right:55px;top:10px;background:#121216d9;border:1px solid #ff4949;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;color:white;pointer-events:none">🔴 LIVE · Viewers unavailable</div><video id="player" class="video" controls playsinline></video><div class="tapZones"><div class="tapZone" id="tapBack" aria-label="Double tap to rewind 10 seconds"></div><div class="tapZone center"></div><div class="tapZone" id="tapForward" aria-label="Double tap to advance 10 seconds"></div></div><div class="seekToast" id="seekToast"></div><div id="adOverlay" class="adOverlay" hidden><div class="adMeta"><b id="adSponsored">Sponsored · Ad 1 of 1</b><span id="adRemaining">00:00 remaining</span></div><div class="adTrack"><div id="adProgress"></div></div><div id="adCta" class="adCta" hidden><button type="button" id="adWatchNow" hidden>▶ Watch Now</button><button type="button" id="adBuyNow" hidden>Buy Now ↗</button></div><button id="skipAd" class="skipOverlay" disabled>Skip in 5s</button></div><button id="inPlayerFullscreen" class="inPlayerFullscreen" aria-label="Fullscreen">⛶</button></div><div class="playerActions"><button type="button" id="fullScreenBtn">⛶ Fullscreen</button><button type="button" id="landscapeBtn">↻ Landscape</button><label>Speed <select id="speedSelect"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><button type="button" id="playerEpisodeToggle">☷ Episodes</button><label id="languageSettings" style="display:none">🌐 Language <select id="playerLanguage" aria-label="Video language"></select></label></div>
+  <div class="playerWrap" id="playerWrap"><div id="liveAudience" hidden style="position:absolute;z-index:14;right:55px;top:10px;background:#121216d9;border:1px solid #ff4949;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;color:white;pointer-events:none">🔴 LIVE · Viewers unavailable</div><video id="player" class="video" controls playsinline></video><div class="tapZones"><div class="tapZone" id="tapBack" aria-label="Double tap to rewind 10 seconds"></div><div class="tapZone center"></div><div class="tapZone" id="tapForward" aria-label="Double tap to advance 10 seconds"></div></div><div class="seekToast" id="seekToast"></div><div id="broadcastProgress" class="broadcastProgress" hidden><div id="broadcastFill"></div></div><div id="tapPlayerControls" class="tapPlayerControls" hidden><button type="button" id="tapTogglePlayback">⏸ Pause</button><button type="button" id="tapPlayerSettings">⚙ Settings</button><button type="button" id="tapClosePlayback">✕ Close</button><div id="playerSettingsPanel" hidden><label>Quality <select id="qualitySelect"><option value="auto">Auto (original source)</option></select></label><span class="muted">Language options are available when uploaded.</span></div></div><div id="adOverlay" class="adOverlay" hidden><div class="adMeta"><b id="adSponsored">Sponsored · Ad 1 of 1</b><span id="adRemaining">00:00 remaining</span></div><div class="adTrack"><div id="adProgress"></div></div><div id="adCta" class="adCta" hidden><button type="button" id="adWatchNow" hidden>▶ Watch Now</button><button type="button" id="adBuyNow" hidden>Buy Now ↗</button></div><button id="skipAd" class="skipOverlay" disabled>Skip in 5s</button></div><button id="inPlayerFullscreen" class="inPlayerFullscreen" aria-label="Fullscreen">⛶</button></div><div class="playerActions"><button type="button" id="fullScreenBtn">⛶ Fullscreen</button><button type="button" id="landscapeBtn">↻ Landscape</button><label>Speed <select id="speedSelect"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><button type="button" id="playerEpisodeToggle">☷ Episodes</button><label id="languageSettings" style="display:none">🌐 Language <select id="playerLanguage" aria-label="Video language"></select></label></div>
   
   <p id="playerDesc" class="desc"></p><h3>Episodes</h3><div id="playerEpisodes" class="playerEpList"></div><h3>More Like This</h3><div id="playerMore" class="moreGrid"></div>
 </dialog>
@@ -317,28 +323,27 @@ function openDetails(x){
    promo.src=x.promo;promo.muted=false;promo.volume=1;promo.playsInline=true;
    promo.currentTime=0;promo.style.display='block';banner.style.display='none';
    const soundButton=$('promoSoundButton');
-   soundButton.style.display='none';
-   soundButton.textContent='🔊 Tap for sound';
+   soundButton.style.display='block';
+   soundButton.textContent='🔊 Sound On';
    soundButton.onclick=async()=>{
     if(finished||generation!==detailsPromoGeneration)return;
-    try{promo.muted=false;promo.volume=1;await promo.play();soundButton.style.display='none'}
-    catch(e){soundButton.textContent='▶ Tap to play promo with sound';soundButton.style.display='block'}
+    promo.muted=!promo.muted;promo.volume=1;soundButton.textContent=promo.muted?'🔇 Sound Off':'🔊 Sound On';try{await promo.play()}catch(e){soundButton.textContent='▶ Play Trailer'}
    };
-   $('detailsPromoLabel').textContent=duration+'s PROMO';$('detailsPromoLabel').hidden=false;
+   $('detailsPromoLabel').textContent='TRAILER';$('detailsPromoLabel').hidden=false;
    promo.ontimeupdate=()=>{if(promo.currentTime>=duration)finish()};
    promo.onended=finish;promo.onerror=finish;
    // Browsers usually prohibit autoplay with sound. Try it, then fall back to
    // muted autoplay with a visible user-gesture button for enabling sound.
-   Promise.resolve(promo.play()).catch(async()=>{
+   Promise.resolve(promo.play()).then(()=>{soundButton.textContent='🔊 Sound On'}).catch(async()=>{
     if(finished||generation!==detailsPromoGeneration)return;
     promo.muted=true;
     soundButton.style.display='block';
-    try{await promo.play()}catch(e){
+    try{await promo.play();soundButton.textContent='🔇 Sound Off'}catch(e){
      if(finished||generation!==detailsPromoGeneration)return;
-     soundButton.textContent='▶ Tap to play promo with sound';
+     soundButton.textContent='▶ Play Trailer';
     }
    });
-  },3000);
+  },4000);
  }
  $('detailsTitle').textContent=x.title;$('detailsMeta').textContent=`${x.category} • ${x.accessType||'Free'} • ${x.year||''} • ${episodesOf(x).length} episode(s)`;$('detailsDescription').textContent=x.description||'Watch on STAR 7';
  const eps=episodesOf(x);$('episodesHeading').hidden=eps.length===0;fillEpisodeRows(x,'episodeList',8);
@@ -361,7 +366,7 @@ $('detailsPlay').onclick=()=>{if(selectedTitle){const x=selectedTitle;stopDetail
 $('detailsList').onclick=()=>{if(!selectedTitle)return;saved.has(selectedTitle.id)?saved.delete(selectedTitle.id):saved.add(selectedTitle.id);$('detailsList').textContent=saved.has(selectedTitle.id)?'✓ In My List':'＋ My List';render();starPersist().catch(console.error)};
 $('detailsShare').onclick=async()=>{if(!selectedTitle)return;const data={title:selectedTitle.title,text:`Watch ${selectedTitle.title} on STAR 7`};if(navigator.share){try{await navigator.share(data)}catch(e){}}else{try{await navigator.clipboard.writeText(data.text);alert('Title copied for sharing')}catch(e){alert(data.text)}}};
 $('detailsDownload').onclick=()=>{if(!selectedTitle)return;downloadToSpace(selectedTitle,0)};
-function startEpisode(x,index){if(!premiumGate(x))returnstopDetailsPromo();const rec=episodeRecords(x)[index],state=episodeState(rec);if(state==='scheduled'){alert('This broadcast has not started yet.');return}if(state==='ended'){alert('This live stream has ended and has no replay.');return}selectedTitle=x;currentEpisode=index;const src=episodesOf(x)[index];if(!src){alert('Episode source missing');return}const item={...x,video:src,ads:(x.preRoll?[{src:x.preRoll,atSeconds:0,skippable:false,cuts:[]}]:[]).concat(x.ads||[])};playContent(item);starSetPlayerLanguages(rec);if(state==='live'||state==='premiere'){const start=Date.parse(rec.broadcastStart||'');const offset=Math.max(0,(Date.now()-start)/1000);playback.broadcastMode=state;playback.broadcastStart=start;playback.broadcastLength=(Number(rec.durationMinutes)||0)*60;const v=$('player');v.controls=false;
+function startEpisode(x,index){if(!premiumGate(x))return;stopDetailsPromo();const rec=episodeRecords(x)[index],state=episodeState(rec);if(state==='scheduled'){alert('This broadcast has not started yet.');return}if(state==='ended'){alert('This live stream has ended and has no replay.');return}selectedTitle=x;currentEpisode=index;const src=episodesOf(x)[index];if(!src){alert('Episode source missing');return}const item={...x,video:src,ads:(x.preRoll?[{src:x.preRoll,atSeconds:0,skippable:false,cuts:[]}]:[]).concat(x.ads||[])};playContent(item);starSetPlayerLanguages(rec);if(state==='live'||state==='premiere'){const start=Date.parse(rec.broadcastStart||'');const offset=Math.max(0,(Date.now()-start)/1000);playback.broadcastMode=state;playback.broadcastStart=start;playback.broadcastLength=(Number(rec.durationMinutes)||0)*60;const v=$('player');v.controls=false;
  const syncBroadcast=()=>{if(playback?.broadcastMode&&playback.mode==='content'){
   const elapsed=Math.max(0,(Date.now()-start)/1000);
   const target=Math.min(elapsed,Math.max(0,(Number.isFinite(v.duration)?v.duration:elapsed)-0.2));
@@ -855,6 +860,46 @@ window.addEventListener('offline',()=>{$('offlineNotice').hidden=false});
 if(!navigator.onLine)$('offlineNotice').hidden=false;
 spacePlanUI();
 
+
+// Player wake policy: native Android bridge controls FLAG_KEEP_SCREEN_ON.
+function starScreenAwake(on){try{window.Star7Native?.setVideoPlaying(!!on)}catch(e){}}
+for(const videoId of ['player','detailsPromo','trimPlayer']){
+ const video=$(videoId);
+ video.addEventListener('playing',()=>starScreenAwake(true));
+ video.addEventListener('pause',()=>starScreenAwake(['player','detailsPromo','trimPlayer'].some(id=>!$(id).paused&&!$(id).ended)));
+ video.addEventListener('ended',()=>starScreenAwake(['player','detailsPromo','trimPlayer'].some(id=>!$(id).paused&&!$(id).ended)));
+}
+function starShowHome(){if($('mySpaceSection'))$('mySpaceSection').hidden=true;view='all';filter='All';$('search').value='';render();window.scrollTo({top:0,behavior:'smooth'})}
+$('starNavHome').onclick=starShowHome;
+$('starNavSearch').onclick=()=>{starShowHome();$('search').focus();$('search').scrollIntoView({behavior:'smooth',block:'center'})};
+$('starNavSpace').onclick=()=>{showSpace();$('mySpaceSection').hidden=false;$('mySpaceSection').scrollIntoView({behavior:'smooth'})};
+const playerControls=$('tapPlayerControls'),settingsPanel=$('playerSettingsPanel');
+$('playerWrap').addEventListener('click',e=>{
+ if(e.target.closest('button,select,label,.tapZone,#adOverlay'))return;
+ playerControls.hidden=!playerControls.hidden;
+});
+$('tapTogglePlayback').onclick=()=>{const v=$('player');if(v.paused)v.play().catch(()=>{});else v.pause()};
+$('player').addEventListener('play',()=>{$('tapTogglePlayback').textContent='⏸ Pause'});
+$('player').addEventListener('pause',()=>{$('tapTogglePlayback').textContent='▶ Play'});
+$('tapPlayerSettings').onclick=()=>{settingsPanel.hidden=!settingsPanel.hidden};
+$('tapClosePlayback').onclick=()=>$('closePlayer').click();
+// Quality switching requires distinct URLs provided by the uploader; no fictitious transcoding.
+function starRefreshQualities(){const sel=$('qualitySelect');sel.replaceChildren(new Option('Auto (original source)','auto'));const rec=selectedTitle&&episodeRecords(selectedTitle)[currentEpisode];for(const [name,url] of Object.entries(rec?.qualities||{})){if(url)sel.add(new Option(name,name))}}
+$('qualitySelect').onchange=()=>{const rec=selectedTitle&&episodeRecords(selectedTitle)[currentEpisode];const url=rec?.qualities?.[$('qualitySelect').value];if(!url)return;const v=$('player'),at=v.currentTime,paused=v.paused;v.src=url;v.load();v.addEventListener('loadedmetadata',()=>{if(Number.isFinite(at))v.currentTime=Math.min(at,Math.max(0,v.duration-.1));if(!paused)v.play().catch(()=>{})},{once:true})};
+const originalStartEpisode=startEpisode;
+startEpisode=function(x,i){stopDetailsPromo();originalStartEpisode(x,i);starRefreshQualities()};
+function starBroadcastTick(){const bar=$('broadcastProgress'),fill=$('broadcastFill'),v=$('player');if(!playback?.broadcastMode||playback.mode!=='content'){bar.hidden=true;return}
+ const elapsed=Math.max(0,(Date.now()-playback.broadcastStart)/1000),duration=playback.broadcastLength||v.duration||1;
+ const limit=Math.min(duration,elapsed),pos=Math.min(limit,Number.isFinite(v.currentTime)?v.currentTime:0);
+ bar.hidden=false;bar.classList.toggle('live',playback.broadcastMode==='live');fill.style.width=Math.max(0,Math.min(100,pos/duration*100))+'%';
+ // Live always rejoins current broadcast time after a pause. Premiere may catch up but never exceed the live edge.
+ if(!v.paused&&playback.broadcastMode==='live'&&Math.abs(v.currentTime-limit)>2&&v.readyState>=1){try{v.currentTime=Math.min(limit,Math.max(0,v.duration-.1))}catch(e){}}
+ if(playback.broadcastMode==='premiere'&&v.currentTime>limit+0.4){try{v.currentTime=limit}catch(e){}}
+}
+setInterval(starBroadcastTick,700);
+$('player').addEventListener('play',()=>{if(playback?.broadcastMode==='live'){const v=$('player'),edge=Math.max(0,(Date.now()-playback.broadcastStart)/1000);try{v.currentTime=Math.min(edge,Math.max(0,v.duration-.1))}catch(e){}}});
+// Tapping video during a broadcast reveals the same Pause/Play/Close controls.
+$('player').addEventListener('click',()=>{playerControls.hidden=!playerControls.hidden});
 </script>
 </body>
 </html>
