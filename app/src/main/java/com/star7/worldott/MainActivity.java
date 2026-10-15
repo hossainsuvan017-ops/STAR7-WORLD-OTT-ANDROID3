@@ -3,229 +3,90 @@ package com.star7.worldott;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 public class MainActivity extends Activity {
+    private WebView web;
+    private FrameLayout root;
+    private View fullscreen;
+    private WebChromeClient.CustomViewCallback fullscreenCallback;
+    private ValueCallback<Uri[]> fileCallback;
+    private static final int PICK_FILE = 7001;
+    private boolean videoPlaying = false;
 
-    private WebView webView;
-    private FrameLayout rootLayout;
-
-    private View fullScreenView;
-    private WebChromeClient.CustomViewCallback fullScreenCallback;
-
-    private ValueCallbackHolder fileChooserHolder;
-
-    private static class ValueCallbackHolder {
-        android.webkit.ValueCallback<Uri[]> callback;
+    // Only expose this bridge to bundled trusted HTML, never arbitrary websites.
+    public class VideoBridge {
+        @JavascriptInterface public void setVideoPlaying(boolean playing) {
+            runOnUiThread(() -> { videoPlaying = playing; updateKeepAwake(); });
+        }
     }
-
-    private static final int FILE_CHOOSER_REQUEST = 1001;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        rootLayout = new FrameLayout(this);
-        rootLayout.setBackgroundColor(android.graphics.Color.BLACK);
-
-        webView = new WebView(this);
-        rootLayout.addView(
-            webView,
-            new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        );
-
-        setContentView(rootLayout);
-
-        WebSettings settings = webView.getSettings();
-
-        settings.setJavaScriptEnabled(true);
-        settings.setDomStorageEnabled(true);
-        settings.setDatabaseEnabled(true);
-
-        settings.setAllowFileAccess(true);
-        settings.setAllowContentAccess(true);
-
-        settings.setMediaPlaybackRequiresUserGesture(false);
-
-        webView.setWebViewClient(new WebViewClient());
-
-        webView.setWebChromeClient(new WebChromeClient() {
-
-            @Override
-            public void onShowCustomView(
-                View view,
-                CustomViewCallback callback
-            ) {
-                if (fullScreenView != null) {
-                    callback.onCustomViewHidden();
-                    return;
-                }
-
-                fullScreenView = view;
-                fullScreenCallback = callback;
-
-                webView.setVisibility(View.GONE);
-
-                rootLayout.addView(
-                    fullScreenView,
-                    new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
-                );
-
-                getWindow().addFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-                );
-
-                getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                );
-
-                setRequestedOrientation(
-                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                );
+    private void updateKeepAwake() {
+        if (videoPlaying) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+    @Override public void onCreate(Bundle state) {
+        super.onCreate(state);
+        // Do not draw content behind Android status/navigation bars.
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        root = new FrameLayout(this);
+        root.setFitsSystemWindows(true);
+        web = new WebView(this);
+        root.addView(web,new FrameLayout.LayoutParams(-1,-1));
+        setContentView(root);
+        WebSettings s=web.getSettings();
+        s.setJavaScriptEnabled(true);
+        s.setDomStorageEnabled(true);
+        s.setDatabaseEnabled(true);
+        s.setAllowFileAccess(true);
+        s.setAllowContentAccess(true);
+        s.setMediaPlaybackRequiresUserGesture(false);
+        web.addJavascriptInterface(new VideoBridge(),"Star7Native");
+        web.setWebViewClient(new WebViewClient());
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override public void onShowCustomView(View view,CustomViewCallback cb) {
+                if(fullscreen!=null){cb.onCustomViewHidden();return;}
+                fullscreen=view;fullscreenCallback=cb;
+                web.setVisibility(View.GONE);
+                root.addView(view,new FrameLayout.LayoutParams(-1,-1));
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
-
-            @Override
-            public void onHideCustomView() {
-                exitFullScreen();
-            }
-
-            @Override
-            public boolean onShowFileChooser(
-                WebView webView,
-                android.webkit.ValueCallback<Uri[]> filePathCallback,
-                FileChooserParams fileChooserParams
-            ) {
-                if (fileChooserHolder != null
-                        && fileChooserHolder.callback != null) {
-                    fileChooserHolder.callback.onReceiveValue(null);
-                }
-
-                fileChooserHolder = new ValueCallbackHolder();
-                fileChooserHolder.callback = filePathCallback;
-
-                try {
-                    Intent intent = fileChooserParams.createIntent();
-
-                    startActivityForResult(
-                        intent,
-                        FILE_CHOOSER_REQUEST
-                    );
-
-                    return true;
-
-                } catch (Exception e) {
-                    fileChooserHolder.callback.onReceiveValue(null);
-                    fileChooserHolder = null;
-                    return false;
-                }
+            @Override public void onHideCustomView(){closeFullscreen();}
+            @Override public boolean onShowFileChooser(WebView view,ValueCallback<Uri[]> cb,FileChooserParams params){
+                if(fileCallback!=null)fileCallback.onReceiveValue(null);
+                fileCallback=cb;
+                try{startActivityForResult(params.createIntent(),PICK_FILE);return true;}
+                catch(Exception e){fileCallback.onReceiveValue(null);fileCallback=null;return false;}
             }
         });
-
-        webView.loadUrl("file:///android_asset/index.html");
+        web.loadUrl("file:///android_asset/index.html");
     }
-
-    private void exitFullScreen() {
-        if (fullScreenView == null) {
-            return;
-        }
-
-        rootLayout.removeView(fullScreenView);
-        fullScreenView = null;
-
-        webView.setVisibility(View.VISIBLE);
-
-        getWindow().clearFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
-
-        getWindow().getDecorView().setSystemUiVisibility(
-            View.SYSTEM_UI_FLAG_VISIBLE
-        );
-
-        setRequestedOrientation(
-            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        );
-
-        if (fullScreenCallback != null) {
-            fullScreenCallback.onCustomViewHidden();
-            fullScreenCallback = null;
-        }
+    private void closeFullscreen(){
+        if(fullscreen==null)return;
+        root.removeView(fullscreen);fullscreen=null;web.setVisibility(View.VISIBLE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        if(fullscreenCallback!=null){fullscreenCallback.onCustomViewHidden();fullscreenCallback=null;}
+        updateKeepAwake();
     }
-
-    @Override
-    protected void onActivityResult(
-        int requestCode,
-        int resultCode,
-        Intent data
-    ) {
-        super.onActivityResult(
-            requestCode,
-            resultCode,
-            data
-        );
-
-        if (requestCode == FILE_CHOOSER_REQUEST
-                && fileChooserHolder != null) {
-
-            Uri[] results = null;
-
-            if (resultCode == RESULT_OK) {
-                results =
-                    WebChromeClient.FileChooserParams.parseResult(
-                        resultCode,
-                        data
-                    );
-            }
-
-            if (fileChooserHolder.callback != null) {
-                fileChooserHolder.callback.onReceiveValue(results);
-            }
-
-            fileChooserHolder = null;
-        }
+    @Override protected void onActivityResult(int request,int result,Intent data){
+        super.onActivityResult(request,result,data);
+        if(request==PICK_FILE&&fileCallback!=null){fileCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result,data));fileCallback=null;}
     }
-
-    @Override
-    public void onBackPressed() {
-        if (fullScreenView != null) {
-            exitFullScreen();
-        } else if (webView != null && webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (fileChooserHolder != null
-                && fileChooserHolder.callback != null) {
-            fileChooserHolder.callback.onReceiveValue(null);
-            fileChooserHolder = null;
-        }
-
-        if (webView != null) {
-            webView.destroy();
-        }
-
-        super.onDestroy();
-    }
+    @Override public void onBackPressed(){if(fullscreen!=null)closeFullscreen();else if(web!=null&&web.canGoBack())web.goBack();else super.onBackPressed();}
+    @Override protected void onDestroy(){videoPlaying=false;updateKeepAwake();if(web!=null){web.destroy();web=null;}super.onDestroy();}
 }
