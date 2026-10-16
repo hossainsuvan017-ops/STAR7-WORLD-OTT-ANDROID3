@@ -51,6 +51,25 @@ html{scroll-padding-top:80px}body{padding-top:env(safe-area-inset-top,0px);paddi
 header{top:0}#starBottomNav{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-content:space-around;align-items:center;min-height:62px;padding-bottom:env(safe-area-inset-bottom,0px);background:#0c0c10f5;border-top:1px solid #333}#starBottomNav button{background:none;color:#e5e5e5;border:0;padding:9px 15px;font-weight:700;font-size:13px}#starBottomNav button:focus{color:var(--gold)}
 #detailsPromoLabel{color:#fff!important;background:#0009!important;font-weight:900!important}#promoSoundButton{background:#141414d9!important;color:#fff!important;border:1px solid #ddd8!important}
 .tapPlayerControls{position:absolute;left:10px;bottom:43px;z-index:17;display:flex;gap:7px;flex-wrap:wrap;align-items:center;pointer-events:auto}.tapPlayerControls[hidden],#playerSettingsPanel[hidden],.broadcastProgress[hidden]{display:none!important}.tapPlayerControls button{border:1px solid #888;background:#10131ddd;color:white;border-radius:8px;padding:9px}.tapPlayerControls #playerSettingsPanel{background:#14151af0;color:white;padding:9px;border-radius:8px;flex-basis:100%}.tapPlayerControls select{background:#222;color:white;padding:6px}.broadcastProgress{position:absolute;bottom:0;left:0;right:0;height:5px;background:#444;z-index:18;pointer-events:none}.broadcastProgress div{height:100%;width:0%;background:#188cff}.broadcastProgress.live div{background:#ef2929}
+
+/* STAR 7 immersive dark surfaces: Android system bars are controlled by MainActivity. */
+html,body{background:#08090e!important;color:#f6f6f8}body{padding-top:0!important;padding-bottom:0!important}main{padding-bottom:100px}#starBottomNav{bottom:0;background:#090b12!important;border-top:1px solid #1e2430!important}#starBottomNav button{font-size:14px}#mySpaceSection.starSpacePage{position:fixed;inset:0 0 63px;z-index:19;overflow-y:auto;margin:0;padding:22px 4% 60px;background:linear-gradient(160deg,#13102c,#100b1b 30%,#0b0d15 75%);border:0;border-radius:0}#mySpaceSection.starSpacePage[hidden]{display:none!important}#spaceBack{background:#23243b;color:white;border:1px solid #41435c;border-radius:12px;padding:10px 16px}#spaceWatchlist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}#spaceWatchlist .poster{height:155px}#seasonTabs,#playerSeasonTabs{display:flex;gap:12px;overflow-x:auto;padding:12px 0}#seasonTabs button,#playerSeasonTabs button{white-space:nowrap;border:0;border-bottom:2px solid transparent;background:transparent;color:#aaa;padding:12px;font-weight:700}#seasonTabs button.active,#playerSeasonTabs button.active{color:white;border-bottom-color:#48a4ff}#detailsPlay,#detailsLatest{display:block;width:100%;margin:10px 0;padding:16px;text-align:center;border-radius:12px;font-size:17px}#detailsLatest{background:#292c35;color:white;border:0;font-weight:800}#nextEpisodeFloating{position:absolute;bottom:15%;right:14px;z-index:18;background:#e6eaf6;color:#101018;padding:12px;border:0;border-radius:9px;font-weight:800}#nextEpisodeFloating[hidden]{display:none!important}.playerWrap:fullscreen .tapPlayerControls{left:4%;bottom:12%;right:4%;justify-content:center}.playerWrap:fullscreen #nextEpisodeFloating{bottom:23%}#tapPlayerControls[hidden]{display:none!important}
+
+/* STAR 7 owner-controlled seasonal design studio */
+#festivalStudio{border:1px solid #625124;border-radius:15px;padding:17px;margin:18px 0;background:#17171c}
+#festivalStudio .festivalFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#festivalStudio label{display:grid;gap:6px;font-size:13px;color:#ddd}
+#festivalStudio input,#festivalStudio select{width:100%;min-width:0;padding:10px;background:#25252b;color:#fff;border:1px solid #555;border-radius:8px}
+#festivalStudio button{margin:9px 7px 0 0;padding:11px 14px;border:0;border-radius:9px;background:#f5ca2a;color:#111;font-weight:800}
+#festivalStudio .secondary{background:#34343d;color:white}
+#starFestivalBanner{margin:0 auto 15px;max-width:1250px;border-radius:14px;padding:18px;text-align:center;font-size:clamp(17px,4vw,27px);font-weight:900;letter-spacing:.5px;color:var(--festival-text,#fff);background:linear-gradient(110deg,var(--festival-dark,#282038),var(--festival-accent,#ad7bff),var(--festival-dark,#282038));border:1px solid var(--festival-accent,#ad7bff);box-shadow:0 0 24px color-mix(in srgb,var(--festival-accent,#ad7bff) 25%,transparent)}
+#starFestivalBanner[hidden]{display:none!important}
+body.star-festival header{border-bottom-color:var(--festival-accent)!important;background:var(--festival-dark)!important}
+body.star-festival .brand,body.star-festival .eyebrow{color:var(--festival-accent)!important}
+body.star-festival #starBottomNav{border-top:2px solid var(--festival-accent)!important}
+body.star-festival .hero{border-color:var(--festival-accent)!important}
+body.star-festival .btn:not(.alt){background:var(--festival-accent)!important}
+@media(max-width:540px){#festivalStudio .festivalFields{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -92,11 +111,11 @@ header{top:0}#starBottomNav{position:fixed;bottom:0;left:0;right:0;z-index:30;di
   </div>
   <section id="grid" class="grid"></section>
 
-  <section class="panel" id="mySpaceSection" hidden>
+  <section class="panel starSpacePage" id="mySpaceSection" hidden><button id="spaceBack" type="button">← Back to Home</button>
     <div class="eyebrow">YOUR SPACE</div><h2>My Space</h2>
     <div id="spaceAccount" class="notice"></div>
     <div id="subscriptionExpiryNotice" class="notice" hidden role="status"><strong>Subscription Expired</strong><p>Your Premium subscription has ended. Renew to watch Premium videos. Free videos are still available.</p><button class="btn" id="renewSubscription" type="button">Renew Subscription</button></div>
-    <div class="rowTitle"><h2>Offline Downloads</h2><span class="muted" id="offlineCount"></span></div>
+    <div class="rowTitle"><h2>Watchlist</h2></div><div id="spaceWatchlist"></div><div class="rowTitle"><h2>Offline Downloads</h2><span class="muted" id="offlineCount"></span></div>
     <div id="offlineLibrary" class="grid"></div>
     <div class="rowTitle"><h2>Subscription Plans</h2></div>
     <div id="viewerPlans" class="formgrid"></div>
@@ -138,9 +157,9 @@ header{top:0}#starBottomNav{position:fixed;bottom:0;left:0;right:0;z-index:30;di
       <form id="contentForm" novalidate>
         <div class="formgrid">
           <div class="field"><label for="title">Title *</label><input id="title" required maxlength="120" placeholder="Movie or series title"></div>
-          <div class="field"><label for="category">Category</label><select id="category"><option>Movies</option><option>Web Series</option><option>TV Shows</option><option>Documentary</option><option>Serial</option><option>Live Stream</option><option>Premium</option></select></div>
+          <div class="field"><label for="category">Category</label><select id="category"><option>Movies</option><option>Web Series</option><option>TV Shows</option><option>Reality Shows</option><option>Comedy</option><option>Horror</option><option>Documentary</option><option>Serial</option><option>Live Stream</option><option>Premium</option></select></div>
           <div class="field"><label for="accessType">Access label (display only; no payment lock yet)</label><select id="accessType"><option value="Free">Free</option><option value="Premium">Premium</option></select></div>
-          <div class="field"><label for="year">Release year</label><input id="year" type="number" min="1900" max="2100" placeholder="2026"></div>
+          <div class="field"><label for="showStatus">Story status</label><select id="showStatus"><option value="ongoing">Ongoing — new episodes expected</option><option value="finished">Finished — story completed</option></select></div><div class="field"><label for="genre">Genre / type</label><select id="genre"><option>Drama</option><option>Comedy</option><option>Romance</option><option>Reality Show</option><option>Horror</option><option>Thriller</option><option>Action</option><option>Family</option><option>Fantasy</option><option>Sports</option><option>Documentary</option><option>Other</option></select></div><div class="field"><label for="year">Release year</label><input id="year" type="number" min="1900" max="2100" placeholder="2026"></div>
           <div class="field"><label for="posterFile">Poster image (optional)</label><input id="posterFile" type="file" accept="image/*"></div>
           <div class="field full"><label for="videoFile">Video file (local to this browser) *</label><input id="videoFile" type="file" accept="video/*"></div>
           <div class="field full"><label for="videoUrl">OR direct video URL (MP4/WebM or compatible stream)</label><input id="videoUrl" type="url" placeholder="https://your-authorized-host.example/video.mp4"></div>
@@ -188,13 +207,13 @@ header{top:0}#starBottomNav{position:fixed;bottom:0;left:0;right:0;z-index:30;di
 <footer>STAR 7</footer>
 
 <dialog id="trimDialog"><div class="modalhead"><h2>Preview video &amp; cuts</h2><button class="close" id="closeTrim">×</button></div><p class="desc">Play the selected source and check the cuts. The original video is not changed.</p><video id="trimPlayer" class="video" controls playsinline></video><p id="trimMessage" class="muted"></p></dialog>
-<dialog id="detailsDialog"><div class="modalhead"><h2 id="detailsTitle">Title details</h2><button class="close" id="closeDetails">×</button></div><div id="detailsHero" style="position:relative;max-width:100%;margin:8px 0 14px;border-radius:12px;overflow:hidden;background:#101014;min-height:110px"><img id="detailsBanner" alt="Show banner" style="width:100%;max-height:310px;object-fit:cover;display:none"><video id="detailsPromo" playsinline preload="none" style="display:none;width:100%;max-height:310px;background:#000"></video><button id="promoSoundButton" type="button" style="display:none;position:absolute;right:12px;bottom:12px;z-index:4;background:#f5ca2a;color:#111;border:0;border-radius:9px;padding:10px 13px;font-weight:800;cursor:pointer">🔊 Tap for sound</button><span id="detailsPromoLabel" style="position:absolute;top:9px;left:9px;background:#000b;padding:5px 9px;border-radius:6px;font-size:12px" hidden>TRAILER</span></div><p id="detailsMeta" class="muted"></p><p id="detailsDescription" class="desc"></p><div><button class="btn" id="detailsPlay">▶ Play</button><button class="btn alt" id="detailsList">＋ My List</button><button class="btn alt" id="detailsShare">Share</button><button class="btn alt" id="detailsDownload">⬇ Save to My Space</button></div><h3 id="episodesHeading" hidden>Season 1 · Episodes</h3><div id="episodeList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-top:12px"></div><h3>More Like This</h3><div class="moreGrid" id="moreLikeThis"></div></dialog>
+<dialog id="detailsDialog"><div class="modalhead"><h2 id="detailsTitle">Title details</h2><button class="close" id="closeDetails">×</button></div><div id="detailsHero" style="position:relative;max-width:100%;margin:8px 0 14px;border-radius:12px;overflow:hidden;background:#101014;min-height:110px"><img id="detailsBanner" alt="Show banner" style="width:100%;max-height:310px;object-fit:cover;display:none"><video id="detailsPromo" playsinline preload="none" style="display:none;width:100%;max-height:310px;background:#000"></video><button id="promoSoundButton" type="button" style="display:none;position:absolute;right:12px;bottom:12px;z-index:4;background:#f5ca2a;color:#111;border:0;border-radius:9px;padding:10px 13px;font-weight:800;cursor:pointer">🔊 Tap for sound</button><span id="detailsPromoLabel" style="position:absolute;top:9px;left:9px;background:#000b;padding:5px 9px;border-radius:6px;font-size:12px" hidden>TRAILER</span></div><p id="detailsMeta" class="muted"></p><p id="detailsDescription" class="desc"></p><div><button class="btn" id="detailsPlay">▶ Watch Now</button><button id="detailsLatest" type="button">▶ Watch Latest Episode</button><button class="btn alt" id="detailsList">＋ My List</button><button class="btn alt" id="detailsShare">Share</button><button class="btn alt" id="detailsDownload">⬇ Save to My Space</button></div><h3 id="episodesHeading" hidden>Season 1 · Episodes</h3><div id="seasonTabs"></div><div id="episodeList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-top:12px"></div><h3>More Like This</h3><div class="moreGrid" id="moreLikeThis"></div></dialog>
 <dialog id="playerDialog">
   <div class="modalhead"><div><div class="eyebrow">STAR 7 PLAYER</div><h2 id="playerTitle" style="margin:5px 0"></h2></div><button class="close" id="closePlayer">×</button></div>
   
-  <div class="playerWrap" id="playerWrap"><div id="liveAudience" hidden style="position:absolute;z-index:14;right:55px;top:10px;background:#121216d9;border:1px solid #ff4949;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;color:white;pointer-events:none">🔴 LIVE · Viewers unavailable</div><video id="player" class="video" controls playsinline></video><div class="tapZones"><div class="tapZone" id="tapBack" aria-label="Double tap to rewind 10 seconds"></div><div class="tapZone center"></div><div class="tapZone" id="tapForward" aria-label="Double tap to advance 10 seconds"></div></div><div class="seekToast" id="seekToast"></div><div id="broadcastProgress" class="broadcastProgress" hidden><div id="broadcastFill"></div></div><div id="tapPlayerControls" class="tapPlayerControls" hidden><button type="button" id="tapTogglePlayback">⏸ Pause</button><button type="button" id="tapPlayerSettings">⚙ Settings</button><button type="button" id="tapClosePlayback">✕ Close</button><div id="playerSettingsPanel" hidden><label>Quality <select id="qualitySelect"><option value="auto">Auto (original source)</option></select></label><span class="muted">Language options are available when uploaded.</span></div></div><div id="adOverlay" class="adOverlay" hidden><div class="adMeta"><b id="adSponsored">Sponsored · Ad 1 of 1</b><span id="adRemaining">00:00 remaining</span></div><div class="adTrack"><div id="adProgress"></div></div><div id="adCta" class="adCta" hidden><button type="button" id="adWatchNow" hidden>▶ Watch Now</button><button type="button" id="adBuyNow" hidden>Buy Now ↗</button></div><button id="skipAd" class="skipOverlay" disabled>Skip in 5s</button></div><button id="inPlayerFullscreen" class="inPlayerFullscreen" aria-label="Fullscreen">⛶</button></div><div class="playerActions"><button type="button" id="fullScreenBtn">⛶ Fullscreen</button><button type="button" id="landscapeBtn">↻ Landscape</button><label>Speed <select id="speedSelect"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><button type="button" id="playerEpisodeToggle">☷ Episodes</button><label id="languageSettings" style="display:none">🌐 Language <select id="playerLanguage" aria-label="Video language"></select></label></div>
+  <div class="playerWrap" id="playerWrap"><div id="liveAudience" hidden style="position:absolute;z-index:14;right:55px;top:10px;background:#121216d9;border:1px solid #ff4949;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;color:white;pointer-events:none">🔴 LIVE · Viewers unavailable</div><video id="player" class="video" controls playsinline></video><div class="tapZones"><div class="tapZone" id="tapBack" aria-label="Double tap to rewind 10 seconds"></div><div class="tapZone center"></div><div class="tapZone" id="tapForward" aria-label="Double tap to advance 10 seconds"></div></div><div class="seekToast" id="seekToast"></div><div id="broadcastProgress" class="broadcastProgress" hidden><div id="broadcastFill"></div></div><div id="tapPlayerControls" class="tapPlayerControls" hidden><button type="button" id="tapTogglePlayback">⏸ Pause</button><button type="button" id="tapPlayerSettings">⚙ Settings</button><button type="button" id="tapClosePlayback">✕ Close</button><div id="playerSettingsPanel" hidden><label>Quality <select id="qualitySelect"><option value="auto">Auto (original source)</option></select></label><span class="muted">Language options are available when uploaded.</span></div></div><div id="adOverlay" class="adOverlay" hidden><div class="adMeta"><b id="adSponsored">Sponsored · Ad 1 of 1</b><span id="adRemaining">00:00 remaining</span></div><div class="adTrack"><div id="adProgress"></div></div><div id="adCta" class="adCta" hidden><button type="button" id="adWatchNow" hidden>▶ Watch Now</button><button type="button" id="adBuyNow" hidden>Buy Now ↗</button></div><button id="skipAd" class="skipOverlay" disabled>Skip in 5s</button></div><button id="nextEpisodeFloating" type="button" hidden>▶ Next Episode</button><button id="inPlayerFullscreen" class="inPlayerFullscreen" aria-label="Fullscreen">⛶</button></div><div class="playerActions"><button type="button" id="fullScreenBtn">⛶ Fullscreen</button><button type="button" id="landscapeBtn">↻ Landscape</button><label>Speed <select id="speedSelect"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><button type="button" id="playerEpisodeToggle">☷ Episodes</button><label id="languageSettings" style="display:none">🌐 Language <select id="playerLanguage" aria-label="Video language"></select></label></div>
   
-  <p id="playerDesc" class="desc"></p><h3>Episodes</h3><div id="playerEpisodes" class="playerEpList"></div><h3>More Like This</h3><div id="playerMore" class="moreGrid"></div>
+  <p id="playerDesc" class="desc"></p><h3>Episodes</h3><div id="playerSeasonTabs"></div><div id="playerEpisodes" class="playerEpList"></div><h3>More Like This</h3><div id="playerMore" class="moreGrid"></div>
 </dialog>
 <script>
 const initial = [
@@ -242,7 +261,7 @@ async function starRestore(){
   gather(records);const urls=new Map();for(const key of keys){const blob=await starGet('media',key);if(blob){const url=URL.createObjectURL(blob);objectUrls.push(url);mediaKeys.set(url,{file:blob,key});urls.set(key,url)}}
   const revive=v=>{if(typeof v==='string'&&v.startsWith('star-media:'))return urls.get(v.slice(11))||'';if(Array.isArray(v))return v.map(revive);if(v&&typeof v==='object'){for(const k of Object.keys(v))v[k]=revive(v[k]);return v}return v};
   content=initial.concat(revive(records));saved=new Set((await starGet('data','mylist'))||[]);
-  render();renderManage();refreshSeriesTargets();refreshFeatured();renderContinue();
+  render();renderContinue();renderManage();refreshSeriesTargets();refreshFeatured();renderContinue();
  }catch(e){console.error('Could not restore saved videos',e);const st=document.getElementById('publishStatus');if(st){st.textContent='Storage unavailable: '+e.message;st.style.color='#ff9898'}}
 }
 const $=id=>document.getElementById(id);
@@ -259,12 +278,14 @@ function episodeState(rec){
  return rec.broadcastType;
 }
 function fmtDate(value){if(!value)return 'Date unavailable';const d=new Date(value);return Number.isNaN(d.getTime())?'Date unavailable':d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
-function renderContinue(){const section=$('continueSection'),box=$('continueGrid');if(!section||!box)return;box.replaceChildren();const all=getProgress();let count=0;for(const x of content.filter(c=>!c.sample)){const p=all[x.id];if(!p)continue;const records=episodeRecords(x);let index=p.index;if(index>=records.length)index=records.length-1;if(index<0)continue;if(p.completed){if(index+1>=records.length)continue;index++}const rec=records[index];if(episodeState(rec)==='ended')continue;count++;const card=document.createElement('article');card.className='card';const poster=document.createElement('div');poster.className='poster';if(x.poster){const img=document.createElement('img');img.src=x.poster;img.alt='';poster.append(img)}const name=document.createElement('span');name.className='posterTitle';name.textContent=x.poster?'':x.title;poster.append(name);if(episodeState(rec)==='premiere'){const tag=document.createElement('span');tag.className='premiereTag';tag.textContent='● PREMIERE';poster.append(tag)}const title=document.createElement('h3');title.textContent=x.title;const meta=document.createElement('div');meta.className='meta';meta.textContent='Episode '+rec.number+(p.completed?' · New episode':' · Resume');card.append(poster,title,meta);card.onclick=()=>startEpisode(x,index);box.append(card)}section.hidden=count===0}
+function starHasPartial(x){const p=getProgress()[x.id];return !!(p&&!p.completed)}
+function starNextIndex(x){const p=getProgress()[x.id],n=episodeRecords(x).length;if(!p)return 0;return Math.min(Math.max(0,(Number(p.index)||0)+(p.completed?1:0)),Math.max(0,n-1))}
+function renderContinue(){const section=$('continueSection'),box=$('continueGrid');if(!section||!box)return;box.replaceChildren();const all=getProgress();let count=0;for(const x of content.filter(c=>!c.sample)){const p=all[x.id];if(!p)continue;const records=episodeRecords(x);let index=p.index;if(index>=records.length)index=records.length-1;if(index<0)continue;if(p.completed){if(index+1>=records.length)continue;index++}const rec=records[index];if(episodeState(rec)==='ended')continue;count++;const card=document.createElement('article');card.className='card';const poster=document.createElement('div');poster.className='poster';if(x.poster){const img=document.createElement('img');img.src=x.poster;img.alt='';poster.append(img)}const name=document.createElement('span');name.className='posterTitle';name.textContent=x.poster?'':x.title;poster.append(name);if(episodeState(rec)==='premiere'){const tag=document.createElement('span');tag.className='premiereTag';tag.textContent='● PREMIERE';poster.append(tag)}const title=document.createElement('h3');title.textContent=x.title;const meta=document.createElement('div');meta.className='meta';meta.textContent='S'+(rec.season||1)+' E'+rec.number+(p.completed?' · New episode':' · Resume')+(x.showStatus==='ongoing'?' · Ongoing':'');card.append(poster,title,meta);card.onclick=()=>startEpisode(x,index);box.append(card)}section.hidden=count===0}
 const STAR_APPEARANCE='STAR7_APPEARANCE_V1';let appearance={};try{appearance=JSON.parse(localStorage.getItem(STAR_APPEARANCE)||'{}')}catch(e){}
 let featuredIndex=0,featuredTimer=null,featuredCurrent=null;
 function applyAppearance(){document.documentElement.style.setProperty('--bg',appearance.bg||'#080808');document.documentElement.style.setProperty('--gold',appearance.accent||'#f5ca2a');const label=$('heroFeaturedLabel');label.textContent=appearance.welcome||'';label.style.color=appearance.welcomeColor||'#ffffff';label.style.fontSize=(Number(appearance.welcomeSize)||16)+'px';label.style.textShadow=appearance.welcomeStyle==='rainbow'?'0 0 9px #f0f, 0 0 18px #00f9ff, 0 0 25px #ffff00':appearance.welcomeStyle==='glow'?'0 0 12px currentColor, 0 0 25px currentColor':'';}
 function featuredTitlesList(){const selected=(appearance.featured||[]).map(id=>content.find(x=>x.id===id)).filter(Boolean);return selected.length?selected.slice(0,5):content.filter(x=>!x.sample).slice(0,5)}
-function rotateFeatured(){const titles=featuredTitlesList();const x=titles.length?titles[featuredIndex%titles.length]:null;const hero=document.querySelector('.hero');if(!x){featuredCurrent=null;$('heroOpen').hidden=true;$('browse').textContent='▶ Play';return}featuredCurrent=x;featuredIndex++;$('browse').textContent='▶ Play';hero.style.background=x.poster?'linear-gradient(90deg,#080808ef 0%,#080808bd 46%,#08080835 100%),url("'+x.poster.replace(/"/g,'%22')+'") center/cover':'linear-gradient(90deg,#080808,#614b12)';hero.querySelector('h1').textContent=x.title;hero.querySelector('p').textContent=x.description||'Watch now on STAR 7';$('heroOpen').hidden=false;$('heroOpen').onclick=()=>openDetails(x)}
+function rotateFeatured(){const titles=featuredTitlesList();const x=titles.length?titles[featuredIndex%titles.length]:null;const hero=document.querySelector('.hero');if(!x){featuredCurrent=null;$('heroOpen').hidden=true;$('browse').textContent='▶ Play';return}featuredCurrent=x;featuredIndex++;$('browse').textContent='▶ Play';hero.style.background=x.poster?'linear-gradient(90deg,#080808ef 0%,#080808bd 46%,#08080835 100%),url("'+x.poster.replace(/"/g,'%22')+'") center/cover':'linear-gradient(90deg,#080808,#614b12)';hero.querySelector('h1').textContent=x.title;hero.querySelector('p').textContent=[x.year,x.genre||x.category,x.category].filter(Boolean).join(' • ');$('heroOpen').hidden=false;$('heroOpen').onclick=()=>openDetails(x)}
 function refreshFeatured(){const sel=$('featuredTitles');if(!sel)return;sel.replaceChildren();for(const x of content){const o=new Option(x.title,x.id);o.selected=(appearance.featured||[]).includes(x.id);sel.add(o)}const slots=$('featuredSlots');if(slots){slots.replaceChildren();for(let i=0;i<5;i++){const field=document.createElement('div');field.className='field';const label=document.createElement('label');label.textContent='Home slide '+(i+1);const pick=document.createElement('select');pick.className='featuredSlot';pick.setAttribute('aria-label','Home slide '+(i+1));pick.add(new Option('— None —',''));for(const x of content)pick.add(new Option(x.title,x.id));pick.value=(appearance.featured||[])[i]||'';field.append(label,pick);slots.append(field)}}featuredIndex=0;rotateFeatured()}
 
 applyAppearance();featuredTimer=setInterval(()=>{if(!document.hidden)rotateFeatured()},3000);
@@ -293,7 +314,7 @@ function starSetPlayerLanguages(rec){const el=$('playerLanguage'),wrap=$('langua
 $('playerLanguage').addEventListener('change',()=>{const rec=selectedTitle&&episodeRecords(selectedTitle)[currentEpisode];if(!rec||!playback||playback.mode!=='content'){alert('Change language while the episode is playing, not during an advertisement.');return}const src=starEpisodeLanguages(rec)[$('playerLanguage').value];if(!src)return;const p=$('player'),position=p.currentTime,wasPaused=p.paused,mode=playback.broadcastMode;p.pause();p.src=src;playback.item.video=src;p.load();p.addEventListener('loadedmetadata',function restoreLanguage(){if(Number.isFinite(position)&&!mode)try{p.currentTime=Math.min(position,Math.max(0,p.duration-0.1))}catch(e){}if(!wasPaused)p.play().catch(()=>{})},{once:true});});
 
 function refreshSeriesTargets(){const el=$('seriesTarget');if(!el)return;const prior=el.value;el.replaceChildren(new Option('Create a new title / series',''));content.filter(x=>!x.sample).forEach(x=>el.add(new Option(x.title+' ('+x.category+')',x.id)));el.value=prior;}
-$('seriesTarget').addEventListener('change',()=>{const x=content.find(c=>c.id===$('seriesTarget').value);if(x){$('title').value=x.title;$('category').value=x.category;$('accessType').value=x.accessType||'Free';$('description').value=x.description||'';}});
+$('seriesTarget').addEventListener('change',()=>{const x=content.find(c=>c.id===$('seriesTarget').value);if(x){$('title').value=x.title;$('category').value=x.category;$('accessType').value=x.accessType||'Free';$('description').value=x.description||'';$('genre').value=x.genre||'Drama';$('showStatus').value=x.showStatus||'ongoing';}});
 let detailsPromoTimer=null,detailsPromoGeneration=0;
 function stopDetailsPromo(){
  detailsPromoGeneration++;
@@ -345,13 +366,24 @@ function openDetails(x){
    });
   },4000);
  }
- $('detailsTitle').textContent=x.title;$('detailsMeta').textContent=`${x.category} • ${x.accessType||'Free'} • ${x.year||''} • ${episodesOf(x).length} episode(s)`;$('detailsDescription').textContent=x.description||'Watch on STAR 7';
+ $('detailsPlay').textContent=starNextIndex(x)>0||starHasPartial(x)?'▶ Watch Next':'▶ Watch Now';$('detailsLatest').hidden=(x.showStatus==='finished'||episodeRecords(x).length<2);$('detailsTitle').textContent=x.title;$('detailsMeta').textContent=`${x.year||''} • ${x.genre||x.category} • ${x.category} • ${x.accessType||'Free'} • ${episodesOf(x).length} episode(s)`;$('detailsDescription').textContent=x.description||'Watch on STAR 7';
  const eps=episodesOf(x);$('episodesHeading').hidden=eps.length===0;fillEpisodeRows(x,'episodeList',8);
  renderRecommendations(x,'moreLikeThis');
  $('detailsList').textContent=saved.has(x.id)?'✓ In My List':'＋ My List';$('detailsDialog').showModal()}
 function renderRecommendations(x,target){const holder=$(target);holder.replaceChildren();content.filter(y=>y.id!==x.id&&!y.sample).slice(0,9).forEach(y=>{const btn=document.createElement('button');btn.className='moreTile';if(y.poster){const img=document.createElement('img');img.src=y.poster;img.alt='';btn.append(img)}const name=document.createElement('span');name.textContent=y.title;btn.append(name);btn.onclick=()=>{if($('playerDialog').open){$('playerDialog').close();resetPlayback()}if($('detailsDialog').open)$('detailsDialog').close();openDetails(y)};holder.append(btn)});if(!holder.children.length)holder.textContent='More titles will appear here when you publish them.'}
 function makeEpisodeRow(x,i){const b=document.createElement('button');b.className='episodeVisual'+(i===currentEpisode?' active':'');const thumb=document.createElement('div');thumb.className='epThumb';if(x.poster){const img=document.createElement('img');img.src=x.poster;img.alt='';thumb.append(img)}const icon=document.createElement('span');icon.textContent='▶';thumb.append(icon);const info=document.createElement('div');info.className='epInfo';const rec=episodeRecords(x)[i];const title=document.createElement('strong');title.textContent=rec.name||`Episode ${rec.number}`;const meta=document.createElement('small');meta.textContent=`Season ${rec.season} · Episode ${rec.number} · ${fmtDate(rec.uploadedAt)} · ${rec.durationMinutes?rec.durationMinutes+' min':'Duration unavailable'}`;const state=episodeState(rec);if(state==='premiere'||state==='live'){const badge=document.createElement('span');badge.className='premiereTag';badge.textContent=state==='premiere'?'● PREMIERE':'● LIVE';thumb.append(badge)}if(state==='scheduled')meta.textContent+=' · Scheduled '+(rec.broadcastStart?new Date(rec.broadcastStart).toLocaleString():'(set start time)');if(state==='ended')meta.textContent+=' · Live ended · No replay';if(rec.thumbnail&&rec.thumbnail!==x.poster){const im=thumb.querySelector('img')||document.createElement('img');im.src=rec.thumbnail;if(!im.parentNode)thumb.prepend(im)}info.append(title,meta);b.append(thumb,info);b.onclick=()=>startEpisode(x,i);return b}
-function fillEpisodeRows(x,target,initial=8){const box=$(target);const eps=episodesOf(x);let limit=Math.min(eps.length,initial);function paint(){box.replaceChildren();for(let i=0;i<limit;i++)box.append(makeEpisodeRow(x,i));if(limit<eps.length){const more=document.createElement('button');more.className='btn alt';more.textContent=`View More · ${eps.length-limit} episodes remaining`;more.onclick=()=>{limit=Math.min(eps.length,limit+60);paint();more.scrollIntoView?.({block:'nearest'})};box.append(more)}}paint()}
+function fillEpisodeRows(x,target,initial=8){
+ const box=$(target), records=episodeRecords(x),tabs=$(target==='episodeList'?'seasonTabs':'playerSeasonTabs');
+ const seasons=[...new Set(records.map(r=>Number(r.season)||1))].sort((a,b)=>a-b);
+ let activeSeason=seasons[0]||1,limit=initial;
+ function paint(){
+  tabs.replaceChildren();seasons.forEach(season=>{const b=document.createElement('button');b.textContent='Season '+season;b.className=season===activeSeason?'active':'';b.onclick=()=>{activeSeason=season;limit=initial;paint()};tabs.append(b)});
+  const indices=records.map((r,i)=>Number(r.season||1)===activeSeason?i:-1).filter(i=>i>=0);
+  box.replaceChildren();indices.slice(0,limit).forEach(i=>box.append(makeEpisodeRow(x,i)));
+  if(limit<indices.length){const more=document.createElement('button');more.className='btn alt';more.textContent='View More · '+(indices.length-limit)+' episodes';more.onclick=()=>{limit+=60;paint()};box.append(more)}
+ }
+ paint();
+}
 function renderPlayerEpisodes(x){fillEpisodeRows(x,'playerEpisodes',8);renderRecommendations(x,'playerMore')}
 let toastTimer;function seekBy(amount){if(playback?.mode!=='content'||playback.broadcastMode)return;const v=$('player');if(!Number.isFinite(v.duration))return;v.currentTime=Math.max(0,Math.min(v.duration,v.currentTime+amount));$('seekToast').textContent=(amount>0?'+':'')+amount+' seconds';$('seekToast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('seekToast').style.display='none',700)}
 function doubleTap(el,seconds){let last=0;el.addEventListener('pointerup',e=>{const now=Date.now();if(now-last<340){seekBy(seconds);last=0}else last=now})}
@@ -362,7 +394,8 @@ $('inPlayerFullscreen').onclick=()=>$('fullScreenBtn').click();
 $('landscapeBtn').onclick=async()=>{try{if(!document.fullscreenElement)await $('playerWrap').requestFullscreen();if(screen.orientation?.lock)await screen.orientation.lock('landscape');else alert('Rotate your phone manually for landscape.')}catch(e){alert('Landscape lock is unavailable here. Rotate the phone manually.')}};
 $('playerEpisodeToggle').onclick=()=>$('playerEpisodes').scrollIntoView({behavior:'smooth',block:'start'});
 $('closeDetails').onclick=()=>{stopDetailsPromo();$('detailsDialog').close()};$('detailsDialog').addEventListener('close',stopDetailsPromo);
-$('detailsPlay').onclick=()=>{if(selectedTitle){const x=selectedTitle;stopDetailsPromo();startEpisode(x,0);if($('playerDialog').open)$('detailsDialog').close()}};
+$('detailsPlay').onclick=()=>{if(selectedTitle){const x=selectedTitle;stopDetailsPromo();startEpisode(x,starNextIndex(x));if($('playerDialog').open)$('detailsDialog').close()}};
+$('detailsLatest').onclick=()=>{if(!selectedTitle)return;const x=selectedTitle;stopDetailsPromo();startEpisode(x,episodeRecords(x).length-1);if($('detailsDialog').open)$('detailsDialog').close()};
 $('detailsList').onclick=()=>{if(!selectedTitle)return;saved.has(selectedTitle.id)?saved.delete(selectedTitle.id):saved.add(selectedTitle.id);$('detailsList').textContent=saved.has(selectedTitle.id)?'✓ In My List':'＋ My List';render();starPersist().catch(console.error)};
 $('detailsShare').onclick=async()=>{if(!selectedTitle)return;const data={title:selectedTitle.title,text:`Watch ${selectedTitle.title} on STAR 7`};if(navigator.share){try{await navigator.share(data)}catch(e){}}else{try{await navigator.clipboard.writeText(data.text);alert('Title copied for sharing')}catch(e){alert(data.text)}}};
 $('detailsDownload').onclick=()=>{if(!selectedTitle)return;downloadToSpace(selectedTitle,0)};
@@ -488,7 +521,7 @@ $('adWatchNow').onclick=()=>{const ad=playback?.activeAd;if(!ad||ad.ctaType!=='w
 $('adBuyNow').onclick=()=>{const ad=playback?.activeAd;if(!ad||ad.ctaType!=='buy')return;try{const u=new URL(ad.buyUrl);if(u.protocol!=='https:')return;$('player').pause();const w=window.open(u.href,'_blank','noopener,noreferrer');if(!w)alert('Your browser blocked the sponsor page. Allow pop-ups or open in Chrome.')}catch(e){alert('Sponsor website URL is invalid')}};
 $('skipAd').onclick=()=>{if(playback?.mode==='ad'&&playback.activeAd?.skippable&&!$('skipAd').disabled)resumeContent()};
 $('player').addEventListener('ended',()=>{
- if(playback?.mode==='ad')resumeContent();else if(playback?.mode==='content'&&selectedTitle){if(!playback.broadcastMode)saveProgress(selectedTitle,currentEpisode,0,$('player').duration,true);if(episodesOf(selectedTitle).length>currentEpisode+1&&!playback.broadcastMode)startEpisode(selectedTitle,currentEpisode+1)}
+ if(playback?.mode==='ad')resumeContent();else if(playback?.mode==='content'&&selectedTitle){if(!playback.broadcastMode)saveProgress(selectedTitle,currentEpisode,0,$('player').duration,true);if(!playback.broadcastMode){if(episodesOf(selectedTitle).length>currentEpisode+1)startEpisode(selectedTitle,currentEpisode+1);else{const other=content.find(y=>y.id!==selectedTitle.id&&!y.sample&&episodesOf(y).length);if(other)startEpisode(other,0)}}}
 });
 $('player').addEventListener('error',()=>{
  if(playback?.mode==='ad'){
@@ -684,9 +717,9 @@ $('contentForm').addEventListener('submit',e=>{
     if(duplicates.length){fail('Episode '+duplicates[0].number+' already exists in Season '+duplicates[0].season+'. Choose a different number.');return}
     existing.episodeRecords=old.concat(newRecords).sort((a,b)=>a.season-b.season||a.number-b.number);
     if(!existing.video)existing.video=existing.episodeRecords[0].src;
-    if(poster)existing.poster=poster;if(banner)existing.detailsBanner=banner;if(promo)existing.promo=promo;if(promo||!existing.promoDuration)existing.promoDuration=promoDuration;
+    existing.showStatus=$('showStatus').value;existing.genre=$('genre').value;existing.year=$('year').value||existing.year;if(poster)existing.poster=poster;if(banner)existing.detailsBanner=banner;if(promo)existing.promo=promo;if(promo||!existing.promoDuration)existing.promoDuration=promoDuration;
   }else{
-    content.unshift({id:'v'+Date.now(),title,accessType:$('accessType').value,category:$('category').value,year:$('year').value,description:$('description').value.trim(),video,poster:poster||'',detailsBanner:banner||poster||'',promo,promoDuration,ads,adCount,cuts:mainCuts,episodeRecords:newRecords,preRoll});
+    content.unshift({id:'v'+Date.now(),title,accessType:$('accessType').value,category:$('category').value,genre:$('genre').value,showStatus:$('showStatus').value,year:$('year').value,description:$('description').value.trim(),video,poster:poster||'',detailsBanner:banner||poster||'',promo,promoDuration,ads,adCount,cuts:mainCuts,episodeRecords:newRecords,preRoll});
   }
   $('contentForm').reset();$('broadcastNow').checked=true;$('seasonNumber').value=1;$('episodeNumber').value=1;buildAdSlots();filter='All';view='all';
   document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.filter==='All'));
@@ -851,8 +884,10 @@ async function renderSpace(){
  }catch(e){box.textContent='Offline library unavailable: '+e.message}
 }
 async function starDelete(store,key){const db=await starDB();return new Promise((resolve,reject)=>{const tx=db.transaction(store,'readwrite');tx.objectStore(store).delete(key);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
-function showSpace(){if(!viewerCurrent()){$('viewerAccountSection').hidden=false;viewerRender();$('viewerAccountSection').scrollIntoView();return} $('mySpaceSection').hidden=false;renderSpace();$('mySpaceSection').scrollIntoView({behavior:'smooth'})}
+function showSpace(){if(!viewerCurrent()){$('viewerAccountSection').hidden=false;viewerRender();$('viewerAccountSection').scrollIntoView();return} $('mySpaceSection').hidden=false;renderSpace();renderSpaceWatchlist();$('mySpaceSection').scrollIntoView({behavior:'smooth'})}
 $('mySpaceNav').onclick=showSpace;
+function renderSpaceWatchlist(){const box=$('spaceWatchlist');if(!box)return;box.replaceChildren();content.filter(x=>saved.has(x.id)).forEach(x=>{const card=document.createElement('article');card.className='card';const art=document.createElement('div');art.className='poster';if(x.poster){const im=document.createElement('img');im.src=x.poster;art.append(im)}const title=document.createElement('small');title.textContent=x.title;card.append(art,title);card.onclick=()=>{starShowHome();openDetails(x)};box.append(card)});if(!box.children.length)box.textContent='Your Watchlist is empty.'}
+$('spaceBack').onclick=()=>starShowHome();
 $('goToDownloads').onclick=()=>{$('offlineNotice').hidden=true;showSpace()};
 $('spaceSignOut').onclick=()=>{localStorage.removeItem(VIEWER_SESSION);star7Entitlement=null;star7EverSubscribed=false;viewerRender();renderSpace()};
 window.addEventListener('online',()=>{$('offlineNotice').hidden=true;if(STAR7_ENTITLEMENT_API)refreshVerifiedSubscription()});
@@ -872,16 +907,20 @@ for(const videoId of ['player','detailsPromo','trimPlayer']){
 function starShowHome(){if($('mySpaceSection'))$('mySpaceSection').hidden=true;view='all';filter='All';$('search').value='';render();window.scrollTo({top:0,behavior:'smooth'})}
 $('starNavHome').onclick=starShowHome;
 $('starNavSearch').onclick=()=>{starShowHome();$('search').focus();$('search').scrollIntoView({behavior:'smooth',block:'center'})};
-$('starNavSpace').onclick=()=>{showSpace();$('mySpaceSection').hidden=false;$('mySpaceSection').scrollIntoView({behavior:'smooth'})};
+$('starNavSpace').onclick=showSpace;
 const playerControls=$('tapPlayerControls'),settingsPanel=$('playerSettingsPanel');
+let controlsHideTimer;function showControlsTemporarily(){playerControls.hidden=false;clearTimeout(controlsHideTimer);controlsHideTimer=setTimeout(()=>{playerControls.hidden=true;settingsPanel.hidden=true},4500)}
+$('player').addEventListener('timeupdate',()=>{const v=$('player'),b=$('nextEpisodeFloating');if(playback?.mode!=='content'||playback.broadcastMode||!Number.isFinite(v.duration)){b.hidden=true;return}b.hidden=!(v.duration-v.currentTime<=30&&v.duration-v.currentTime>=0&&currentEpisode+1<episodeRecords(selectedTitle).length)});
+$('nextEpisodeFloating').onclick=()=>{if(selectedTitle&&currentEpisode+1<episodeRecords(selectedTitle).length)startEpisode(selectedTitle,currentEpisode+1)};
+
 $('playerWrap').addEventListener('click',e=>{
  if(e.target.closest('button,select,label,.tapZone,#adOverlay'))return;
- playerControls.hidden=!playerControls.hidden;
+ if(playerControls.hidden)showControlsTemporarily();else{playerControls.hidden=true;clearTimeout(controlsHideTimer)}
 });
 $('tapTogglePlayback').onclick=()=>{const v=$('player');if(v.paused)v.play().catch(()=>{});else v.pause()};
 $('player').addEventListener('play',()=>{$('tapTogglePlayback').textContent='⏸ Pause'});
 $('player').addEventListener('pause',()=>{$('tapTogglePlayback').textContent='▶ Play'});
-$('tapPlayerSettings').onclick=()=>{settingsPanel.hidden=!settingsPanel.hidden};
+$('tapPlayerSettings').onclick=()=>{settingsPanel.hidden=!settingsPanel.hidden;showControlsTemporarily()};
 $('tapClosePlayback').onclick=()=>$('closePlayer').click();
 // Quality switching requires distinct URLs provided by the uploader; no fictitious transcoding.
 function starRefreshQualities(){const sel=$('qualitySelect');sel.replaceChildren(new Option('Auto (original source)','auto'));const rec=selectedTitle&&episodeRecords(selectedTitle)[currentEpisode];for(const [name,url] of Object.entries(rec?.qualities||{})){if(url)sel.add(new Option(name,name))}}
@@ -900,6 +939,87 @@ setInterval(starBroadcastTick,700);
 $('player').addEventListener('play',()=>{if(playback?.broadcastMode==='live'){const v=$('player'),edge=Math.max(0,(Date.now()-playback.broadcastStart)/1000);try{v.currentTime=Math.min(edge,Math.max(0,v.duration-.1))}catch(e){}}});
 // Tapping video during a broadcast reveals the same Pause/Play/Close controls.
 $('player').addEventListener('click',()=>{playerControls.hidden=!playerControls.hidden});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderContinue()});
+
+/* STAR7 search discovery and device-local voting enhancement */
+(function(){
+ const css=document.createElement('style');css.textContent=`
+ #starSearchPage{position:fixed;inset:0 0 66px;background:#101116;z-index:18;overflow:auto;padding:22px 3.5% 60px;color:#fff}
+ #starSearchPage[hidden]{display:none!important}.starSearchField{display:flex;align-items:center;background:#34363e;border-radius:17px;padding:9px 16px;gap:10px;margin:8px 0 28px}
+ .starSearchField input{flex:1;min-width:0;background:transparent;border:0;color:white;font-size:18px;padding:10px;outline:none}
+ .starSearchField button{border:0;background:transparent;color:white;font-size:23px}
+ .starSearchTags{display:flex;gap:9px;overflow:auto;margin:18px 0 26px}.starSearchTags button{background:#1c1e28;border:1px solid #424650;color:#eee;border-radius:11px;padding:11px 16px;white-space:nowrap}
+ .starSearchGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.starSearchTile{border:0;background:#20222a;color:white;border-radius:11px;overflow:hidden;text-align:left;padding:0}.starSearchTile img{width:100%;height:200px;object-fit:cover;display:block}.starSearchTile strong{display:block;padding:9px}.starSearchEmpty{color:#aab0c0;padding:18px}
+ .starVotePanel{margin:22px 0;padding:16px;background:#1d2030;border:1px solid #464c65;border-radius:14px}.starVotePanel button{display:block;width:100%;margin:8px 0;background:#30384c;color:white;border:1px solid #6a7892;border-radius:10px;padding:13px;text-align:left}
+ `;document.head.append(css);
+ const page=document.createElement('section');page.id='starSearchPage';page.hidden=true;
+ page.innerHTML='<h2>Search STAR 7</h2><div class="starSearchField"><span>⌕</span><input id="starSearchText" type="search" placeholder="Search movies, series, shows..." aria-label="Search STAR 7"><button id="starSearchClear" type="button" aria-label="Clear search">×</button></div><h3 id="starSearchHeading">Discover titles</h3><div class="starSearchTags" id="starSearchTags"></div><div class="starSearchGrid" id="starSearchResults"></div>';
+ document.body.append(page);
+ const input=$('starSearchText'),results=$('starSearchResults');
+ const tags=['All','Movies','TV Shows','Serial','Web Series','Reality Shows','Comedy','Horror'];let activeTag='All';
+ for(const tag of tags){const b=document.createElement('button');b.type='button';b.textContent=tag;b.onclick=()=>{activeTag=tag;paint()};$('starSearchTags').append(b)}
+ function paint(){const q=input.value.trim().toLowerCase();const list=content.filter(x=>(activeTag==='All'||x.category===activeTag||x.genre===activeTag)&&[x.title,x.category,x.genre,x.year,x.description].join(' ').toLowerCase().includes(q));$('starSearchHeading').textContent=q?'Search Results ('+list.length+')':'Explore STAR 7';results.replaceChildren();for(const x of list){const b=document.createElement('button');b.className='starSearchTile';if(x.poster){const img=document.createElement('img');img.src=x.poster;img.alt='';b.append(img)}const label=document.createElement('strong');label.textContent=x.title+' · '+(x.genre||x.category);b.append(label);b.onclick=()=>{page.hidden=true;openDetails(x)};results.append(b)}if(!list.length){const p=document.createElement('p');p.className='starSearchEmpty';p.textContent='No matching titles published yet.';results.append(p)}}
+ input.addEventListener('input',paint);$('starSearchClear').onclick=()=>{input.value='';paint();input.focus()};
+ $('starNavSearch').onclick=()=>{if($('mySpaceSection'))$('mySpaceSection').hidden=true;page.hidden=false;paint();input.focus()};
+ $('starNavHome').addEventListener('click',()=>page.hidden=true);$('starNavSpace').addEventListener('click',()=>page.hidden=true);
+ // Preserve the existing double-tap seek listeners, add feedback and a reliable single-tap reveal.
+ for(const id of ['tapBack','tapForward']){$(id).addEventListener('click',()=>{if(typeof showControlsTemporarily==='function')showControlsTemporarily()})}
+ // Voting is a device-local prototype, not secure public voting.
+ const voteBox=document.createElement('div');voteBox.className='panel';voteBox.innerHTML='<h3>Viewer voting (local prototype)</h3><p class="muted">Configure a poll for a published title. Votes are saved only on this device and can be reset; not suitable for public competitions.</p><label>Title <select id="starVoteTitle"></select></label><label style="display:block;margin-top:10px">Question <input id="starVoteQuestion" placeholder="Who should win?"></label><label style="display:block;margin-top:10px">Options (one per line) <textarea id="starVoteOptions" rows="4" placeholder="Contestant A&#10;Contestant B"></textarea></label><button type="button" class="btn" id="starVoteSave">Save Poll</button><button type="button" class="btn alt" id="starVoteDisable">Disable Poll</button>';
+ $('adminBox').append(voteBox);
+ const key='STAR7_POLLS_LOCAL_V1';function readPolls(){try{return JSON.parse(localStorage.getItem(key)||'{}')}catch(e){return {}}}function writePolls(p){localStorage.setItem(key,JSON.stringify(p))}
+ function fillTitles(){const s=$('starVoteTitle'),old=s.value;s.replaceChildren();content.filter(x=>!x.sample).forEach(x=>s.add(new Option(x.title,x.id)));if(old)s.value=old;loadPoll()}
+ function loadPoll(){const p=readPolls()[$('starVoteTitle').value];$('starVoteQuestion').value=p?.question||'';$('starVoteOptions').value=(p?.options||[]).join('\n')}
+ $('starVoteTitle').onchange=loadPoll;
+ $('starVoteSave').onclick=()=>{const id=$('starVoteTitle').value;if(!id)return alert('Publish a title first.');const options=$('starVoteOptions').value.split(/\n/).map(s=>s.trim()).filter(Boolean);if(options.length<2)return alert('Enter at least two options.');const polls=readPolls();polls[id]={question:$('starVoteQuestion').value.trim()||'Vote for your favorite',options,counts:options.map(()=>0)};writePolls(polls);alert('Poll saved on this device.')};
+ $('starVoteDisable').onclick=()=>{const p=readPolls();delete p[$('starVoteTitle').value];writePolls(p);alert('Poll disabled.')};
+ const voteViewer=document.createElement('section');voteViewer.id='starVoteViewer';voteViewer.className='starVotePanel';voteViewer.hidden=true;$('detailsDialog').append(voteViewer);
+ function renderVote(x){const p=readPolls()[x?.id];voteViewer.replaceChildren();voteViewer.hidden=!p;if(!p)return;const h=document.createElement('h3');h.textContent='Vote · '+p.question;voteViewer.append(h);p.options.forEach((opt,i)=>{const b=document.createElement('button');b.textContent=opt+' · '+(p.counts[i]||0)+' local votes';b.onclick=()=>{const all=readPolls(),v=all[x.id];if(!v)return;const once='STAR7_VOTED_'+x.id;if(localStorage.getItem(once))return alert('You have already voted on this device.');v.counts[i]=(v.counts[i]||0)+1;writePolls(all);localStorage.setItem(once,'1');renderVote(x)};voteViewer.append(b)});const note=document.createElement('small');note.textContent='Local test poll only. No verified accounts or server-based vote counting.';voteViewer.append(note)}
+ const previousOpenDetails=openDetails;openDetails=function(x){previousOpenDetails(x);renderVote(x)};
+ fillTitles();new MutationObserver(fillTitles).observe($('seriesTarget'),{childList:true});
+})();
+
+</script>
+<script>
+/* Seasonal design settings are local to this device; cloud-wide updates need a backend. */
+(function(){
+const KEY='STAR7_FESTIVAL_STUDIO_V1';
+const themes={
+ normal:{name:'Normal STAR 7',accent:'#f5ca2a',dark:'#101014',text:'#ffffff',icon:'',message:''},
+ durga:{name:'Durga Puja',accent:'#ff9c42',dark:'#461323',text:'#ffffff',icon:'🌺',message:'Shubho Durga Puja from STAR 7'},
+ kali:{name:'Kali Puja / Diwali',accent:'#ffc43a',dark:'#25123e',text:'#ffffff',icon:'🪔',message:'Happy Diwali from STAR 7'},
+ eid:{name:'Eid',accent:'#4bdca5',dark:'#0b4035',text:'#ffffff',icon:'🌙',message:'Eid Mubarak from STAR 7'},
+ ramadan:{name:'Ramadan',accent:'#d5bb6b',dark:'#102d38',text:'#ffffff',icon:'🌙',message:'Ramadan Kareem from STAR 7'},
+ christmas:{name:'Christmas',accent:'#f25768',dark:'#173b2b',text:'#ffffff',icon:'🎄',message:'Merry Christmas from STAR 7'},
+ newyear:{name:'New Year',accent:'#6bb8ff',dark:'#1b2253',text:'#ffffff',icon:'🎉',message:'Happy New Year from STAR 7'},
+ custom:{name:'Custom',accent:'#b88cff',dark:'#242039',text:'#ffffff',icon:'✨',message:'Celebrate with STAR 7'}
+};
+const $f=id=>document.getElementById(id);
+function read(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch{return null}}
+function active(s){if(!s||!s.enabled||s.preset==='normal')return false;const now=new Date(),today=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');return (!s.start||today>=s.start)&&(!s.end||today<=s.end)}
+let preview=null;
+function apply(){const s=preview||read(),on=active(s),b=$f('starFestivalBanner');document.body.classList.toggle('star-festival',!!on);if(!b)return;b.hidden=!on;if(!on)return;document.body.style.setProperty('--festival-accent',s.accent);document.body.style.setProperty('--festival-dark',s.dark);document.body.style.setProperty('--festival-text',s.text);b.textContent=(s.icon?s.icon+'  ':'')+(s.message||themes[s.preset]?.message||'Welcome to STAR 7')+(s.icon?'  '+s.icon:'')}
+const banner=document.createElement('div');banner.id='starFestivalBanner';banner.hidden=true;banner.setAttribute('role','status');const main=document.querySelector('main');if(main)main.prepend(banner);
+const box=document.createElement('section');box.id='festivalStudio';box.innerHTML=`<h2>🎊 Festival & Seasonal Design Studio</h2><p class="muted">Change the STAR 7 home theme for Puja, Eid, Ramadan, Christmas and more. Preview before saving; schedule start and end dates. Settings apply only on this device until you connect an online backend.</p>
+<div class="festivalFields">
+<label>Festival preset<select id="festPreset"><option value="normal">Normal STAR 7</option><option value="durga">Durga Puja</option><option value="kali">Kali Puja / Diwali</option><option value="eid">Eid</option><option value="ramadan">Ramadan</option><option value="christmas">Christmas</option><option value="newyear">New Year</option><option value="custom">Custom festival</option></select></label>
+<label>Banner icon / emoji<input id="festIcon" maxlength="12" placeholder="🌙"></label>
+<label style="grid-column:1/-1">Greeting text<input id="festMessage" maxlength="140" placeholder="Eid Mubarak from STAR 7"></label>
+<label>Accent color<input id="festAccent" type="color"></label><label>Banner background<input id="festDark" type="color"></label>
+<label>Text color<input id="festText" type="color"></label>
+<label>Start date (optional)<input id="festStart" type="date"></label><label>End date (optional)<input id="festEnd" type="date"></label>
+<label>Enable festival design<select id="festEnabled"><option value="yes">On</option><option value="no">Off</option></select></label></div>
+<div><button type="button" id="festPreview">Preview design</button><button type="button" id="festSave">Save & Activate</button><button type="button" id="festReset" class="secondary">Restore normal design</button></div>
+<p id="festStatus" class="muted" aria-live="polite"></p>`;
+const admin=$f('adminBox');if(admin){admin.insertBefore(box,admin.firstChild)}
+function populate(s){s=s||{...themes.normal,enabled:false};$f('festPreset').value=s.preset||'normal';$f('festIcon').value=s.icon||'';$f('festMessage').value=s.message||'';$f('festAccent').value=s.accent||'#f5ca2a';$f('festDark').value=s.dark||'#101014';$f('festText').value=s.text||'#ffffff';$f('festStart').value=s.start||'';$f('festEnd').value=s.end||'';$f('festEnabled').value=s.enabled?'yes':'no'}
+function gather(){return {preset:$f('festPreset').value,icon:$f('festIcon').value.trim(),message:$f('festMessage').value.trim(),accent:$f('festAccent').value,dark:$f('festDark').value,text:$f('festText').value,start:$f('festStart').value,end:$f('festEnd').value,enabled:$f('festEnabled').value==='yes'}}
+$f('festPreset').addEventListener('change',()=>{const k=$f('festPreset').value,p=themes[k];if(p){$f('festIcon').value=p.icon;$f('festMessage').value=p.message;$f('festAccent').value=p.accent;$f('festDark').value=p.dark;$f('festText').value=p.text}});
+$f('festPreview').onclick=()=>{preview={...gather(),enabled:true,start:'',end:''};apply();$f('festStatus').textContent='Preview only — not saved. Tap Save & Activate to keep it.'};
+$f('festSave').onclick=()=>{const s=gather();if(s.start&&s.end&&s.end<s.start){$f('festStatus').textContent='End date must not be earlier than start date.';return}try{localStorage.setItem(KEY,JSON.stringify(s));preview=null;apply();$f('festStatus').textContent='Saved on this device. Scheduled dates use the device clock.'}catch(e){$f('festStatus').textContent='Could not save: '+e.message}};
+$f('festReset').onclick=()=>{preview=null;localStorage.removeItem(KEY);populate(null);apply();$f('festStatus').textContent='Normal STAR 7 theme restored.'};
+populate(read());apply();setInterval(()=>{if(!preview)apply()},60000);
+})();
 </script>
 </body>
 </html>
