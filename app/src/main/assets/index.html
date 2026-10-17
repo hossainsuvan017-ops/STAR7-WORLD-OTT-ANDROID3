@@ -1029,5 +1029,201 @@ $f('festReset').onclick=()=>{preview=null;localStorage.removeItem(KEY);populate(
 populate(read());apply();setInterval(()=>{if(!preview)apply()},60000);
 })();
 </script>
+<!-- ==============================
+     STAR 7 WORLD OTT
+     DOWNLOAD APP + SHARE APP
+     SHARE VIDEO + DOWNLOAD VIDEO
+     ============================== -->
+
+<style>
+.star7-extra-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 16px 0;
+}
+
+.star7-extra-buttons button,
+.star7-extra-buttons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    border: 1px solid #d6ad55;
+    border-radius: 10px;
+    background: #171717;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.star7-extra-buttons button:active,
+.star7-extra-buttons a:active {
+    transform: scale(.97);
+}
+
+.star7-extra-buttons .star7-gold {
+    background: #d6ad55;
+    color: #111111;
+}
+</style>
+
+<script>
+(function () {
+    "use strict";
+
+    /* STAR 7 APP DOWNLOAD LINK */
+    const STAR7_APP_DOWNLOAD =
+        "https://drive.google.com/file/d/15jESqx2597bwwYhv7g8cguC1HdAYeAhJ/view?usp=drivesdk";
+
+    /*
+      WEBSITE LINK:
+      আপনার প্রকাশিত STAR 7 ওয়েবসাইটের ঠিকানা
+      জানা না থাকায় এখানে ফাঁকা রাখা হয়েছে।
+      ওয়েবসাইট প্রকাশ করলে সেই ঠিকানা বসাবেন।
+    */
+    const STAR7_WEBSITE = "";
+
+    function star7Share(text, url) {
+        if (navigator.share) {
+            navigator.share({
+                title: "STAR 7 World OTT",
+                text: text,
+                url: url
+            }).catch(function (error) {
+                if (error.name !== "AbortError") {
+                    star7Copy(url);
+                }
+            });
+        } else {
+            star7Copy(url);
+        }
+    }
+
+    function star7Copy(url) {
+        if (navigator.clipboard &&
+            window.isSecureContext) {
+            navigator.clipboard.writeText(url)
+                .then(function () {
+                    alert("লিংক কপি হয়েছে। এখন শেয়ার করুন!");
+                })
+                .catch(function () {
+                    prompt("লিংকটি কপি করুন:", url);
+                });
+        } else {
+            prompt("লিংকটি কপি করুন:", url);
+        }
+    }
+
+    /* DOWNLOAD APP */
+    function star7DownloadApp() {
+        window.open(
+            STAR7_APP_DOWNLOAD,
+            "_blank",
+            "noopener"
+        );
+    }
+
+    /* SHARE APP */
+    function star7ShareApp() {
+        const appUrl =
+            STAR7_WEBSITE ||
+            window.location.href.split("?")[0];
+
+        star7Share(
+            "STAR 7 World OTT — Watch movies, series and shows!",
+            appUrl
+        );
+    }
+
+    /* SHARE VIDEO */
+    function star7ShareVideo() {
+        let videoUrl = window.location.href;
+
+        /*
+          ভিডিওর নিজস্ব ID থাকলে শেয়ার লিংকে
+          সেটি যুক্ত করার চেষ্টা করবে।
+        */
+        let videoId = "";
+
+        try {
+            if (window.selectedTitle &&
+                window.selectedTitle.id != null) {
+                videoId = window.selectedTitle.id;
+            } else if (window.selectedVideo &&
+                       window.selectedVideo.id != null) {
+                videoId = window.selectedVideo.id;
+            }
+        } catch (error) {}
+
+        if (videoId !== "") {
+            const baseUrl =
+                STAR7_WEBSITE ||
+                window.location.href.split("?")[0];
+
+            videoUrl = baseUrl +
+                "?video=" +
+                encodeURIComponent(videoId);
+        }
+
+        star7Share(
+            "Watch this video on STAR 7 World OTT",
+            videoUrl
+        );
+    }
+
+    /* CREATE BUTTONS */
+    function star7CreateButtons() {
+        if (document.getElementById("star7ExtraButtons")) {
+            return;
+        }
+
+        const container = document.createElement("div");
+        container.id = "star7ExtraButtons";
+        container.className = "star7-extra-buttons";
+
+        container.innerHTML = `
+            <button type="button"
+                class="star7-gold"
+                id="star7DownloadAppBtn">
+                ⬇ Download App
+            </button>
+
+            <button type="button"
+                id="star7ShareAppBtn">
+                ↗ Share App
+            </button>
+
+            <button type="button"
+                id="star7ShareVideoBtn">
+                🎬 Share Video
+            </button>
+        `;
+
+        document.body.appendChild(container);
+
+        document.getElementById("star7DownloadAppBtn")
+            .addEventListener("click", star7DownloadApp);
+
+        document.getElementById("star7ShareAppBtn")
+            .addEventListener("click", star7ShareApp);
+
+        document.getElementById("star7ShareVideoBtn")
+            .addEventListener("click", star7ShareVideo);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            star7CreateButtons
+        );
+    } else {
+        star7CreateButtons();
+    }
+
+})();
+</script>
 </body>
 </html>
