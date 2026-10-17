@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -34,8 +33,6 @@ jobs:
         shell: bash
         run: |
           set -e
-
-          echo "ANDROID_HOME=$ANDROID_HOME"
 
           SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
 
@@ -70,7 +67,7 @@ jobs:
             "app/build.gradle.kts"
             "app/src/main/AndroidManifest.xml"
             "app/src/main/assets/index.html"
-            "app/src/main/assets/logo.png"
+            "app/src/main/assets/Star 7_20260922_160312_0001.png"
             "app/src/main/java/com/star7/worldott/MainActivity.java"
           )
 
@@ -99,8 +96,8 @@ jobs:
 
           mkdir -p app/src/main/res/drawable
 
-          cp app/src/main/assets/logo.png \
-             app/src/main/res/drawable/app_icon.png
+          cp "app/src/main/assets/Star 7_20260922_160312_0001.png" \
+             "app/src/main/res/drawable/app_icon.png"
 
           echo "STAR 7 app icon prepared."
 
