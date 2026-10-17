@@ -62,17 +62,35 @@ jobs:
       - name: Check Project Files
         shell: bash
         run: |
-          set -e
+          echo "Checking STAR 7 project files..."
 
-          test -f settings.gradle.kts
-          test -f build.gradle.kts
-          test -f app/build.gradle.kts
-          test -f app/src/main/AndroidManifest.xml
-          test -f app/src/main/assets/index.html
-          test -f app/src/main/assets/logo.png
-          test -f app/src/main/java/com/star7/worldott/MainActivity.java
+          files=(
+            "settings.gradle.kts"
+            "build.gradle.kts"
+            "app/build.gradle.kts"
+            "app/src/main/AndroidManifest.xml"
+            "app/src/main/assets/index.html"
+            "app/src/main/assets/logo.png"
+            "app/src/main/java/com/star7/worldott/MainActivity.java"
+          )
 
-          echo "All STAR 7 project files found."
+          missing=0
+
+          for file in "${files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "FOUND: $file"
+            else
+              echo "MISSING: $file"
+              missing=1
+            fi
+          done
+
+          if [ "$missing" -eq 1 ]; then
+            echo "ERROR: Some required files are missing."
+            exit 1
+          fi
+
+          echo "All project files found!"
 
       - name: Prepare STAR 7 App Icon
         shell: bash
