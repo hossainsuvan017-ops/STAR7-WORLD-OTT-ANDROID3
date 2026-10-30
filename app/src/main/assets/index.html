@@ -82,6 +82,12 @@ footer{border-top:1px solid #222;text-align:center;padding:24px;color:#888;font-
 .star7NewBadge{background:#e72750;color:white}
 .star7FreeBadge{background:#127b5b;color:white;top:37px}
 #star7ComingAdmin{margin-top:20px}
+
+/* STAR 7: restore prominent Details primary actions only. Other UI untouched. */
+#detailsPlay,#detailsLatest{display:block;width:100%;min-height:54px;margin:10px 0;padding:14px 18px;border-radius:12px;font-size:17px;font-weight:800;text-align:center;}
+#detailsPlay[hidden],#detailsLatest[hidden]{display:none!important;}
+#detailsPlay{background:#f5c844;color:#111;border:0;}
+#detailsLatest{background:#252630;color:#fff;border:1px solid #777;}
 </style>
 <style id="star7UiPatch">
 #star7BottomBar{position:fixed;bottom:0;left:0;right:0;z-index:32;display:flex;align-items:center;justify-content:space-around;background:#090b12;border-top:1px solid #2b2c34;padding:5px 0 max(5px,env(safe-area-inset-bottom));min-height:65px}#star7BottomBar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:transparent;color:#e8e8ef;font-weight:700;font-size:13px;padding:3px}#star7NavLogo{height:27px;width:52px;object-fit:contain}#star7BottomBar .star7NavIcon{font-size:26px;line-height:27px}body{padding-bottom:75px!important}main{padding-bottom:115px!important}#starBottomNav{display:none!important}.star7ViewerActions{display:flex;gap:8px;overflow-x:auto;padding:12px 0;max-width:1100px;margin:auto}.star7ViewerActions button,.star7Reactions button{flex:0 0 auto;background:#242630;color:#fff;border:1px solid #484a55;border-radius:12px;padding:11px 13px;font-weight:700}.star7Reactions{max-width:1100px;margin:0 auto 14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}.star7Reactions[hidden],.star7HiddenSettings[hidden]{display:none!important}.star7HiddenSettings{border:1px solid #30333e;border-radius:12px;padding:12px}#playerDialog{padding-bottom:80px!important}
@@ -90,12 +96,15 @@ const STAR7_REMINDERS='star7_reminders_device_v1';
 function star7HasRelease(x){return !!(x.episodeRecords?.some(r=>!!r.src)||x.video||x.episodes?.some(Boolean))}
 function star7IsUpcoming(x){return !!x.comingSoon&&!star7HasRelease(x)}
 function star7ApplyPosterBadges(card,x){
+ if(star7IsUpcoming(x))return;
  const poster=card.querySelector('.poster');if(!poster)return;
- const days=Number(x.newBadgeDays??0);
- if(x.releasedAt&&days>0&&Date.now()-new Date(x.releasedAt).getTime()<days*86400000){
- const tag=document.createElement('span');tag.className='star7PosterBadge star7NewBadge';tag.textContent='NEW';poster.append(tag);
+ const active=(enabled,start,days)=>enabled&&start&&Number(days)>0&&Date.now()-new Date(start).getTime()<Number(days)*86400000;
+ if(active(x.newBadgeEnabled,x.newBadgeStartedAt,x.newBadgeDays)){
+ const tag=document.createElement('span');tag.className='star7PosterBadge star7NewBadge';tag.textContent='NEWLY ADDED';poster.append(tag);
  }
- if(x.accessType==='Free'){const tag=document.createElement('span');tag.className='star7PosterBadge star7FreeBadge';tag.textContent='WATCH FREE';poster.append(tag)}
+ if(x.accessType==='Free'&&active(x.freeBadgeEnabled,x.freeBadgeStartedAt,x.freeBadgeDays)){
+ const tag=document.createElement('span');tag.className='star7PosterBadge star7FreeBadge';tag.textContent='WATCH FREE';poster.append(tag);
+ }
 }
 function star7RenderUpcoming(){
  const sec=document.getElementById('star7UpcomingSection'),grid=document.getElementById('star7UpcomingGrid');if(!sec||!grid)return;
@@ -286,7 +295,7 @@ function star7UpdateDetailsAvailability(x){
 <div class="field"><label for="star7UpcomingNewDays">NEW badge duration after release (days)</label><input id="star7UpcomingNewDays" type="number" min="0" max="365" value="30"></div>
 <div class="field full"><label for="star7UpcomingDescription">Description</label><textarea id="star7UpcomingDescription"></textarea></div>
 </div>
-<div class="panel" style="margin:12px 0"><h3>NEW Badge / Free Label for Published Titles</h3><label for="star7PublishedSelect">Published title</label><select id="star7PublishedSelect"></select><label for="star7PublishedDays">Show NEW badge for days after release</label><input id="star7PublishedDays" type="number" min="0" max="365" value="30"><label for="star7PublishedAccess">Availability</label><select id="star7PublishedAccess"><option>Free</option><option>Premium</option></select><button class="btn alt" type="button" id="star7PublishedSave">Save Labels</button></div><button type="button" class="btn" id="star7UpcomingSave">Save / Update Coming Soon</button>
+<button type="button" class="btn" id="star7UpcomingSave">Save / Update Coming Soon</button>
 <button type="button" class="btn alt" id="star7UpcomingClear">New Entry</button>
 <p id="star7UpcomingStatus" role="status" class="muted"></p>
 <p class="muted">When the first episode or movie is published using the existing upload form, select the same title under “Add to existing series”. The entry will then move out of Coming Soon. Date alone does not publish a video.</p>
@@ -367,7 +376,7 @@ const $=id=>document.getElementById(id);
 const STAR_PROGRESS='STAR7_PROGRESS_V2';
 function progressKey(){return 'star7_progress_'+(typeof viewerCurrent==='function'&&viewerCurrent()||'guest')}
 function getProgress(){try{return JSON.parse(localStorage.getItem(progressKey())||'{}')}catch{return {}}}
-function saveProgress(x,index,seconds,duration,completed=false){if(!x||x.sample)return;const all=getProgress(),key=x.id;const previous=all[key]||{};const currentAd=(playback?.mode==='ad'&&selectedTitle?.id===x.id&&currentEpisode===index)?{index:Math.max(0,playback.played-1),seconds:Math.max(0,$('player').currentTime||0)}:null;all[key]={index,seconds,duration,completed,ad:completed?null:(currentAd||previous.ad||null),updated:Date.now()};try{localStorage.setItem(progressKey(),JSON.stringify(all))}catch(e){}renderContinue()}
+function saveProgress(x,index,seconds,duration,completed=false){if(!x||x.sample)return;const all=getProgress(),key=x.id;const previous=all[key]||{};const currentAd=(playback?.mode==='ad'&&selectedTitle?.id===x.id&&currentEpisode===index)?{index:Math.max(0,playback.played-1),seconds:Math.max(0,$('player').currentTime||0)}:null;all[key]={index,seconds,duration,completed,ad:completed?null:(currentAd||previous.ad||null),completedAds:completed?[]:(playback?.completedAds||previous.completedAds||[]),updated:Date.now()};try{localStorage.setItem(progressKey(),JSON.stringify(all))}catch(e){}renderContinue()}
 function episodeState(rec){
  if(!rec||!['premiere','live'].includes(rec.broadcastType))return 'normal';
  const start=Date.parse(rec.broadcastStart||'');if(!Number.isFinite(start))return 'scheduled';
@@ -501,7 +510,7 @@ function startEpisode(x,index,resumeFromContinue=false){if(!premiumGate(x))retur
   const savedSeconds=Math.max(0,Number(savedProgress.seconds)||0);
   const ads=playback.item.ads||[];
   const pastCount=ads.filter(a=>(Number(a.atSeconds)||0)<savedSeconds-0.1).length;
-  playback.played=Math.min(ads.length,pastCount);playback.skipInitialAd=savedSeconds>3;
+  playback.completedAds=Array.isArray(savedProgress.completedAds)?[...savedProgress.completedAds]:[];playback.played=Math.min(ads.length,pastCount);playback.skipInitialAd=savedSeconds>3;
   if(savedProgress.ad&&ads[savedProgress.ad.index]&&ads[savedProgress.ad.index].src){
    const adIndex=savedProgress.ad.index;playback.played=adIndex;playback.resumeAt=savedSeconds;
    const v=$('player');v.addEventListener('loadedmetadata',function resumeInterruptedAd(){if(!playback||playback.mode!=='content')return;startAd();const adPos=Math.max(0,Number(savedProgress.ad.seconds)||0);v.addEventListener('loadedmetadata',function seekAd(){if(playback?.mode==='ad')try{v.currentTime=Math.min(adPos,Math.max(0,(v.duration||adPos)-0.1))}catch(e){}},{once:true})},{once:true});
@@ -510,7 +519,8 @@ function startEpisode(x,index,resumeFromContinue=false){if(!premiumGate(x))retur
  const syncBroadcast=()=>{if(playback?.broadcastMode&&playback.mode==='content'){
   const elapsed=Math.max(0,(Date.now()-start)/1000);
   const target=Math.min(elapsed,Math.max(0,(Number.isFinite(v.duration)?v.duration:elapsed)-0.2));
-  if(Math.abs(v.currentTime-target)>1.5)try{v.currentTime=target}catch(e){}
+  if(state==='live'&&Math.abs(v.currentTime-target)>1.5)try{v.currentTime=target}catch(e){}
+  if(state==='premiere'&&v.currentTime>target+1)try{v.currentTime=target}catch(e){}
  }};
  v.addEventListener('loadedmetadata',syncBroadcast,{once:true});
  $('liveAudience').hidden=false;$('liveAudience').textContent=state==='live'?'🔴 LIVE · Viewers unavailable':'🔴 PREMIERE';}else if(resumeFromContinue){const prog=getProgress()[x.id];if(prog&&prog.index===index&&!prog.completed&&prog.seconds>3){const v=$('player');v.addEventListener('loadedmetadata',function resumeSaved(){try{v.currentTime=Math.min(prog.seconds,Math.max(0,v.duration-1))}catch(e){}},{once:true})}}renderPlayerEpisodes(x);$('playerTitle').textContent=`${x.title}${episodesOf(x).length>1?' — Episode '+episodeRecords(x)[index].number:''}`;}
@@ -553,7 +563,8 @@ $('trimDialog').addEventListener('close',()=>{const p=$('trimPlayer');p.pause();
 $('previewMain').onclick=()=>previewVideo($('videoFile'),$('videoUrl'),$('mainCuts'));
 
 function resetPlayback(){
- if(playback?.mode==='ad'&&selectedTitle&&!playback.broadcastMode){const previous=getProgress()[selectedTitle.id];const seconds=Number.isFinite(playback.resumeAt)?playback.resumeAt:(previous?.seconds||0);saveProgress(selectedTitle,currentEpisode,seconds,previous?.duration||0,false)}
+ if(playback?.mode==='content'&&selectedTitle&&Number.isFinite($('player').currentTime)&&$('player').duration){saveProgress(selectedTitle,currentEpisode,$('player').currentTime,$('player').duration,false)}
+ if(playback?.mode==='ad'&&selectedTitle){const previous=getProgress()[selectedTitle.id];const seconds=Number.isFinite(playback.resumeAt)?playback.resumeAt:(previous?.seconds||0);saveProgress(selectedTitle,currentEpisode,seconds,previous?.duration||0,false)}
  const p=$('player');p.pause();p.removeAttribute('src');p.load();p.controls=true;
  $('adOverlay').hidden=true;$('skipAd').disabled=true;playback=null;studioLastStamp=0;
 }
@@ -588,7 +599,7 @@ $('player').addEventListener('timeupdate',()=>{
   $('player').pause();$('player').controls=false;$('liveAudience').textContent='🔴 LIVE ENDED';
  }
 });
-let lastProgressSave=0;$('player').addEventListener('timeupdate',()=>{if(playback?.mode!=='content'||playback.broadcastMode||!selectedTitle)return;const p=$('player');if(Date.now()-lastProgressSave>2500&&Number.isFinite(p.currentTime)&&p.duration){lastProgressSave=Date.now();saveProgress(selectedTitle,currentEpisode,p.currentTime,p.duration,false)}});
+let lastProgressSave=0;$('player').addEventListener('timeupdate',()=>{if(playback?.mode!=='content'||!selectedTitle)return;const p=$('player');if(Date.now()-lastProgressSave>2500&&Number.isFinite(p.currentTime)&&p.duration){lastProgressSave=Date.now();saveProgress(selectedTitle,currentEpisode,p.currentTime,p.duration,false)}});
 
 $('player').addEventListener('seeked',()=>{studioLastStamp=0;if(playback?.broadcastMode&&playback.broadcastStart){const p=$('player');const liveTime=Math.max(0,(Date.now()-playback.broadcastStart)/1000);if(playback.broadcastMode==='live'&&Math.abs(p.currentTime-liveTime)>3)try{p.currentTime=Math.min(liveTime,p.duration||liveTime)}catch(e){}else if(playback.broadcastMode==='premiere'&&p.currentTime>liveTime)try{p.currentTime=Math.min(liveTime,p.duration||liveTime)}catch(e){}}});
 studioRender();
@@ -601,7 +612,7 @@ function playContent(x){
  studioStart(x);studioLiveBadge(x);
  $('playerTitle').textContent=x.title;
  $('playerDesc').textContent=`${x.category}${x.year?' • '+x.year:''}${x.description?' — '+x.description:''}`;
- playback={item:x,adCount:(x.ads||[]).length,played:0,mode:'content',resumeAt:0,adStarted:false,activeAd:null};
+ playback={item:x,adCount:(x.ads||[]).length,played:0,mode:'content',resumeAt:0,adStarted:false,activeAd:null,completedAds:[]};
  const p=$('player');p.playbackRate=Number($('speedSelect').value);p.src=x.video;p.load();if(!$('playerDialog').open)$('playerDialog').showModal();p.play().catch(()=>{});if(adsAllowed()&&x.ads?.length&&x.ads[0].atSeconds===0){p.addEventListener('loadedmetadata',()=>{if(playback?.mode==='content'&&playback.played===0&&!playback.skipInitialAd)startAd()},{once:true})}
 }
 function startAd(){
@@ -613,8 +624,8 @@ function startAd(){
 }
 function resumeContent(){
  const state=playback;if(!state||state.mode!=='ad')return;
- const p=$('player');state.mode='content';$('adOverlay').hidden=true;
- p.pause();p.src=state.item.video;p.controls=!state.broadcastMode;state.activeAd=null;if(selectedTitle&&!state.broadcastMode){const progress=getProgress()[selectedTitle.id];if(progress){progress.ad=null;const all=getProgress();all[selectedTitle.id]=progress;localStorage.setItem(progressKey(),JSON.stringify(all))}}
+ const p=$('player');if(state.activeAd){const id=String(state.played-1);if(!state.completedAds.includes(id))state.completedAds.push(id)}state.mode='content';$('adOverlay').hidden=true;
+ p.pause();p.src=state.item.video;p.controls=!state.broadcastMode;state.activeAd=null;if(selectedTitle){const progress=getProgress()[selectedTitle.id];if(progress){progress.ad=null;const all=getProgress();all[selectedTitle.id]=progress;localStorage.setItem(progressKey(),JSON.stringify(all))}}
  // Restore the exact position after metadata loads.
  const resumeAt=state.resumeAt;
  p.addEventListener('loadedmetadata',function restore(){p.removeEventListener('loadedmetadata',restore);try{p.currentTime=Math.min(resumeAt,p.duration||resumeAt)}catch(e){}p.play().catch(()=>{})},{once:true});
@@ -625,6 +636,8 @@ $('player').addEventListener('timeupdate',()=>{
  if(state?.mode==='ad'){skipCuts(p,state.activeAd?.cuts);const skip=$('skipAd');const duration=Number.isFinite(p.duration)?p.duration:0;const left=duration?Math.max(0,Math.ceil(duration-p.currentTime)):0;const fmt=n=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');$('adRemaining').textContent=duration?fmt(left)+' remaining':'Ad playing';$('adProgress').style.width=duration?Math.min(100,p.currentTime/duration*100)+'%':'0%';if(state.activeAd?.skippable){const remaining=Math.max(0,Math.ceil(5-p.currentTime));skip.disabled=remaining>0;skip.textContent=remaining?`Skip in ${remaining}s`:'Skip Ad ▶'}else{skip.disabled=true;skip.textContent=duration?`Ad ends in ${left}s`:'Ad playing'}return}
  if(state?.mode==='content'&&!state.broadcastMode)skipCuts(p,state.item.cuts);
  if(!state||!adsAllowed()||state.mode!=='content'||!state.item.ads?.length||state.adCount<=0||state.played>=state.adCount)return;
+ while(state.played<state.adCount&&state.completedAds?.includes(String(state.played)))state.played++;
+ if(state.played>=state.adCount)return;
  if(!Number.isFinite(p.duration)||p.duration<=0)return;
  // Play each ad at the exact timestamp configured by the admin (in seconds).
  const next=state.item.ads[state.played];
@@ -748,6 +761,19 @@ function renderManage(){
    epDel.onclick=()=>deleteSingleEpisode(x.id,rec.season,rec.number);
    epRow.append(epLabel,epDel);details.append(epRow);
   });
+  if(!star7IsUpcoming(x)){
+   const badge=document.createElement('details');badge.style.cssText='margin-top:12px;border:1px solid #3d3526;border-radius:10px;padding:10px';
+   const head=document.createElement('summary');head.textContent='Poster badges — NEWLY ADDED / WATCH FREE';badge.append(head);
+   const newToggle=document.createElement('input');newToggle.type='checkbox';newToggle.checked=!!x.newBadgeEnabled;
+   const days=document.createElement('input');days.type='number';days.min='1';days.max='3650';days.value=String(x.newBadgeDays||30);days.style.width='75px';
+   const freeToggle=document.createElement('input');freeToggle.type='checkbox';freeToggle.checked=!!x.freeBadgeEnabled;
+   const freeDays=document.createElement('input');freeDays.type='number';freeDays.min='1';freeDays.max='3650';freeDays.value=String(x.freeBadgeDays||30);freeDays.style.width='75px';
+   const add=(text,control)=>{const label=document.createElement('label');label.style.cssText='display:flex;align-items:center;gap:9px;margin:10px 0';label.append(control,document.createTextNode(text));badge.append(label)};
+   add('Show NEWLY ADDED',newToggle);add('NEWLY ADDED days',days);add('Show WATCH FREE',freeToggle);add('WATCH FREE days',freeDays);
+   const save=document.createElement('button');save.type='button';save.className='btn';save.textContent='Save Poster Badges';
+   save.onclick=()=>{x.newBadgeEnabled=newToggle.checked;x.newBadgeDays=Math.max(1,Number(days.value)||30);x.freeBadgeEnabled=freeToggle.checked&&x.accessType==='Free';x.freeBadgeDays=Math.max(1,Number(freeDays.value)||30);if(x.newBadgeEnabled&&!x.newBadgeStartedAt)x.newBadgeStartedAt=new Date().toISOString();if(x.freeBadgeEnabled&&!x.freeBadgeStartedAt)x.freeBadgeStartedAt=new Date().toISOString();if(!x.newBadgeEnabled)x.newBadgeStartedAt=null;if(!x.freeBadgeEnabled)x.freeBadgeStartedAt=null;starPersist().then(()=>{render();renderManage()}).catch(e=>alert('Could not save: '+e.message))};
+   badge.append(save);section.append(badge);
+  }
   section.append(details);holder.append(section);
  });
 }
@@ -1253,7 +1279,6 @@ new MutationObserver(()=>{if(!$('mySpaceSection').hidden)sync()}).observe($('myS
 (function(){
 const $=id=>document.getElementById(id),val=id=>$(id).value;
 function refresh(){
- const published=$('star7PublishedSelect'),oldPublished=published.value;published.replaceChildren();for(const x of content.filter(x=>!x.sample&&star7HasRelease(x)))published.add(new Option(x.title,x.id));if([...published.options].some(o=>o.value===oldPublished))published.value=oldPublished;
  const select=$('star7UpcomingSelect'),prev=select.value;select.replaceChildren(new Option('Create new upcoming title',''));
  for(const x of content.filter(x=>!x.sample&&star7IsUpcoming(x)))select.add(new Option(x.title,x.id));
  if([...select.options].some(o=>o.value===prev))select.value=prev;
@@ -1262,8 +1287,6 @@ window.star7RefreshUpcomingAdmin=refresh;
 function clear(){ $('star7UpcomingSelect').value='';for(const id of ['star7UpcomingName','star7UpcomingDate','star7UpcomingPosterUrl','star7UpcomingTrailerUrl','star7UpcomingDescription','star7UpcomingPoster','star7UpcomingTrailer'])$(id).value='';
  $('star7UpcomingLength').value='30';$('star7UpcomingAccess').value='Free';$('star7UpcomingNewDays').value='30';$('star7UpcomingStatus').textContent='New upcoming title';}
 $('star7UpcomingClear').addEventListener('click',clear);
-$('star7PublishedSelect').addEventListener('change',()=>{const x=content.find(c=>c.id===val('star7PublishedSelect'));if(x){$('star7PublishedDays').value=String(x.newBadgeDays??30);$('star7PublishedAccess').value=x.accessType||'Free'}});
-$('star7PublishedSave').addEventListener('click',async()=>{if($('adminBox').hidden)return;const x=content.find(c=>c.id===val('star7PublishedSelect'));if(!x)return;x.newBadgeDays=Math.max(0,Math.min(365,Number(val('star7PublishedDays'))||0));x.accessType=val('star7PublishedAccess');x.releasedAt=x.releasedAt||new Date().toISOString();try{await starPersist();render();$('star7UpcomingStatus').textContent='Published title labels saved.'}catch(e){$('star7UpcomingStatus').textContent=e.message}});
 $('star7UpcomingSelect').addEventListener('change',()=>{
  const x=content.find(c=>c.id===val('star7UpcomingSelect'));if(!x)return;
  $('star7UpcomingName').value=x.title;$('star7UpcomingCategory').value=x.category;
@@ -1292,7 +1315,7 @@ $('star7UpcomingSave').addEventListener('click',async()=>{
 });
 const oldRender=render;render=function(...args){const result=oldRender(...args);refresh();return result};
 new MutationObserver(()=>{if(!$('adminBox').hidden)refresh()}).observe($('adminBox'),{attributes:true,attributeFilter:['hidden']});
-refresh();$('star7PublishedSelect').dispatchEvent(new Event('change'));star7RenderUpcoming();
+refresh();star7RenderUpcoming();
 })();
 </script></body>
 </html>
