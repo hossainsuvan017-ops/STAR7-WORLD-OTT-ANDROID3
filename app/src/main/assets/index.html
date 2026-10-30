@@ -376,7 +376,7 @@ const $=id=>document.getElementById(id);
 const STAR_PROGRESS='STAR7_PROGRESS_V2';
 function progressKey(){return 'star7_progress_'+(typeof viewerCurrent==='function'&&viewerCurrent()||'guest')}
 function getProgress(){try{return JSON.parse(localStorage.getItem(progressKey())||'{}')}catch{return {}}}
-function saveProgress(x,index,seconds,duration,completed=false){if(!x||x.sample)return;const all=getProgress(),key=x.id;const previous=all[key]||{};const currentAd=(playback?.mode==='ad'&&selectedTitle?.id===x.id&&currentEpisode===index)?{index:Math.max(0,playback.played-1),seconds:Math.max(0,$('player').currentTime||0)}:null;all[key]={index,seconds,duration,completed,ad:completed?null:(currentAd||previous.ad||null),completedAds:completed?[]:(playback?.completedAds||previous.completedAds||[]),updated:Date.now()};try{localStorage.setItem(progressKey(),JSON.stringify(all))}catch(e){}renderContinue()}
+function saveProgress(x,index,seconds,duration,completed=false){if(!x||x.sample)return;const all=getProgress(),key=x.id;const previous=all[key]||{};const currentAd=(playback?.mode==='ad'&&selectedTitle?.id===x.id&&currentEpisode===index)?{index:Math.max(0,playback.played-1),seconds:Math.max(0,$('player').currentTime||0)}:null;all[key]={index,seconds,duration,completed,ad:completed?null:(currentAd||(playback?.mode==='content'?null:previous.ad)||null),completedAds:completed?[]:(playback?.completedAds||previous.completedAds||[]),updated:Date.now()};try{localStorage.setItem(progressKey(),JSON.stringify(all))}catch(e){}renderContinue()}
 function episodeState(rec){
  if(!rec||!['premiere','live'].includes(rec.broadcastType))return 'normal';
  const start=Date.parse(rec.broadcastStart||'');if(!Number.isFinite(start))return 'scheduled';
@@ -483,10 +483,10 @@ function renderRecommendations(x,target){const holder=$(target);holder.replaceCh
 function makeEpisodeRow(x,i){const b=document.createElement('button');b.className='episodeVisual'+(i===currentEpisode?' active':'');const thumb=document.createElement('div');thumb.className='epThumb';if(x.poster){const img=document.createElement('img');img.src=x.poster;img.alt='';thumb.append(img)}const icon=document.createElement('span');icon.textContent='▶';thumb.append(icon);const info=document.createElement('div');info.className='epInfo';const rec=episodeRecords(x)[i];const title=document.createElement('strong');title.textContent=rec.name||`Episode ${rec.number}`;const meta=document.createElement('small');meta.textContent=`Season ${rec.season} · Episode ${rec.number} · ${fmtDate(rec.uploadedAt)} · ${rec.durationMinutes?rec.durationMinutes+' min':'Duration unavailable'}`;const state=episodeState(rec);if(state==='premiere'||state==='live'){const badge=document.createElement('span');badge.className='premiereTag';badge.textContent=state==='premiere'?'● PREMIERE':'● LIVE';thumb.append(badge)}if(state==='scheduled')meta.textContent+=' · Scheduled '+(rec.broadcastStart?new Date(rec.broadcastStart).toLocaleString():'(set start time)');if(state==='ended')meta.textContent+=' · Live ended · No replay';if(rec.thumbnail&&rec.thumbnail!==x.poster){const im=thumb.querySelector('img')||document.createElement('img');im.src=rec.thumbnail;if(!im.parentNode)thumb.prepend(im)}info.append(title,meta);b.append(thumb,info);b.onclick=()=>startEpisode(x,i);return b}
 function fillEpisodeRows(x,target,initial=8){const box=$(target);const eps=episodesOf(x);let limit=Math.min(eps.length,initial);function paint(){box.replaceChildren();for(let i=0;i<limit;i++)box.append(makeEpisodeRow(x,i));if(limit<eps.length){const more=document.createElement('button');more.className='btn alt';more.textContent=`View More · ${eps.length-limit} episodes remaining`;more.onclick=()=>{limit=Math.min(eps.length,limit+60);paint();more.scrollIntoView?.({block:'nearest'})};box.append(more)}}paint()}
 function renderPlayerEpisodes(x){fillEpisodeRows(x,'playerEpisodes',8);renderRecommendations(x,'playerMore')}
-let toastTimer;function seekBy(amount){if(playback?.mode!=='content'||playback.broadcastMode==='live')return;const v=$('player');if(!Number.isFinite(v.duration))return;v.currentTime=Math.max(0,Math.min(v.duration,v.currentTime+amount,playback?.broadcastMode==='premiere'?Math.max(0,(Date.now()-playback.broadcastStart)/1000):v.duration));$('seekToast').textContent=(amount>0?'+':'')+amount+' seconds';$('seekToast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('seekToast').style.display='none',700)}
+let toastTimer;function seekBy(amount){if(playback?.mode!=='content'||playback.broadcastMode)return;const v=$('player');if(!Number.isFinite(v.duration))return;v.currentTime=Math.max(0,Math.min(v.duration,v.currentTime+amount,playback?.broadcastMode==='premiere'?Math.max(0,(Date.now()-playback.broadcastStart)/1000):v.duration));$('seekToast').textContent=(amount>0?'+':'')+amount+' seconds';$('seekToast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('seekToast').style.display='none',700)}
 function doubleTap(el,seconds){let last=0;el.addEventListener('pointerup',e=>{const now=Date.now();if(now-last<340){seekBy(seconds);last=0}else last=now})}
 $('star7BroadcastTrack').addEventListener('pointerdown',e=>{
- if(playback?.broadcastMode!=='premiere'||playback.mode!=='content')return;
+ if(playback?.broadcastMode)return;
  const track=$('star7BroadcastTrack'),rect=track.getBoundingClientRect();
  const edge=Math.min(playback.broadcastLength||Infinity,Math.max(0,(Date.now()-playback.broadcastStart)/1000));
  const pos=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
@@ -494,7 +494,7 @@ $('star7BroadcastTrack').addEventListener('pointerdown',e=>{
  if(Number.isFinite(target))$('player').currentTime=target;
 });
 doubleTap($('tapBack'),-10);doubleTap($('tapForward'),10);
-$('speedSelect').onchange=()=>{$('player').playbackRate=Number($('speedSelect').value)};
+$('speedSelect').onchange=()=>{if(playback?.broadcastMode){$('speedSelect').value='1';return}$('player').playbackRate=Number($('speedSelect').value)};
 $('fullScreenBtn').onclick=async()=>{const wrap=$('playerWrap'),v=$('player');try{if(document.fullscreenElement){await document.exitFullscreen()}else if(wrap.requestFullscreen){await wrap.requestFullscreen()}else if(v.webkitEnterFullscreen){v.webkitEnterFullscreen()}else alert('Fullscreen unavailable in this browser')}catch(e){if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();else alert('Fullscreen is blocked by this viewer. Try Chrome.')}};
 $('inPlayerFullscreen').onclick=()=>$('fullScreenBtn').click();
 $('landscapeBtn').onclick=async()=>{try{if(!document.fullscreenElement)await $('playerWrap').requestFullscreen();if(screen.orientation?.lock)await screen.orientation.lock('landscape');else alert('Rotate your phone manually for landscape.')}catch(e){alert('Landscape lock is unavailable here. Rotate the phone manually.')}};
@@ -505,24 +505,36 @@ $('detailsLatest').onclick=()=>{if(!selectedTitle)return;const x=selectedTitle;s
 $('detailsList').onclick=()=>{if(!selectedTitle)return;saved.has(selectedTitle.id)?saved.delete(selectedTitle.id):saved.add(selectedTitle.id);$('detailsList').textContent=saved.has(selectedTitle.id)?'✓ In My List':'＋ My List';render();starPersist().catch(console.error)};
 $('detailsShare').onclick=async()=>{if(!selectedTitle)return;const data={title:selectedTitle.title,text:`Watch ${selectedTitle.title} on STAR 7`};if(navigator.share){try{await navigator.share(data)}catch(e){}}else{try{await navigator.clipboard.writeText(data.text);alert('Title copied for sharing')}catch(e){alert(data.text)}}};
 $('detailsDownload').onclick=()=>{if(!selectedTitle)return;downloadToSpace(selectedTitle,0)};
-function startEpisode(x,index,resumeFromContinue=false){if(!premiumGate(x))return;stopDetailsPromo();const rec=episodeRecords(x)[index],state=episodeState(rec);if(state==='scheduled'){alert('This broadcast has not started yet.');return}if(state==='ended'){alert('This live stream has ended and has no replay.');return}const src=episodesOf(x)[index];if(!src){alert('Episode source missing');return}const item={...x,video:src,ads:(x.preRoll?[{src:x.preRoll,atSeconds:0,skippable:false,cuts:[]}]:[]).concat(x.ads||[])};playContent(item);selectedTitle=x;currentEpisode=index;starSetPlayerLanguages(rec);
- const savedProgress=getProgress()[x.id];if(resumeFromContinue&&playback&&savedProgress&&savedProgress.index===index&&!savedProgress.completed){
+function startEpisode(x,index,resumeFromContinue=false){if(!premiumGate(x))return;stopDetailsPromo();const rec=episodeRecords(x)[index],state=episodeState(rec);if(state==='scheduled'){alert('This broadcast has not started yet.');return}if(state==='ended'){alert('This live stream has ended and has no replay.');return}const src=episodesOf(x)[index];if(!src){alert('Episode source missing');return}const item={...x,video:src,ads:(x.preRoll?[{src:x.preRoll,atSeconds:0,skippable:false,cuts:[]}]:[]).concat(x.ads||[])};if(playback)resetPlayback();selectedTitle=x;currentEpisode=index;playContent(item);starSetPlayerLanguages(rec);
+ const savedProgress=getProgress()[x.id];
+ if(resumeFromContinue&&state==='normal'&&savedProgress?.index===index&&!savedProgress.completed&&Number(savedProgress.seconds)>0){
+  const savedSeconds=Number(savedProgress.seconds);
+  $('player').addEventListener('loadedmetadata',function(){if(playback?.mode==='content')try{$('player').currentTime=Math.min(savedSeconds,Math.max(0,$('player').duration-0.1))}catch(e){}},{once:true});
+ }
+ if(resumeFromContinue&&playback&&savedProgress&&savedProgress.index===index&&!savedProgress.completed){
   const savedSeconds=Math.max(0,Number(savedProgress.seconds)||0);
   const ads=playback.item.ads||[];
   const pastCount=ads.filter(a=>(Number(a.atSeconds)||0)<savedSeconds-0.1).length;
-  playback.completedAds=Array.isArray(savedProgress.completedAds)?[...savedProgress.completedAds]:[];playback.played=Math.min(ads.length,pastCount);playback.skipInitialAd=savedSeconds>3;
+  playback.completedAds=Array.isArray(savedProgress.completedAds)?[...savedProgress.completedAds]:[];playback.played=Math.min(ads.length,pastCount);playback.skipInitialAd=savedSeconds>0;
   if(savedProgress.ad&&ads[savedProgress.ad.index]&&ads[savedProgress.ad.index].src){
    const adIndex=savedProgress.ad.index;playback.played=adIndex;playback.resumeAt=savedSeconds;
    const v=$('player');v.addEventListener('loadedmetadata',function resumeInterruptedAd(){if(!playback||playback.mode!=='content')return;startAd();const adPos=Math.max(0,Number(savedProgress.ad.seconds)||0);v.addEventListener('loadedmetadata',function seekAd(){if(playback?.mode==='ad')try{v.currentTime=Math.min(adPos,Math.max(0,(v.duration||adPos)-0.1))}catch(e){}},{once:true})},{once:true});
   }
- }if(state==='live'||state==='premiere'){const start=Date.parse(rec.broadcastStart||'');const offset=Math.max(0,(Date.now()-start)/1000);playback.broadcastMode=state;playback.broadcastStart=start;playback.broadcastLength=(Number(rec.durationMinutes)||0)*60;const v=$('player');v.controls=false;$('star7BroadcastTrack').hidden=false;$('star7BroadcastTrack').classList.toggle('star7LiveTrack',state==='live');
+ }if(state==='live'||state==='premiere'){const start=Date.parse(rec.broadcastStart||'');const offset=Math.max(0,(Date.now()-start)/1000);playback.broadcastMode=state;playback.broadcastStart=start;playback.broadcastLength=(Number(rec.durationMinutes)||0)*60;const v=$('player');v.controls=false;v.playbackRate=1;$('speedSelect').value='1';$('star7BroadcastTrack').hidden=false;$('star7BroadcastTrack').classList.toggle('star7LiveTrack',state==='live');
  const syncBroadcast=()=>{if(playback?.broadcastMode&&playback.mode==='content'){
   const elapsed=Math.max(0,(Date.now()-start)/1000);
   const target=Math.min(elapsed,Math.max(0,(Number.isFinite(v.duration)?v.duration:elapsed)-0.2));
   if(state==='live'&&Math.abs(v.currentTime-target)>1.5)try{v.currentTime=target}catch(e){}
-  if(state==='premiere'&&v.currentTime>target+1)try{v.currentTime=target}catch(e){}
+  if(state==='premiere'&&Math.abs(v.currentTime-target)>2)try{v.currentTime=target}catch(e){}
  }};
- v.addEventListener('loadedmetadata',syncBroadcast,{once:true});
+ v.addEventListener('loadedmetadata',()=>{
+   if(playback?.mode!=='content')return;
+   const elapsed=Math.max(0,(Date.now()-start)/1000);
+   const edge=Math.min(elapsed,Number.isFinite(v.duration)?Math.max(0,v.duration-0.1):elapsed);
+   try{v.currentTime=edge}catch(e){}
+   playback.broadcastLock=edge;
+   syncBroadcast();
+ },{once:true});
  $('liveAudience').hidden=false;$('liveAudience').textContent=state==='live'?'🔴 LIVE · Viewers unavailable':'🔴 PREMIERE';}else if(resumeFromContinue){const prog=getProgress()[x.id];if(prog&&prog.index===index&&!prog.completed&&prog.seconds>3){const v=$('player');v.addEventListener('loadedmetadata',function resumeSaved(){try{v.currentTime=Math.min(prog.seconds,Math.max(0,v.duration-1))}catch(e){}},{once:true})}}renderPlayerEpisodes(x);$('playerTitle').textContent=`${x.title}${episodesOf(x).length>1?' — Episode '+episodeRecords(x)[index].number:''}`;}
 
 function toSeconds(t){const m=/^(\d+):([0-5]\d)$/.exec(t.trim());return m?Number(m[1])*60+Number(m[2]):null}
@@ -601,7 +613,7 @@ $('player').addEventListener('timeupdate',()=>{
 });
 let lastProgressSave=0;$('player').addEventListener('timeupdate',()=>{if(playback?.mode!=='content'||!selectedTitle)return;const p=$('player');if(Date.now()-lastProgressSave>2500&&Number.isFinite(p.currentTime)&&p.duration){lastProgressSave=Date.now();saveProgress(selectedTitle,currentEpisode,p.currentTime,p.duration,false)}});
 
-$('player').addEventListener('seeked',()=>{studioLastStamp=0;if(playback?.broadcastMode&&playback.broadcastStart){const p=$('player');const liveTime=Math.max(0,(Date.now()-playback.broadcastStart)/1000);if(playback.broadcastMode==='live'&&Math.abs(p.currentTime-liveTime)>3)try{p.currentTime=Math.min(liveTime,p.duration||liveTime)}catch(e){}else if(playback.broadcastMode==='premiere'&&p.currentTime>liveTime)try{p.currentTime=Math.min(liveTime,p.duration||liveTime)}catch(e){}}});
+$('player').addEventListener('seeked',()=>{studioLastStamp=0;if(playback?.broadcastMode&&playback.broadcastStart){const p=$('player');const liveTime=Math.max(0,(Date.now()-playback.broadcastStart)/1000);if((playback.broadcastMode==='live'||playback.broadcastMode==='premiere')&&Math.abs(p.currentTime-Math.min(liveTime,p.duration||liveTime))>3)try{p.currentTime=Math.min(liveTime,p.duration||liveTime)}catch(e){}}});
 studioRender();
 function studioLiveBadge(x){const badge=$('liveAudience');badge.hidden=true;badge.textContent='🔴 LIVE · Viewers unavailable';badge.title='A verified live viewer count needs a connected presence backend. No fabricated count is shown.'}
 function playContent(x){
