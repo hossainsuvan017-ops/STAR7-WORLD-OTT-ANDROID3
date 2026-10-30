@@ -54,6 +54,19 @@ footer{border-top:1px solid #222;text-align:center;padding:24px;color:#888;font-
 #star7PageSearchInput{width:100%;background:#22242c;color:white;border:1px solid #555;border-radius:13px;padding:15px;font-size:16px;margin:10px 0 20px}
 #star7BottomBar .star7HomeWordmark{font-size:20px;font-weight:950;letter-spacing:-1px;color:white;line-height:27px;background:none!important;border:0!important}
 #star7AnalyticsPanel{margin-top:20px}#star7AnalyticsPanel .star7MetricGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#star7AnalyticsPanel .star7Metric{padding:13px;border:1px solid #414451;border-radius:12px;background:#171921}#star7AnalyticsPanel .star7Metric strong{font-size:23px;display:block}#star7AnalyticsPanel table{width:100%;border-collapse:collapse;font-size:13px}#star7AnalyticsPanel td,#star7AnalyticsPanel th{padding:9px 5px;border-bottom:1px solid #343743;text-align:left}
+ 
+#mySpaceSection:not([hidden]){position:fixed!important;inset:0 0 63px!important;z-index:22!important;overflow-y:auto!important;margin:0!important;padding:20px 16px 100px!important;background:linear-gradient(155deg,#17152d,#08090d 38%)!important;border:0!important;border-radius:0!important;max-width:none!important}
+#mySpaceSection[hidden]{display:none!important}
+.star7SpaceTop{display:flex;justify-content:space-between;align-items:center}
+.star7SpaceHero{display:flex;gap:16px;align-items:center;padding:23px 15px;margin:16px 0;border-radius:18px;background:linear-gradient(120deg,#31264b,#171821);border:1px solid #5d5270}
+.star7SpaceHero strong{font-size:20px}.star7SpaceHero p{margin:5px 0 0}
+.star7SpaceAvatar{width:60px;height:60px;border-radius:50%;background:#e8b940;color:#19101e;display:grid;place-items:center;font-size:34px;flex:none}
+.star7SpaceQuick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 18px}
+.star7SpaceQuick .btn{white-space:normal;font-size:12px;padding:12px 5px}
+#star7SpaceQuickResults{margin-bottom:16px}
+#star7VotePhotoStudio{margin:14px 0;background:#181a24;border:1px solid #4b4561}
+#star7VotePhotoStudio select,#star7VotePhotoStudio input{display:block;width:100%;margin:8px 0 13px}
+#star7VotePhotoPreview[hidden]{display:none!important}
 </style>
 <style id="star7UiPatch">
 #star7BottomBar{position:fixed;bottom:0;left:0;right:0;z-index:32;display:flex;align-items:center;justify-content:space-around;background:#090b12;border-top:1px solid #2b2c34;padding:5px 0 max(5px,env(safe-area-inset-bottom));min-height:65px}#star7BottomBar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:transparent;color:#e8e8ef;font-weight:700;font-size:13px;padding:3px}#star7NavLogo{height:27px;width:52px;object-fit:contain}#star7BottomBar .star7NavIcon{font-size:26px;line-height:27px}body{padding-bottom:75px!important}main{padding-bottom:115px!important}#starBottomNav{display:none!important}.star7ViewerActions{display:flex;gap:8px;overflow-x:auto;padding:12px 0;max-width:1100px;margin:auto}.star7ViewerActions button,.star7Reactions button{flex:0 0 auto;background:#242630;color:#fff;border:1px solid #484a55;border-radius:12px;padding:11px 13px;font-weight:700}.star7Reactions{max-width:1100px;margin:0 auto 14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}.star7Reactions[hidden],.star7HiddenSettings[hidden]{display:none!important}.star7HiddenSettings{border:1px solid #30333e;border-radius:12px;padding:12px}#playerDialog{padding-bottom:80px!important}
@@ -98,7 +111,10 @@ footer{border-top:1px solid #222;text-align:center;padding:24px;color:#888;font-
   <section id="grid" class="grid"></section>
 
   <section class="panel" id="mySpaceSection" hidden>
-    <div class="eyebrow">YOUR SPACE</div><h2>My Space</h2>
+    <div class="star7SpaceTop"><div><div class="eyebrow">STAR 7 • YOUR SPACE</div><h2>My Space</h2></div><button type="button" id="star7SpaceBack" class="btn alt" aria-label="Back to Home">✕</button></div>
+<div class="star7SpaceHero"><div class="star7SpaceAvatar" aria-hidden="true">★</div><div><strong id="star7SpaceName">Welcome to STAR 7</strong><p id="star7SpaceId" class="muted">Your entertainment, your space</p></div></div>
+<div class="star7SpaceQuick"><button type="button" id="star7SpaceMyList" class="btn alt">＋ My List</button><button type="button" id="star7SpaceContinue" class="btn alt">▶ Continue Watching</button><button type="button" id="star7SpaceDownloads" class="btn alt">⬇ Downloads</button></div>
+<div id="star7SpaceQuickResults" class="grid"></div>
     <div class="panel" style="margin:10px 0"><h3>My Account &amp; Subscription</h3>
 <p class="muted">Account ID, plan, renewal and offline library</p>
 <div id="spaceAccount" class="notice"></div>
@@ -145,7 +161,11 @@ footer{border-top:1px solid #222;text-align:center;padding:24px;color:#888;font-
 <div class="star7MetricGrid"><div class="star7Metric"><strong id="star7LocalPlays">0</strong>Playback starts (this device)</div><div class="star7Metric"><strong id="star7LocalMinutes">0</strong>Watched minutes (this device)</div><div class="star7Metric"><strong id="star7LocalTitles">0</strong>Titles watched (this device)</div><div class="star7Metric"><strong id="star7GlobalViewers">Not connected</strong>Verified worldwide viewers</div></div>
 <h4>Most watched titles — local activity</h4><div style="overflow-x:auto"><table><thead><tr><th>Title</th><th>Plays</th><th>Minutes</th></tr></thead><tbody id="star7AnalyticsRows"></tbody></table></div>
 <button type="button" class="btn alt" id="star7AnalyticsRefresh">Refresh Analytics</button>
-</section><section class="panel" id="star7VotingStudio" style="margin-top:18px"><h3>Reality Show Voting Studio</h3><p class="muted">Configure local preview voting for a title. This device-only version is NOT a secure worldwide vote count. A server must authenticate viewers and enforce the 101-vote allowance for a real competition.</p><div class="formgrid"><div class="field"><label for="star7VoteTitle">Show / title</label><select id="star7VoteTitle"></select></div><div class="field"><label for="star7VoteEnabled">Voting</label><select id="star7VoteEnabled"><option value="off">Off</option><option value="on">On (local preview)</option></select></div><div class="field full"><label for="star7VoteContestants">Contestants (one per line: Name | optional HTTPS photo URL)</label><textarea id="star7VoteContestants" rows="6" placeholder="Contestant One | https://example.org/photo.jpg&#10;Contestant Two"></textarea></div></div><button class="btn" type="button" id="star7VoteSave">Save Voting Setup</button><p id="star7VoteAdminStatus" class="muted" role="status"></p></section><section class="panel" id="star7LogoStudio" style="margin-top:18px"><h3>STAR 7 Logo Studio</h3><p>Change the logo inside this app. A remote HTTPS image URL can be shared across devices only when a hosted configuration is set up. Play Store and installed launcher icons require an app release update.</p><div class="formgrid"><div class="field"><label for="star7LogoFile">Choose logo image</label><input id="star7LogoFile" type="file" accept="image/png,image/jpeg,image/webp"></div><div class="field"><label for="star7LogoUrl">Logo HTTPS URL (optional)</label><input id="star7LogoUrl" type="url" placeholder="https://your-domain.example/logo.png"></div><div class="field full"><label for="star7LogoConfig">Published logo config HTTPS URL (optional)</label><input id="star7LogoConfig" type="url" placeholder="https://your-domain.example/branding.json"><small class="muted">The URL should return JSON such as {"logoUrl":"https://your-domain.example/logo.png"}. Changes on the server can then appear on other devices. A local file is not automatically published.</small></div></div><button type="button" class="btn" id="star7LogoSave">Save Logo</button><button type="button" class="btn alt" id="star7LogoReset">Restore Original Logo</button><p class="muted" id="star7LogoStatus" role="status"></p></section>
+</section><section class="panel" id="star7VotingStudio" style="margin-top:18px"><h3>Reality Show Voting Studio</h3><p class="muted">Configure local preview voting for a title. This device-only version is NOT a secure worldwide vote count. A server must authenticate viewers and enforce the 101-vote allowance for a real competition.</p><div class="formgrid"><div class="field"><label for="star7VoteTitle">Show / title</label><select id="star7VoteTitle"></select></div><div class="field"><label for="star7VoteEnabled">Voting</label><select id="star7VoteEnabled"><option value="off">Off</option><option value="on">On (local preview)</option></select></div><div class="field full"><label for="star7VoteContestants">Contestants (one per line: Name | optional HTTPS photo URL)</label><textarea id="star7VoteContestants" rows="6" placeholder="Contestant One | https://example.org/photo.jpg&#10;Contestant Two"></textarea></div></div><div class="panel" id="star7VotePhotoStudio"><h4>Contestant Photo Upload</h4><p class="muted">Choose a contestant name from the list above and select a photo from your phone. Photos are compressed and saved on this device only.</p>
+<label for="star7VotePhotoName">Contestant name (must match the list)</label><select id="star7VotePhotoName"></select>
+<label for="star7VotePhotoFile">Choose photo</label><input type="file" id="star7VotePhotoFile" accept="image/*">
+<img id="star7VotePhotoPreview" alt="Selected contestant photo preview" hidden style="width:92px;height:92px;object-fit:cover;border-radius:14px;display:block;margin:10px 0">
+<button type="button" class="btn alt" id="star7VotePhotoRemove">Remove Selected Photo</button><p id="star7VotePhotoStatus" class="muted" role="status"></p></div><button class="btn" type="button" id="star7VoteSave">Save Voting Setup</button><p id="star7VoteAdminStatus" class="muted" role="status"></p></section><section class="panel" id="star7LogoStudio" style="margin-top:18px"><h3>STAR 7 Logo Studio</h3><p>Change the logo inside this app. A remote HTTPS image URL can be shared across devices only when a hosted configuration is set up. Play Store and installed launcher icons require an app release update.</p><div class="formgrid"><div class="field"><label for="star7LogoFile">Choose logo image</label><input id="star7LogoFile" type="file" accept="image/png,image/jpeg,image/webp"></div><div class="field"><label for="star7LogoUrl">Logo HTTPS URL (optional)</label><input id="star7LogoUrl" type="url" placeholder="https://your-domain.example/logo.png"></div><div class="field full"><label for="star7LogoConfig">Published logo config HTTPS URL (optional)</label><input id="star7LogoConfig" type="url" placeholder="https://your-domain.example/branding.json"><small class="muted">The URL should return JSON such as {"logoUrl":"https://your-domain.example/logo.png"}. Changes on the server can then appear on other devices. A local file is not automatically published.</small></div></div><button type="button" class="btn" id="star7LogoSave">Save Logo</button><button type="button" class="btn alt" id="star7LogoReset">Restore Original Logo</button><p class="muted" id="star7LogoStatus" role="status"></p></section>
       <div class="panel" style="margin-top:20px"><h3>Subscription Plan Prices</h3><p>Set display prices. Real payment and subscription activation require a verified billing backend.</p><div id="adminPlanFields" class="formgrid"></div><button type="button" class="btn" id="savePlanPrices">Save Plan Prices</button></div>
       <p class="muted">Live Stream supports a compatible stream URL only if the browser/player can play it. Premium is a label until secure subscriptions are implemented.</p>
     <div class="rowTitle"><h2>Content Management</h2><button class="btn alt" id="logoutBtn">Sign Out</button></div>
@@ -919,6 +939,13 @@ const $v=id=>document.getElementById(id);
 const read=key=>{try{return JSON.parse(localStorage.getItem(key)||'null')}catch{return null}};
 const configs=()=>read(CONFIG_KEY)||{};
 let activeTitle=null;
+const photoDraft={};
+const photoKey=id=>'star7:voting:photos:v1:'+id;
+function readPhotos(id){return read(photoKey(id))||{}}
+function savePhotos(id,photos){localStorage.setItem(photoKey(id),JSON.stringify(photos))}
+function photoNames(){const sel=$v('star7VotePhotoName'),old=sel.value;sel.replaceChildren();for(const line of $v('star7VoteContestants').value.split(/\r?\n/)){const name=line.split('|')[0].trim();if(!name)continue;const op=document.createElement('option');op.value=name;op.textContent=name;sel.append(op)}if([...sel.options].some(x=>x.value===old))sel.value=old;photoPreview()}
+function photoPreview(){const id=$v('star7VoteTitle').value,name=$v('star7VotePhotoName').value,im=$v('star7VotePhotoPreview');const image=(photoDraft[id]||readPhotos(id))[name];im.hidden=!image;if(image)im.src=image;else im.removeAttribute('src')}
+
 function titles(){
  const sel=$v('star7VoteTitle');if(!sel)return;
  const previous=sel.value;
@@ -932,9 +959,31 @@ function titles(){
 function loadAdmin(){
  const id=$v('star7VoteTitle').value,config=configs()[id];
  $v('star7VoteEnabled').value=config?.enabled?'on':'off';
- $v('star7VoteContestants').value=(config?.contestants||[]).map(c=>c.name+(c.image?' | '+c.image:'')).join('\n');
+ $v('star7VoteContestants').value=(config?.contestants||[]).map(c=>c.name+(c.image&&!c.image.startsWith('data:')?' | '+c.image:'')).join('\n');
+ photoNames();
 }
 $v('star7VoteTitle').addEventListener('change',loadAdmin);
+$v('star7VoteContestants').addEventListener('input',photoNames);
+$v('star7VotePhotoName').addEventListener('change',photoPreview);
+$v('star7VotePhotoFile').addEventListener('change',async function(){
+ const file=this.files?.[0],id=$v('star7VoteTitle').value,name=$v('star7VotePhotoName').value,status=$v('star7VotePhotoStatus');
+ if(!file||!id||!name){status.textContent='Select a show and add contestant names first.';return}
+ if(!file.type.startsWith('image/')){status.textContent='Please select an image.';return}
+ try{
+  const bitmap=await createImageBitmap(file);const scale=Math.min(1,300/Math.max(bitmap.width,bitmap.height));
+  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+  canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+  const data=canvas.toDataURL('image/jpeg',0.72);
+  photoDraft[id]={...readPhotos(id),...(photoDraft[id]||{}),[name]:data};
+  status.textContent='Photo ready. Tap Save Voting Setup to save it.';photoPreview();
+ }catch(e){status.textContent='Could not load photo: '+e.message}
+});
+$v('star7VotePhotoRemove').addEventListener('click',()=>{
+ const id=$v('star7VoteTitle').value,name=$v('star7VotePhotoName').value;
+ if(!id||!name)return;
+ photoDraft[id]={...readPhotos(id),...(photoDraft[id]||{})};delete photoDraft[id][name];photoPreview();
+ $v('star7VotePhotoStatus').textContent='Photo removed from draft. Tap Save Voting Setup.';
+});
 $v('star7VoteSave').addEventListener('click',()=>{
  if($v('adminBox').hidden){return}
  const id=$v('star7VoteTitle').value;
@@ -944,8 +993,12 @@ $v('star7VoteSave').addEventListener('click',()=>{
   return {name:(name||'').trim().slice(0,90),image:/^https:\/\//i.test(image)?image:''};
  }).filter(c=>c.name).slice(0,200);
  if($v('star7VoteEnabled').value==='on'&&contestants.length<2){$v('star7VoteAdminStatus').textContent='Add at least two contestants.';return}
+ const photos={...readPhotos(id),...(photoDraft[id]||{})};
+ contestants.forEach(c=>{if(photos[c.name])c.image=photos[c.name]});
  const all=configs();all[id]={enabled:$v('star7VoteEnabled').value==='on',contestants};
- localStorage.setItem(CONFIG_KEY,JSON.stringify(all));
+ try{localStorage.setItem(CONFIG_KEY,JSON.stringify(all));savePhotos(id,photos)}
+ catch(e){$v('star7VoteAdminStatus').textContent='Storage full. Try smaller photos or fewer contestants.';return}
+ delete photoDraft[id];
  $v('star7VoteAdminStatus').textContent='Saved on this device. Not published to other viewers.';
  if(selectedTitle&&String(selectedTitle.id)===id)showVote(selectedTitle);
 });
@@ -1070,6 +1123,39 @@ const playerDialog=el('playerDialog');if(playerDialog)new MutationObserver(refre
  const data=read(),key=title();const row=data[key]||{plays:0,seconds:0};row.plays++;data[key]=row;localStorage.setItem(KEY,JSON.stringify(data));draw()},true);
  window.addEventListener('pagehide',()=>{if(window.__star7AnalyticsPending)localStorage.setItem(KEY,JSON.stringify(window.__star7AnalyticsPending))});
  document.getElementById('star7AnalyticsRefresh')?.addEventListener('click',draw);draw();
+})();
+</script><script id="star7MySpaceEnhancements">
+(function(){
+const $=id=>document.getElementById(id);
+function sync(){
+ const email=typeof viewerCurrent==='function'?viewerCurrent():'';
+ const profile=email&&typeof viewerProfiles==='function'?viewerProfiles()[email]:null;
+ $('star7SpaceName').textContent=profile?.name||'Welcome to STAR 7';
+ $('star7SpaceId').textContent=email?'Account ID: '+email:'Sign in to manage your account';
+}
+function close(){ $('mySpaceSection').hidden=true;$('star7SpaceQuickResults').replaceChildren(); }
+$('star7SpaceBack').addEventListener('click',close);
+$('star7SpaceDownloads').addEventListener('click',()=>{$('offlineLibrary').scrollIntoView({behavior:'smooth',block:'center'})});
+function cards(kind){
+ const box=$('star7SpaceQuickResults');box.replaceChildren();
+ const titles=typeof content!=='undefined'?content:[];
+ const prog=typeof getProgress==='function'?getProgress():{};
+ const chosen=kind==='list'?titles.filter(x=>saved.has(x.id)):titles.filter(x=>prog[x.id]&&!prog[x.id].completed);
+ const heading=document.createElement('h3');heading.textContent=kind==='list'?'My List':'Continue Watching';box.append(heading);
+ if(!chosen.length){const p=document.createElement('p');p.className='muted';p.textContent='No videos here yet.';box.append(p);return}
+ for(const x of chosen){
+  const btn=document.createElement('button');btn.className='btn alt';btn.style.cssText='display:block;text-align:left;margin:5px 0;width:100%';
+  btn.textContent=x.title+(kind==='continue'?' · Resume':'');
+  btn.onclick=()=>{close();if(kind==='continue'&&typeof startEpisode==='function'){const pr=prog[x.id];startEpisode(x,pr.index||0,true)}else if(typeof openDetails==='function')openDetails(x)};
+  box.append(btn);
+ }
+ box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$('star7SpaceMyList').addEventListener('click',()=>cards('list'));
+$('star7SpaceContinue').addEventListener('click',()=>cards('continue'));
+$('star7SpaceNav')?.addEventListener('click',()=>setTimeout(sync,30));
+$('mySpaceNav')?.addEventListener('click',()=>setTimeout(sync,30));
+new MutationObserver(()=>{if(!$('mySpaceSection').hidden)sync()}).observe($('mySpaceSection'),{attributes:true,attributeFilter:['hidden']});
 })();
 </script></body>
 </html>
